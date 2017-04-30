@@ -1,6 +1,8 @@
 package pro.cyberstudio.regexexpress;
 
 import java.awt.*;
+import java.awt.geom.Point2D;
+
 import static pro.cyberstudio.regexexpress.Utility.viewSizeMask.*;
 
 /**
@@ -69,6 +71,10 @@ class Utility {
 	}
 	
 	static String displayPt(Point p)  {
+		return displayXY(p.getX(), p.getY());
+	}
+	
+	static String displayPt(Point2D.Double p)  {
 		return displayXY(p.getX(), p.getY());
 	}
 	

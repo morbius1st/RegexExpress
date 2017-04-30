@@ -5,6 +5,8 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
+import static pro.cyberstudio.regexexpress.Utility.*;
+
 /**
  * @author jeffs
  *         File:    RegexAnalysis
@@ -47,14 +49,13 @@ class RegexPointer extends JPanel implements Scrollable,
 	@Override
 	public void paint(Graphics g) {
 		super.paint(g);
-
-		if (cursorPoint != null) {
-			g.setColor(Color.BLUE);
-			// draw horizontal cursor line
-			g.drawLine(0, cursorPoint.y, this.getWidth(), cursorPoint.y);
-			g.drawLine(cursorPoint.x, 0, cursorPoint.x, this.getHeight());
-		}
-	
+		
+		LogMsgln("cursor point 2: " + displayPt(cursorPoint));
+		
+		g.setColor(Color.BLUE);
+		// draw horizontal cursor line
+		g.drawLine(0, cursorPoint.y, this.getWidth(), cursorPoint.y);
+		g.drawLine(cursorPoint.x, 0, cursorPoint.x, this.getHeight());
 	}
 	
 	@Override
@@ -66,6 +67,7 @@ class RegexPointer extends JPanel implements Scrollable,
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		cursorPoint = e.getPoint();
+		LogMsgln("\ncursor point 1: " + displayPt(cursorPoint));
 		repaint();
 	}
 

@@ -2,6 +2,7 @@ package pro.cyberstudio.regexexpress;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.*;
 import java.util.ArrayList;
 
 import javax.swing.*;
@@ -57,6 +58,11 @@ class RegexScroll extends JScrollPane implements MouseWheelListener, ComponentLi
 	
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
+//		Point2D.Double ptSrc = new Point2D.Double(e.getX(), e.getY());
+//		Point2D.Double ptDest = RegexBackground.calcZoomedPoint(ptSrc);
+//		LogMsgln("un-converted point: " + displayPt(ptSrc));
+//		LogMsgln("   converted point: " + displayPt(ptDest));
+		
 		for (iMWListener mwl : mwlChain) {
 			mwl.mouseWheelMoved(e);
 		}

@@ -6,6 +6,8 @@ import java.awt.geom.AffineTransform;
 import javax.swing.*;
 
 import static pro.cyberstudio.regexexpress.RegexExpress.*;
+import static pro.cyberstudio.regexexpress.Utility.LogMsgln;
+import static pro.cyberstudio.regexexpress.Utility.displayXY;
 
 /**
  * @author jeffs
@@ -29,7 +31,7 @@ class RegexLayer extends JPanel implements Scrollable, iRxLayer {
 	
 	private double zoomFactor = 1.0;
 	
-	AffineTransform afInv = new AffineTransform();
+//	AffineTransform afInv = new AffineTransform();
 	
 	
 	RegexLayer(String name) {
@@ -40,6 +42,11 @@ class RegexLayer extends JPanel implements Scrollable, iRxLayer {
 		setAutoscrolls(true);
 		setAlignmentX(CENTER_ALIGNMENT);
 		setAlignmentX(CENTER_ALIGNMENT);
+		
+		int x = IMAGEPOSX + offset;
+		int y = IMAGEPOSY + offset;
+		
+		LogMsgln("start point: " + displayXY(x, y));
 		
 	}
 	
@@ -57,12 +64,12 @@ class RegexLayer extends JPanel implements Scrollable, iRxLayer {
 		Graphics2D g2 = (Graphics2D) g;
 
 		g2.scale(zoomFactor, zoomFactor);
-		
-		try {
-			afInv = g2.getTransform().createInverse();
-		} catch (Exception e) {
-			System.exit(-2);
-		}
+//
+//		try {
+//			afInv = g2.getTransform().createInverse();
+//		} catch (Exception e) {
+//			System.exit(-2);
+//		}
 
 		super.paint(g);
 	}
@@ -78,9 +85,9 @@ class RegexLayer extends JPanel implements Scrollable, iRxLayer {
 		int y = IMAGEPOSY + offset;
 
 		g2.setColor(Color.BLUE);
-		g2.drawString("this is a scroll viewport", x - 40, y - 5);
+		g2.drawString("this is a scroll viewport", x + 5, y + 20);
 		g2.setColor(colors[position]);
-		g2.drawRect( x - 45, y - 25, 135, 30);
+		g2.drawRect( x, y , 135, 30);
 	}
 	
 	@Override

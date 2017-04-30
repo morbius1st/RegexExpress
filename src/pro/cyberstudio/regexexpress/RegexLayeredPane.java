@@ -27,7 +27,7 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener {
 	
 	// hold the actual instance
 	private static RegexLayeredPane me;
-	private static RxBackground background;
+	private static RegexBackground background;
 	private static RegexPointer rxPointer;
 	
 	private static viewSizeData viewSizeParams = new viewSizeData();
@@ -53,7 +53,7 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener {
 	static {
 		me = new RegexLayeredPane();
 		rxPointer = new RegexPointer();
-		background = new RxBackground();
+		background = new RegexBackground();
 	}
 	
 	/**
@@ -105,6 +105,13 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener {
 			}
 		}
 	}
+	
+//	static Point2D.Double calcZoomedPoint(Point2D.Double ptSrc) {
+//		Point2D.Double ptDest = new Point2D.Double();
+//		afInv.transform(ptSrc, ptDest);
+//
+//		return ptDest;
+//	}
 	
 	void zoomView(double zRatio) {
 		zoomRatio = zRatio;
@@ -163,6 +170,7 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener {
 		return result.toDimension();
 	}
 	
+
 	@Override
 	public void componentResized(ComponentEvent e) {
 		Dimension2dx viewportSize = Dimension2dx.toDimension2dx(getParent().getSize());
@@ -173,6 +181,24 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener {
 			updateSize();
 			revalidate();
 		}
+	}
+	
+	
+	
+	void listViewSizes() {
+		Component[] comps = getComponentsInLayer(POINTER_LAYER);
+		
+		LogMsgln("View Size Listing");
+		LogMsgln("Lay Pane");
+		LogMsg(viewSizes(this, viewSizeMask.perf.value + viewSizeMask.size.value));
+		LogMsgln("canvasSize: " + displayDim(viewSizeParams.size));
+
+//		LogMsgln("Pointer Layer");
+//		LogMsgln(viewSizes(comps[0]));
+//		LogMsgln("");
+//		LogMsgln("View Port");
+//		LogMsgln(viewSizes(getParent()));
+	
 	}
 	
 	@Override
@@ -211,21 +237,5 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener {
 		}
 		
 		return sb.toString();
-	}
-	
-	void listViewSizes() {
-		Component[] comps = getComponentsInLayer(POINTER_LAYER);
-		
-		LogMsgln("View Size Listing");
-		LogMsgln("Lay Pane");
-		LogMsg(viewSizes(this, viewSizeMask.perf.value + viewSizeMask.size.value));
-		LogMsgln("canvasSize: " + displayDim(viewSizeParams.size));
-
-//		LogMsgln("Pointer Layer");
-//		LogMsgln(viewSizes(comps[0]));
-//		LogMsgln("");
-//		LogMsgln("View Port");
-//		LogMsgln(viewSizes(getParent()));
-	
 	}
 }

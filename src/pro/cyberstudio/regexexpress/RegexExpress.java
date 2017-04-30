@@ -15,19 +15,17 @@ import static pro.cyberstudio.regexexpress.Utility.*;
  *
  */
 
-class RegexExpress extends JPanel { //implements ComponentListener {
+class RegexExpress extends JPanel {
 
-//	private JScrollPane regexAnalysisScroll;
 	private RegexScroll regexAnalysisScroll;
-	
 	
 	private static JFrame frame;
 	private static RegexExpress rx;
 
 	private static RegexLayeredPane regexLayerPane = RegexLayeredPane.getInstance();
 	
-	private static final int CANVASX = 1000;
-	private static final int CANVASY = 750;
+	static final int CANVASX = 1000;
+	static final int CANVASY = 750;
 
 	private static final int FRAMEPREFWIDTH = CANVASX - 250;
 	private static final int FRAMEPREFHEIGHT = CANVASY - 150;
