@@ -52,8 +52,9 @@ class RegexScroll extends JScrollPane implements MouseWheelListener, ComponentLi
 	
 	static void addCL(iCompListener cl) {
 		
-		if (cl != null && !clChain.contains(cl))
+		if (cl != null && !clChain.contains(cl)) {
 			clChain.add(cl);
+		}
 	}
 	
 	@Override

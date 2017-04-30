@@ -4,6 +4,7 @@ import java.awt.event.ComponentEvent;
 import java.util.*;
 
 import javax.swing.*;
+
 import static pro.cyberstudio.regexexpress.Utility.*;
 
 
@@ -27,8 +28,9 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener {
 	
 	// hold the actual instance
 	private static RegexLayeredPane me;
-	private static RegexBackground background;
+	private static RegexBackground rxBackground;
 	private static RegexPointer rxPointer;
+	private static RegexZero rxZero;
 	
 	private static viewSizeData viewSizeParams = new viewSizeData();
 	
@@ -53,7 +55,8 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener {
 	static {
 		me = new RegexLayeredPane();
 		rxPointer = new RegexPointer();
-		background = new RegexBackground();
+		rxBackground = new RegexBackground();
+		rxZero = new RegexZero();
 	}
 	
 	/**
@@ -67,23 +70,33 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener {
 		viewSizeParams.minSize = initSize.clone();
 		viewSizeParams.size = initSize.clone();
 		
+		rxZero.setOpaque(false);
+		rxZero.setVisible(true);
+		rxZero.setName("zero");
+		add(rxZero, JLayeredPane.DEFAULT_LAYER);
+		
 		rxPointer.assignScrollBars(hScrollBar, vScrollBar);
 		rxPointer.setOpaque(false);
 		rxPointer.setVisible(true);
+		rxPointer.setName("pointer");
 		add(rxPointer, (Integer) (POINTER_LAYER));
 		RegexScroll.addMWL(rxPointer);
 
-		background.setBackground(Color.BLACK);
-		background.setOpaque(true);
-		background.setVisible(true);
-		add(background, (Integer) (-1));
+		rxBackground.setBackground(Color.BLACK);
+		rxBackground.setOpaque(true);
+		rxBackground.setVisible(true);
+		rxBackground.setName("background");
+		add(rxBackground, (Integer) (-1));
+		
+		
 		
 		updateSize();
 	}
-	
+
 	Component add(String layerName) {
-		RegexLayer layer = new RegexLayer(layerName);
+		RegexLayer layer = new RegexLayer();
 		
+		layer.setName(layerName);
 		layer.setSize(getPreferredSize());
 		layer.setOpaque(false);
 		layer.setVisible(true);
@@ -96,11 +109,14 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener {
 	}
 	
 	private void updateSize() {
+		
 		for (int i = lowestLayer(); i <= highestLayer(); i++) {
 			Component[] comps = getComponentsInLayer(i);
 			if (comps.length > 0) {
 				for (Component c : comps) {
 					c.setSize(getPreferredSize());
+					c.revalidate();
+					c.repaint();
 				}
 			}
 		}
@@ -125,6 +141,7 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener {
 //		// set this (Layered Pane's) size
 		setPreferredSize(viewSize);
 		revalidate();
+
 		
 		for (int i = lowestLayer(); i <= highestLayer(); i++) {
 			Component[] comps = getComponentsInLayer(i);
@@ -132,6 +149,7 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener {
 				for (Component c : comps) {
 					c.setSize(viewSize);
 					((iRxLayer) c).setZoomFactor(zoomFactor);
+					c.revalidate();
 					c.repaint();
 				}
 			}
@@ -141,46 +159,69 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener {
 	// restrict the zoomed view size to be no smaller than the
 	// layered pane minimum size
 	private Dimension getZoomedViewSize() {
+	
+//		Dimension2dx result = new Dimension2dx();
+//		Dimension2dx proposed = viewSizeParams.size.clone();
+//		Dimension2dx viewport = Dimension2dx.toDimension2dx(getParent().getSize());
+//
+//		if (proposed.width >= getPreferredSize().width ||
+//				proposed.width >= viewSizeParams.minSize.width) {
+//			result.width = proposed.width;
+//		} else {
+//			result.width = getPreferredSize().width;
+//		}
+//
+//		if (proposed.height >= getPreferredSize().height ||
+//				proposed.height >= viewSizeParams.minSize.height) {
+//			result.height = proposed.height;
+//		} else {
+//			result.height = getPreferredSize().height;
+//		}
+//
+//		if (viewport.width > result.width) {
+//			result.width = viewport.width;
+//		}
+//		if (viewport.height > result.height) {
+//			result.height = viewport.height;
+//		}
 		
 		Dimension2dx result = new Dimension2dx();
 		Dimension2dx proposed = viewSizeParams.size.clone();
 		Dimension2dx viewport = Dimension2dx.toDimension2dx(getParent().getSize());
-
-		if (proposed.width >= getPreferredSize().width ||
-				proposed.width >= viewSizeParams.minSize.width) {
+		
+		if (proposed.width > viewport.width) {
 			result.width = proposed.width;
-		} else {
-			result.width = getPreferredSize().width;
-		}
-
-		if (proposed.height >= getPreferredSize().height ||
-				proposed.height >= viewSizeParams.minSize.height) {
-			result.height = proposed.height;
-		} else {
-			result.height = getPreferredSize().height;
-		}
-
-		if (viewport.width > result.width) {
+		} else if (proposed.width < viewport.width) {
 			result.width = viewport.width;
 		}
-		if (viewport.height > result.height) {
+		
+		if (proposed.height > viewport.height) {
+			result.height = proposed.height;
+		} else if (proposed.height < viewport.height) {
 			result.height = viewport.height;
 		}
-		
+//		LogMsgln("");
+//		LogMsgln("proposed size: " + displayDim(proposed));
+//		LogMsgln("viewport size: " + displayDim(viewport));
+//		LogMsgln("  result size: " + displayDim(result));
+
 		return result.toDimension();
 	}
 	
 
 	@Override
 	public void componentResized(ComponentEvent e) {
-		Dimension2dx viewportSize = Dimension2dx.toDimension2dx(getParent().getSize());
+//		Dimension2dx viewportSize = Dimension2dx.toDimension2dx(getParent().getSize());
 		Dimension2dx zoomedSize = Dimension2dx.toDimension2dx(getZoomedViewSize());
 		
-		if (viewportSize.eitherGreaterThanOrEqual(zoomedSize)) {
+//		LogMsgln("resizing component");
+
+//		if (viewportSize.eitherGreaterThanOrEqual(zoomedSize)) {
+//			LogMsgln("processing resized");
 			setPreferredSize(zoomedSize.toDimension());
 			updateSize();
 			revalidate();
-		}
+//		}
 	}
 	
 	
@@ -231,6 +272,10 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener {
 				
 				for (int j = 0; j < comps.length; j++) {
 					sb.append("component #").append(j).append(" in layer: name= ").append(comps[j].getName());
+					sb.append("\n\t     size: " + displayDim(comps[j].getSize()));
+					sb.append("\n\tperf size: " + displayDim(comps[j].getPreferredSize()));
+					sb.append("\n\t min size: " + displayDim(comps[j].getMinimumSize()));
+					sb.append("\n\t max size: " + displayDim(comps[j].getMaximumSize()));
 					sb.append("\n");
 				}
 			}

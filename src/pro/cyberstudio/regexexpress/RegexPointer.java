@@ -29,8 +29,6 @@ class RegexPointer extends JPanel implements Scrollable,
 		setAlignmentX(CENTER_ALIGNMENT);
 		setAutoscrolls(true);
 		addMouseMotionListener(this);
-		setName("pointer");
-	
 	}
 	
 	public void assignScrollBars(JScrollBar hScrollBar, JScrollBar vScrollBar) {
@@ -50,12 +48,12 @@ class RegexPointer extends JPanel implements Scrollable,
 	public void paint(Graphics g) {
 		super.paint(g);
 		
-		LogMsgln("cursor point 2: " + displayPt(cursorPoint));
-		
 		g.setColor(Color.BLUE);
-		// draw horizontal cursor line
+		// draw cursor lines
 		g.drawLine(0, cursorPoint.y, this.getWidth(), cursorPoint.y);
 		g.drawLine(cursorPoint.x, 0, cursorPoint.x, this.getHeight());
+		
+//		LogMsgln("cursor: " + displayPt(cursorPoint));
 	}
 	
 	@Override
@@ -67,7 +65,6 @@ class RegexPointer extends JPanel implements Scrollable,
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		cursorPoint = e.getPoint();
-		LogMsgln("\ncursor point 1: " + displayPt(cursorPoint));
 		repaint();
 	}
 

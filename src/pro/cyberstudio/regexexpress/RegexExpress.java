@@ -30,8 +30,8 @@ class RegexExpress extends JPanel {
 	private static final int FRAMEPREFWIDTH = CANVASX - 250;
 	private static final int FRAMEPREFHEIGHT = CANVASY - 150;
 
-	private static final int SCROLLPREFWIDTH = FRAMEPREFWIDTH;
-	private static final int SCROLLPREFHEIGHT = FRAMEPREFHEIGHT;
+	private static final int SCROLLPREFWIDTH = CANVASX;
+	private static final int SCROLLPREFHEIGHT = CANVASY;
 	
 	static final int IMAGEPOSX = (CANVASX / 2) - 50;
 	static final int IMAGEPOSY = (CANVASY / 2) - 50;
@@ -77,6 +77,10 @@ class RegexExpress extends JPanel {
 		JButton btnE = new JButton("View Info");
 		btnE.addActionListener(btn3);
 		buttons.add(btnE);
+		
+		JButton btnF = new JButton("Test");
+		btnF.addActionListener(btn6);
+		buttons.add(btnF);
 		
 		buttons.setMaximumSize(new Dimension(FRAMEPREFWIDTH, 30));
 		buttons.setPreferredSize(new Dimension(FRAMEPREFWIDTH, 30));
@@ -155,6 +159,13 @@ class RegexExpress extends JPanel {
 	private String getLayer() {
 		return String.format("Layer %1$d", ++layerIdx);
 	}
+	
+	
+	private ActionListener btn6 = new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent actionEvent) {
+		}
+	};
 	
 	private ActionListener btn5 = new ActionListener() {
 		@Override
