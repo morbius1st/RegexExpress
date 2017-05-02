@@ -80,8 +80,10 @@ class RegexScroll extends JScrollPane implements MouseWheelListener, MouseListen
 		mousePointComponent = new Point2D.Double(e.getX(), e.getY());
 		mousePointScaled = RegexZero.calcZoomedPoint(mousePointComponent);
 		
-		LogMsgln("  comp point: " + displayPt(mousePointComponent));
-		LogMsgln("scaled point: " + displayPt(mousePointScaled));
+		RegexExpress.addCoordText(mousePointScaled);
+		
+//		LogMsgln("  comp point: " + displayPt(mousePointComponent));
+//		LogMsgln("scaled point: " + displayPt(mousePointScaled));
 	}
 	
 	@Override

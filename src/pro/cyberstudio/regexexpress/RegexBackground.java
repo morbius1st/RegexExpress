@@ -20,7 +20,7 @@ class RegexBackground extends JPanel implements iRxLayer {
 	private static AffineTransform afInv = new AffineTransform();
 	
 	@Override
-	public void setZoomFactor(double zoomFactor) {
+	public void setZoomScale(double zoomFactor) {
 		this.zoomFactor = zoomFactor;
 	}
 	

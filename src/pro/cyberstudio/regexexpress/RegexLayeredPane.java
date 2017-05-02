@@ -101,7 +101,7 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener {
 		layer.setSize(getPreferredSize());
 		layer.setOpaque(false);
 		layer.setVisible(true);
-		layer.setZoomFactor(zoomFactor);
+		layer.setZoomScale(zoomFactor);
 		
 		add(layer, (Integer) (layerTable.size() + 1));
 		layerTable.put(layerName, layer);
@@ -121,6 +121,16 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener {
 				}
 			}
 		}
+	}
+	
+	void getViewport() {
+		LogMsgln("Parent: " + getParent().getClass());
+	}
+	
+	void zoomTo(Point2D.Double center) {
+		LogMsgln("zoomTo");
+		getViewport();
+
 	}
 	
 	void zoomView(double zRatio) {
@@ -143,7 +153,7 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener {
 			if (comps.length > 0) {
 				for (Component c : comps) {
 					c.setSize(viewSize);
-					((iRxLayer) c).setZoomFactor(zoomFactor);
+					((iRxLayer) c).setZoomScale(zoomFactor);
 					c.revalidate();
 					c.repaint();
 				}
@@ -154,32 +164,7 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener {
 	// restrict the zoomed view size to be no smaller than the
 	// layered pane minimum size
 	private Dimension getZoomedViewSize() {
-	
-//		Dimension2dx result = new Dimension2dx();
-//		Dimension2dx proposed = viewSizeParams.size.clone();
-//		Dimension2dx viewport = Dimension2dx.toDimension2dx(getParent().getSize());
-//
-//		if (proposed.width >= getPreferredSize().width ||
-//				proposed.width >= viewSizeParams.minSize.width) {
-//			result.width = proposed.width;
-//		} else {
-//			result.width = getPreferredSize().width;
-//		}
-//
-//		if (proposed.height >= getPreferredSize().height ||
-//				proposed.height >= viewSizeParams.minSize.height) {
-//			result.height = proposed.height;
-//		} else {
-//			result.height = getPreferredSize().height;
-//		}
-//
-//		if (viewport.width > result.width) {
-//			result.width = viewport.width;
-//		}
-//		if (viewport.height > result.height) {
-//			result.height = viewport.height;
-//		}
-		
+
 		Dimension2dx result = new Dimension2dx();
 		Dimension2dx proposed = viewSizeParams.size.clone();
 		Dimension2dx viewport = Dimension2dx.toDimension2dx(getParent().getSize());
@@ -195,10 +180,6 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener {
 		} else if (proposed.height < viewport.height) {
 			result.height = viewport.height;
 		}
-//		LogMsgln("");
-//		LogMsgln("proposed size: " + displayDim(proposed));
-//		LogMsgln("viewport size: " + displayDim(viewport));
-//		LogMsgln("  result size: " + displayDim(result));
 
 		return result.toDimension();
 	}

@@ -8,6 +8,6 @@ package pro.cyberstudio.regexexpress;
  */
 
 interface iRxLayer {
-	void setZoomFactor(double zoomFactor);
+	void setZoomScale(double zoomFactor);
 	
 }

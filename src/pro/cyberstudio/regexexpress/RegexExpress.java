@@ -3,6 +3,7 @@ package pro.cyberstudio.regexexpress;
 import java.awt.*;
 import java.awt.Toolkit;
 import java.awt.event.*;
+import java.awt.geom.Point2D;
 
 import javax.swing.*;
 import static pro.cyberstudio.regexexpress.Utility.*;
@@ -21,6 +22,7 @@ class RegexExpress extends JPanel {
 	
 	private static JFrame frame;
 	private static RegexExpress rx;
+	private static JTextArea textAreaCoords;
 
 	private static RegexLayeredPane regexLayerPane = RegexLayeredPane.getInstance();
 	
@@ -87,8 +89,24 @@ class RegexExpress extends JPanel {
 		buttons.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 		
 		add(buttons);
+		
+		this.add(Box.createRigidArea(new Dimension(0,5)));
+		
+		JPanel textAreas = new JPanel(new FlowLayout(FlowLayout.LEFT, 10,0));
+		
+//		textAreas.add(Box.createRigidArea(new Dimension(0,5)));
+		
+		textAreaCoords = new JTextArea("this is a test");
+		textAreaCoords.setMaximumSize(new Dimension(175, 25));
+		textAreaCoords.setPreferredSize(new Dimension(175, 25));
+		textAreaCoords.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5 ));
+		
+		textAreas.add(textAreaCoords);
+		
+		add(textAreas);
+		
 
-		this.add(Box.createRigidArea(new Dimension(0,10)));
+		this.add(Box.createRigidArea(new Dimension(0,5)));
 		
 		regexLayerPane.setMinimumSize(new Dimension(CANVASX, CANVASY));
 		regexLayerPane.setPreferredSize(new Dimension(CANVASX, CANVASY));
@@ -157,10 +175,15 @@ class RegexExpress extends JPanel {
 		return String.format("Layer %1$d", ++layerIdx);
 	}
 	
+	static void addCoordText(Point2D.Double pt2D) {
+		textAreaCoords.setText(displayPt(pt2D));
+	}
 	
+	// unspecified test
 	private ActionListener btn6 = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent actionEvent) {
+			regexLayerPane.zoomTo(new Point2D.Double(100,100));
 		}
 	};
 	

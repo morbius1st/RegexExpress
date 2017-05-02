@@ -57,7 +57,7 @@ class RegexPointer extends JPanel implements Scrollable,
 	}
 	
 	@Override
-	public void setZoomFactor(double zoomFactor) { }
+	public void setZoomScale(double zoomFactor) { }
 	
 	@Override
 	public void mouseDragged(MouseEvent e) { }

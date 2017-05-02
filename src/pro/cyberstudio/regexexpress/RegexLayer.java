@@ -38,7 +38,7 @@ class RegexLayer extends JPanel implements Scrollable, iRxLayer {
 		setAlignmentX(CENTER_ALIGNMENT);
 	}
 	
-	public void setZoomFactor(double zoomFactor) {
+	public void setZoomScale(double zoomFactor) {
 		this.zoomFactor = zoomFactor;
 	}
 	
