@@ -1,15 +1,8 @@
 package pro.cyberstudio.regexexpress;
 
 import java.awt.*;
-import java.awt.geom.AffineTransform;
-
 import javax.swing.*;
-
-import javafx.beans.binding.SetExpression;
-
 import static pro.cyberstudio.regexexpress.RegexExpress.*;
-import static pro.cyberstudio.regexexpress.Utility.LogMsgln;
-import static pro.cyberstudio.regexexpress.Utility.displayXY;
 
 /**
  * @author jeffs
@@ -43,10 +36,6 @@ class RegexLayer extends JPanel implements Scrollable, iRxLayer {
 		setAutoscrolls(true);
 		setAlignmentX(CENTER_ALIGNMENT);
 		setAlignmentX(CENTER_ALIGNMENT);
-		
-		int x = IMAGEPOSX + offset;
-		int y = IMAGEPOSY + offset;
-		
 	}
 	
 	public void setZoomFactor(double zoomFactor) {
@@ -61,15 +50,7 @@ class RegexLayer extends JPanel implements Scrollable, iRxLayer {
 	public void paint(Graphics g) {
 	
 		Graphics2D g2 = (Graphics2D) g;
-
 		g2.scale(zoomFactor, zoomFactor);
-//
-//		try {
-//			afInv = g2.getTransform().createInverse();
-//		} catch (Exception e) {
-//			System.exit(-2);
-//		}
-
 		super.paint(g);
 	}
 	

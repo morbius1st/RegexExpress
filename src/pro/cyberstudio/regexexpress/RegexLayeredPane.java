@@ -1,6 +1,7 @@
 package pro.cyberstudio.regexexpress;
 import java.awt.*;
-import java.awt.event.ComponentEvent;
+import java.awt.event.*;
+import java.awt.geom.Point2D;
 import java.util.*;
 
 import javax.swing.*;
@@ -88,7 +89,7 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener {
 		rxBackground.setName("background");
 		add(rxBackground, (Integer) (-1));
 		
-		
+		rxPointer.addMouseListener(RegexExpress.regexAnalysisScroll);
 		
 		updateSize();
 	}
@@ -122,13 +123,6 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener {
 		}
 	}
 	
-//	static Point2D.Double calcZoomedPoint(Point2D.Double ptSrc) {
-//		Point2D.Double ptDest = new Point2D.Double();
-//		afInv.transform(ptSrc, ptDest);
-//
-//		return ptDest;
-//	}
-	
 	void zoomView(double zRatio) {
 		zoomRatio = zRatio;
 		
@@ -141,7 +135,8 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener {
 //		// set this (Layered Pane's) size
 		setPreferredSize(viewSize);
 		revalidate();
-
+		
+//		LogMsgln("vis rect: " + displayRect(getVisibleRect()));
 		
 		for (int i = lowestLayer(); i <= highestLayer(); i++) {
 			Component[] comps = getComponentsInLayer(i);
@@ -223,9 +218,7 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener {
 			revalidate();
 //		}
 	}
-	
-	
-	
+
 	void listViewSizes() {
 		Component[] comps = getComponentsInLayer(POINTER_LAYER);
 		
@@ -283,4 +276,5 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener {
 		
 		return sb.toString();
 	}
+	
 }

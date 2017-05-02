@@ -15,34 +15,39 @@ import static pro.cyberstudio.regexexpress.Utility.*;
  *         Project: RegexExpress
  */
 
-class RegexScroll extends JScrollPane implements MouseWheelListener, ComponentListener {
+class RegexScroll extends JScrollPane implements MouseWheelListener, MouseListener, ComponentListener {
 	
 	private static ArrayList<iMWListener> mwlChain = new ArrayList<>(5);
 	private static ArrayList<iCompListener> clChain = new ArrayList<>(5);
+	
+	static Point2D.Double mousePointComponent;
+	static Point2D.Double mousePointScaled;
+	
 
 	public RegexScroll(Component component, int i, int i1) {
 		super(component, i, i1);
-		initalize();
+		initialize();
 	}
 
 	public RegexScroll(Component component) {
 		super(component);
-		initalize();
+		initialize();
 	}
 
 	public RegexScroll(int i, int i1) {
 		super(i, i1);
-		initalize();
+		initialize();
 	}
 
 	public RegexScroll() {
-		initalize();
+		initialize();
 	}
 	
-	private void initalize() {
+	private void initialize() {
 		
 		addMouseWheelListener(this);
 		addComponentListener(this);
+
 	}
 	
 	static void addMWL(iMWListener mwl) {
@@ -51,21 +56,8 @@ class RegexScroll extends JScrollPane implements MouseWheelListener, ComponentLi
 	}
 	
 	static void addCL(iCompListener cl) {
-		
 		if (cl != null && !clChain.contains(cl)) {
 			clChain.add(cl);
-		}
-	}
-	
-	@Override
-	public void mouseWheelMoved(MouseWheelEvent e) {
-//		Point2D.Double ptSrc = new Point2D.Double(e.getX(), e.getY());
-//		Point2D.Double ptDest = RegexBackground.calcZoomedPoint(ptSrc);
-//		LogMsgln("un-converted point: " + displayPt(ptSrc));
-//		LogMsgln("   converted point: " + displayPt(ptDest));
-		
-		for (iMWListener mwl : mwlChain) {
-			mwl.mouseWheelMoved(e);
 		}
 	}
 	
@@ -74,6 +66,38 @@ class RegexScroll extends JScrollPane implements MouseWheelListener, ComponentLi
 		for (iCompListener cl : clChain) {
 			cl.componentResized(e);
 		}
+	}
+	
+	@Override
+	public void mouseWheelMoved(MouseWheelEvent e) {
+		for (iMWListener mwl : mwlChain) {
+			mwl.mouseWheelMoved(e);
+		}
+	}
+	
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		mousePointComponent = new Point2D.Double(e.getX(), e.getY());
+		mousePointScaled = RegexZero.calcZoomedPoint(mousePointComponent);
+		
+		LogMsgln("  comp point: " + displayPt(mousePointComponent));
+		LogMsgln("scaled point: " + displayPt(mousePointScaled));
+	}
+	
+	@Override
+	public void mousePressed(MouseEvent e) {
+	}
+	
+	@Override
+	public void mouseReleased(MouseEvent e) {
+	}
+	
+	@Override
+	public void mouseEntered(MouseEvent e) {
+	}
+	
+	@Override
+	public void mouseExited(MouseEvent e) {
 	}
 	
 	@Override

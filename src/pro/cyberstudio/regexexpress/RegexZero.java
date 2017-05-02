@@ -6,6 +6,7 @@ import java.awt.geom.*;
 import javax.swing.JPanel;
 
 import static pro.cyberstudio.regexexpress.RegexExpress.*;
+import static pro.cyberstudio.regexexpress.Utility.*;
 
 /**
  * @author jeffs
@@ -18,15 +19,25 @@ class RegexZero extends JPanel implements iRxLayer {
 	
 	private double zoomFactor = 1.0;
 	private static AffineTransform afInv = new AffineTransform();
+	private static AffineTransform aff = new AffineTransform();
 	
 	@Override
 	public void setZoomFactor(double zoomFactor) {
+		LogMsgln("@zero: zoom factor: " + zoomFactor);
+		LogMsgln("@zero:    zoom inv:" + displayXY(afInv.getScaleX(), afInv.getScaleY()));
+		LogMsgln("@zero:        zoom:" + displayXY(aff.getScaleX(), aff.getScaleY()));
+		
 		this.zoomFactor = zoomFactor;
 	}
 	
 	static Point2D.Double calcZoomedPoint(Point2D.Double ptSrc) {
 		Point2D.Double ptDest = new Point2D.Double();
-		afInv.transform(ptSrc, ptDest);
+//		afInv.transform(ptSrc, ptDest);
+		try {
+			aff.inverseTransform(ptSrc, ptDest);
+		} catch (Exception e) {
+		
+		}
 
 		return ptDest;
 	}
@@ -38,6 +49,8 @@ class RegexZero extends JPanel implements iRxLayer {
 
 		g2.scale(zoomFactor, zoomFactor);
 
+		aff=g2.getTransform();
+		
 		try {
 			afInv = g2.getTransform().createInverse();
 		} catch (Exception e) {

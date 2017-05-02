@@ -91,7 +91,7 @@ class Utility {
 	
 	static String displayXY(int x, int y) { return "x: " + x + " y: " + y; }
 	
-	static String displayRect (Rectangle rect) {
+	static String displayRect(Rectangle rect) {
 		return "x: " + rect.x + " y: " + rect.y + " w: " + rect.width + " h: " + rect.height;
 	}
 	

@@ -17,7 +17,7 @@ import static pro.cyberstudio.regexexpress.Utility.*;
 
 class RegexExpress extends JPanel {
 
-	private RegexScroll regexAnalysisScroll;
+	static RegexScroll regexAnalysisScroll  = new RegexScroll();
 	
 	private static JFrame frame;
 	private static RegexExpress rx;
@@ -89,8 +89,6 @@ class RegexExpress extends JPanel {
 		add(buttons);
 
 		this.add(Box.createRigidArea(new Dimension(0,10)));
-
-		regexAnalysisScroll = new RegexScroll();
 		
 		regexLayerPane.setMinimumSize(new Dimension(CANVASX, CANVASY));
 		regexLayerPane.setPreferredSize(new Dimension(CANVASX, CANVASY));
@@ -107,7 +105,6 @@ class RegexExpress extends JPanel {
 		regexAnalysisScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
 		regexAnalysisScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		regexAnalysisScroll.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 5 ));
-		
 		regexAnalysisScroll.setWheelScrollingEnabled(false);
 		regexAnalysisScroll.setName("scroll pane");
 		
