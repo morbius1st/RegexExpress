@@ -157,7 +157,7 @@ class RegexExpress extends JPanel {
 		
 //		scrollView(CANVASX / 2,CANVASY / 2);
 		
-		regexLayerPane.zoomTo(1.0, new Point(CANVASX / 2,CANVASY / 2));
+		regexLayerPane.zoomTo(1.0, new Point(CANVASX / 2 - 50,CANVASY / 2 - 50));
 
 		frame.setVisible(true);
 	}
@@ -194,7 +194,7 @@ class RegexExpress extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent actionEvent) {
 //			regexLayerPane.testPointer();
-			regexLayerPane.zoomTo(2.0, new Point(CANVASX / 2,CANVASY / 2));
+			regexLayerPane.zoomTo(2.0, new Point(CANVASX / 2 - 50,CANVASY / 2 - 50));
 		}
 	};
 	
