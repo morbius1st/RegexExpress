@@ -1,10 +1,12 @@
 package pro.cyberstudio.regexexpress;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.geom.Point2D;
+import java.awt.geom.*;
 import java.util.*;
 
 import javax.swing.*;
+
+import sun.rmi.runtime.Log;
 
 import static pro.cyberstudio.regexexpress.Utility.*;
 
@@ -21,11 +23,11 @@ class viewSizeData {
 	Dimension2dx size;
 }
 
-class RegexLayeredPane extends JLayeredPane implements iCompListener {
+class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseListener {
 	
-	static final int POINTER_LAYER = JLayeredPane.PALETTE_LAYER - 1;
+	static private final int POINTER_LAYER = JLayeredPane.PALETTE_LAYER - 1;
 	
-	TreeMap<String, RegexLayer> layerTable = new TreeMap<>();
+	private TreeMap<String, RegexLayer> layerTable = new TreeMap<>();
 	
 	// hold the actual instance
 	private static RegexLayeredPane me;
@@ -35,10 +37,10 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener {
 	
 	private static viewSizeData viewSizeParams = new viewSizeData();
 	
-	double zoomFactor = 1.0;
-	double zoomRatio = 1.0;
+	AffineTransform aft = new AffineTransform();
 	
-	int x = 0;
+	private double zoomFactor = 1.0;
+	private double zoomRatio = 1.0;
 	
 	
 	// private constructor to prevent creating
@@ -48,6 +50,7 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener {
 		viewSizeParams.minSize = new Dimension2dx(100, 100);
 		viewSizeParams.size = new Dimension2dx(100, 100);
 		setName("RegexLayeredPane");
+		aft.setToScale(zoomFactor, zoomFactor);
 	}
 	
 	/**
@@ -123,20 +126,136 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener {
 		}
 	}
 	
-	void getViewport() {
-		LogMsgln("Parent: " + getParent().getClass());
-	}
+//	void testPointer() {
+//		rxPointer.test();
+//	}
 	
-	void zoomTo(Point2D.Double center) {
-		LogMsgln("zoomTo");
-		getViewport();
+	private void getViewportRect() {
 
+		Point srcPt = new Point(RegexExpress.regexViewport.getViewRect().x, RegexExpress.regexViewport.getViewRect().y);
+		Point transPt = SwingUtilities.convertPoint(RegexExpress.regexAnalysisScroll, srcPt, this);
+		
+		LogMsgln("vp  view rect: " + Utility.dispVal(RegexExpress.regexViewport.getViewRect()));
+		LogMsgln("vp loc pt raw: " + dispVal(srcPt));
+		LogMsgln("vp loc pt adj: " + dispVal(transPt));
+		
+		LogMsgln("vp   vis rect: " + Utility.dispVal(RegexExpress.regexViewport.getVisibleRect()));
+		LogMsgln("vp    ext dim: " + Utility.dispVal(RegexExpress.regexViewport.getExtentSize()));
+		LogMsgln("vp to view co: " + Utility.dispVal(RegexExpress.regexViewport.toViewCoordinates(RegexExpress.regexViewport.getExtentSize())));
+		LogMsgln("this vis rect: " + Utility.dispVal(getVisibleRect())); // yes
+		LogMsgln("this     size: " + Utility.dispVal(getSize()));  // no
+		LogMsgln("this    w x h: " + Utility.dispVal(getWidth(), getHeight()));  // no
 	}
 	
-	void zoomView(double zRatio) {
-		zoomRatio = zRatio;
+	private Point  calcZoomedPoint(Point ptSrc) {
+		Point ptDest = new Point();
 		
+		try {
+			aft.inverseTransform(ptSrc, ptDest);
+		} catch (Exception e) {}
+		
+		return ptDest;
+	}
+	
+	private Point  calcZoomedPoint(int x, int y) {
+		return calcZoomedPoint(new Point(x, y));
+	}
+	
+	private Point  calcInvZoomedPoint(Point ptSrc) {
+		Point ptDest = new Point();
+		
+		try {
+			aft.transform(ptSrc, ptDest);
+		} catch (Exception e) {}
+		
+		return ptDest;
+	}
+	
+	private Point  calcInvZoomedPoint(int x, int y) {
+		return calcInvZoomedPoint(new Point(x, y));
+	}
+	
+	// center is in viewport (screen type) coordinates
+	void zoomTo(double zRatio, Point zoomCenter) {
+		
+		LogMsgln("zoom ratio      : " + zRatio);
+		
+		LogMsgln("vis rect        : " + dispVal(getVisibleRect().width, getVisibleRect().height));
+		LogMsgln("center          : " + dispVal(zoomCenter));
+		
+		int x = (getVisibleRect().width) / 2;
+		int y = (getVisibleRect().height) / 2;
+		
+		Point drawingCoord = calcZoomedPoint(zoomCenter);
+		
+		LogMsgln("dwg coord before: " + dispVal(drawingCoord));
+		
+		setZoomRatio(zRatio);
+		
+		Point zoomedCoord = calcInvZoomedPoint(drawingCoord);
+		
+		LogMsgln("dwg coord after : " + dispVal(zoomedCoord));
+		
+		Point zoomedOffset = new Point(x, y);
+//		Point zoomedOffset = calcInvZoomedPoint(zoomedOffset);
+		zoomedOffset = calcZoomedPoint(zoomedOffset);
+		
+		LogMsgln("offset          : " + dispVal(x, y));
+		LogMsgln("zoom offset     : " + dispVal(zoomedOffset));
+		
+		Point vpCorner = new Point(zoomedCoord.x - zoomedOffset.x,
+				zoomedCoord.y - zoomedOffset.y);
+		
+		LogMsgln("vp corner       : " + dispVal(vpCorner));
+		
+		zoom();
+
+//		((JViewport) getParent()).setViewPosition(vpCorner);
+		((JViewport) getParent()).setViewPosition(zoomCenter);
+	
+	}
+	
+	void setZoomRatio(double zRatio) {
+		zoomRatio = zRatio;
 		zoomFactor *= zoomRatio;
+		
+		aft.setToScale(zoomFactor, zoomFactor);
+		
+		LogMsgln("aft scale       : " + dispVal(aft.getScaleX(), aft.getScaleY()));
+	}
+	
+	private void zoom() {
+		viewSizeParams.size = viewSizeParams.size.multiply(zoomRatio);
+		
+		Dimension viewSize = getZoomedViewSize();
+
+//		// set this (Layered Pane's) size
+		setPreferredSize(viewSize);
+		revalidate();
+
+//		LogMsgln("vis rect: " + dispVal(getVisibleRect()));
+		
+		for (int i = lowestLayer(); i <= highestLayer(); i++) {
+			Component[] comps = getComponentsInLayer(i);
+			if (comps.length > 0) {
+				for (Component c : comps) {
+					c.setSize(viewSize);
+					((iRxLayer) c).setZoomScale(zoomFactor);
+					c.revalidate();
+					c.repaint();
+				}
+			}
+		}
+	}
+	
+	
+	
+	
+	void zoomToScale(double zRatio) {
+		zoomRatio = zRatio;
+		zoomFactor *= zRatio;
+		
+		aft.setToScale(zoomFactor, zoomFactor);
 		
 		viewSizeParams.size = viewSizeParams.size.multiply(zoomRatio);
 		
@@ -146,7 +265,7 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener {
 		setPreferredSize(viewSize);
 		revalidate();
 		
-//		LogMsgln("vis rect: " + displayRect(getVisibleRect()));
+//		LogMsgln("vis rect: " + dispVal(getVisibleRect()));
 		
 		for (int i = lowestLayer(); i <= highestLayer(); i++) {
 			Component[] comps = getComponentsInLayer(i);
@@ -199,14 +318,31 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener {
 			revalidate();
 //		}
 	}
+	
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		Point mousePointScaleAdjusted;
 
+//		Point2D.Double mousePointComponent;
+//		mousePointComponent = new Point2D.Double(e.getX(), e.getY());
+//		mousePointScaled = calcZoomedPoint(mousePointComponent);
+		Point mousePointUnscaled;
+		mousePointUnscaled = new Point(e.getX(), e.getY());
+		mousePointScaleAdjusted = calcZoomedPoint(new Point(e.getX(), e.getY()));
+
+		RegexExpress.addCoordText(mousePointScaleAdjusted);
+
+		LogMsgln("  comp point: " + dispVal(mousePointUnscaled));
+		LogMsgln("scaled point: " + dispVal(mousePointScaleAdjusted));
+	}
+	
 	void listViewSizes() {
 		Component[] comps = getComponentsInLayer(POINTER_LAYER);
 		
 		LogMsgln("View Size Listing");
 		LogMsgln("Lay Pane");
 		LogMsg(viewSizes(this, viewSizeMask.perf.value + viewSizeMask.size.value));
-		LogMsgln("canvasSize: " + displayDim(viewSizeParams.size));
+		LogMsgln("canvasSize: " + Utility.dispVal(viewSizeParams.size));
 
 //		LogMsgln("Pointer Layer");
 //		LogMsgln(viewSizes(comps[0]));
@@ -246,10 +382,10 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener {
 				
 				for (int j = 0; j < comps.length; j++) {
 					sb.append("component #").append(j).append(" in layer: name= ").append(comps[j].getName());
-					sb.append("\n\t     size: " + displayDim(comps[j].getSize()));
-					sb.append("\n\tperf size: " + displayDim(comps[j].getPreferredSize()));
-					sb.append("\n\t min size: " + displayDim(comps[j].getMinimumSize()));
-					sb.append("\n\t max size: " + displayDim(comps[j].getMaximumSize()));
+					sb.append("\n\t     size: " + Utility.dispVal(comps[j].getSize()));
+					sb.append("\n\tperf size: " + Utility.dispVal(comps[j].getPreferredSize()));
+					sb.append("\n\t min size: " + Utility.dispVal(comps[j].getMinimumSize()));
+					sb.append("\n\t max size: " + Utility.dispVal(comps[j].getMaximumSize()));
 					sb.append("\n");
 				}
 			}

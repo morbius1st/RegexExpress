@@ -43,27 +43,27 @@ class Utility {
 		StringBuilder sb = new StringBuilder();
 		
 		if ((which & min.value) > 0) {
-			sb.append("  Min Size: ").append(displayDim(c.getMinimumSize()));
+			sb.append("  Min Size: ").append(dispVal(c.getMinimumSize()));
 			sb.append("\n");
 		}
 		
 		if ((which & perf.value) > 0) {
-			sb.append(" Pref Size: ").append(displayDim(c.getPreferredSize()));
+			sb.append(" Pref Size: ").append(dispVal(c.getPreferredSize()));
 			sb.append("\n");
 		}
 		
 		if ((which & max.value) > 0) {
-			sb.append("  Max Size: ").append(displayDim(c.getMaximumSize()));
+			sb.append("  Max Size: ").append(dispVal(c.getMaximumSize()));
 			sb.append("\n");
 		}
 		
 		if ((which & size.value) > 0) {
-			sb.append("      Size: ").append(displayDim(c.getSize()));
+			sb.append("      Size: ").append(dispVal(c.getSize()));
 			sb.append("\n");
 		}
 		
 		if ((which & bounds.value) > 0) {
-			sb.append("    Bounds: ").append(displayRect(c.getBounds()));
+			sb.append("    Bounds: ").append(dispVal(c.getBounds()));
 			sb.append("\n");
 		}
 		
@@ -71,27 +71,27 @@ class Utility {
 		return sb.toString();
 	}
 	
-	static String displayPt(Point p)  {
-		return displayXY(p.getX(), p.getY());
+	static String dispVal(Point p)  {
+		return dispVal(p.getX(), p.getY());
 	}
 	
-	static String displayPt(Point2D.Double p)  {
-		return displayXY(p.getX(), p.getY());
+	static String dispVal(Point2D.Double p)  {
+		return dispVal(p.getX(), p.getY());
 	}
 	
-	static String displayDim(Dimension2dx dim) {
-		return displayXY(dim.width, dim.height);
+	static String dispVal(Dimension2dx dim) {
+		return dispVal(dim.width, dim.height);
 	}
 	
-	static String displayDim(Dimension dim) {
-		return displayXY(dim.width, dim.height);
+	static String dispVal(Dimension dim) {
+		return dispVal(dim.width, dim.height);
 	}
 	
-	static String displayXY(double x, double y) { return "x: " + x + " y: " + y; }
+	static String dispVal(double x, double y) { return "x: " + x + " y: " + y; }
 	
-	static String displayXY(int x, int y) { return "x: " + x + " y: " + y; }
+	static String dispVal(int x, int y) { return "x: " + x + " y: " + y; }
 	
-	static String displayRect(Rectangle rect) {
+	static String dispVal(Rectangle rect) {
 		return "x: " + rect.x + " y: " + rect.y + " w: " + rect.width + " h: " + rect.height;
 	}
 	

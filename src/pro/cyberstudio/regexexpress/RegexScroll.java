@@ -6,7 +6,8 @@ import java.awt.geom.*;
 import java.util.ArrayList;
 
 import javax.swing.*;
-import static pro.cyberstudio.regexexpress.Utility.*;
+
+import static pro.cyberstudio.regexexpress.Utility.LogMsgln;
 
 /**
  * @author jeffs
@@ -19,9 +20,7 @@ class RegexScroll extends JScrollPane implements MouseWheelListener, MouseListen
 	
 	private static ArrayList<iMWListener> mwlChain = new ArrayList<>(5);
 	private static ArrayList<iCompListener> clChain = new ArrayList<>(5);
-	
-	static Point2D.Double mousePointComponent;
-	static Point2D.Double mousePointScaled;
+	private static ArrayList<iMouseListener> mlChain = new ArrayList<>(5);
 	
 
 	public RegexScroll(Component component, int i, int i1) {
@@ -61,6 +60,12 @@ class RegexScroll extends JScrollPane implements MouseWheelListener, MouseListen
 		}
 	}
 	
+	static void addML(iMouseListener ml) {
+		if (ml != null && !mlChain.contains(ml)) {
+			mlChain.add(ml);
+		}
+	}
+	
 	@Override
 	public void componentResized(ComponentEvent e) {
 		for (iCompListener cl : clChain) {
@@ -77,13 +82,9 @@ class RegexScroll extends JScrollPane implements MouseWheelListener, MouseListen
 	
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		mousePointComponent = new Point2D.Double(e.getX(), e.getY());
-		mousePointScaled = RegexZero.calcZoomedPoint(mousePointComponent);
-		
-		RegexExpress.addCoordText(mousePointScaled);
-		
-//		LogMsgln("  comp point: " + displayPt(mousePointComponent));
-//		LogMsgln("scaled point: " + displayPt(mousePointScaled));
+		for (iMouseListener ml : mlChain) {
+			ml.mouseClicked(e);
+		}
 	}
 	
 	@Override

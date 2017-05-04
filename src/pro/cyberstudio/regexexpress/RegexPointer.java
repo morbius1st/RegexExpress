@@ -14,8 +14,8 @@ import static pro.cyberstudio.regexexpress.Utility.*;
  *         Project: RegexExpress
  */
 
-class RegexPointer extends JPanel implements Scrollable,
-		MouseMotionListener, iRxLayer, iMWListener {
+class RegexPointer extends JPanel implements Scrollable, iRxLayer, iMWListener, MouseMotionListener {
+	
 	
 	private int maxUnitIncrement = 1;
 	
@@ -53,12 +53,21 @@ class RegexPointer extends JPanel implements Scrollable,
 		g.drawLine(0, cursorPoint.y, this.getWidth(), cursorPoint.y);
 		g.drawLine(cursorPoint.x, 0, cursorPoint.x, this.getHeight());
 		
-//		LogMsgln("cursor: " + displayPt(cursorPoint));
+//		LogMsgln("cursor: " + dispVal(cursorPoint));
 	}
 	
 	@Override
 	public void setZoomScale(double zoomFactor) { }
 	
+//	void test() {
+//		Rectangle r = new Rectangle();
+//		computeVisibleRect(r);
+//		LogMsgln("@pointer  vis rect: " + dispVal(getVisibleRect()));
+//		LogMsgln("@pointer comp rect: " + dispVal(r));
+//		LogMsgln("@pointer    bounds: " + dispVal(getBounds()));
+//	}
+
+	// required for mouse motion
 	@Override
 	public void mouseDragged(MouseEvent e) { }
 

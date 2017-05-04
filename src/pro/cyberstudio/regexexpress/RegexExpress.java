@@ -3,7 +3,6 @@ package pro.cyberstudio.regexexpress;
 import java.awt.*;
 import java.awt.Toolkit;
 import java.awt.event.*;
-import java.awt.geom.Point2D;
 
 import javax.swing.*;
 import static pro.cyberstudio.regexexpress.Utility.*;
@@ -23,6 +22,7 @@ class RegexExpress extends JPanel {
 	private static JFrame frame;
 	private static RegexExpress rx;
 	private static JTextArea textAreaCoords;
+	static JViewport regexViewport;
 
 	private static RegexLayeredPane regexLayerPane = RegexLayeredPane.getInstance();
 	
@@ -116,8 +116,7 @@ class RegexExpress extends JPanel {
 		regexLayerPane.add(getLayer());
 		
 		regexAnalysisScroll.setViewportView(regexLayerPane);
-		regexAnalysisScroll.getViewport().setName("viewport");
-//		regexAnalysisScroll.setMinimumSize(new Dimension(SCROLLPREFWIDTH, SCROLLPREFHEIGHT));
+//		regexAnalysisScroll.setMinimumSize(new Dimension(SCROLLPREFWIDTH, SCROLLPREFHEIGHT)); - do not use
 		regexAnalysisScroll.setPreferredSize(new Dimension(SCROLLPREFWIDTH, SCROLLPREFHEIGHT));
 		regexAnalysisScroll.setViewportBorder(BorderFactory.createBevelBorder(3, Color.WHITE, Color.BLUE));
 		regexAnalysisScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
@@ -126,7 +125,11 @@ class RegexExpress extends JPanel {
 		regexAnalysisScroll.setWheelScrollingEnabled(false);
 		regexAnalysisScroll.setName("scroll pane");
 		
+		regexViewport = regexAnalysisScroll.getViewport();
+		regexViewport.setName("viewport");
+		
 		RegexScroll.addCL(regexLayerPane);
+		RegexScroll.addML(regexLayerPane);
 
 		add(regexAnalysisScroll);
 
@@ -152,20 +155,27 @@ class RegexExpress extends JPanel {
 		
 		frame.pack();
 		
-		scrollView(CANVASX / 2,CANVASY / 2);
+//		scrollView(CANVASX / 2,CANVASY / 2);
+		
+		regexLayerPane.zoomTo(1.0, new Point(CANVASX / 2,CANVASY / 2));
 
 		frame.setVisible(true);
 	}
 	
 	private void scrollView(int centerX, int centerY) {
-		int x = regexAnalysisScroll.getViewport().getWidth() / 2;
-		int y = regexAnalysisScroll.getViewport().getHeight() / 2;
+		int x = regexAnalysisScroll.getViewport().getWidth();
+		int y = regexAnalysisScroll.getViewport().getHeight();
 		
-		x = (int) (centerX * zoomFactor) - x;
-		y = (int) (centerY * zoomFactor) - y;
+		LogMsgln("viewport H & w: " + Utility.dispVal(x, y));
+		
+		
+		x = (int) (centerX * zoomFactor) - (x / 2);
+		y = (int) (centerY * zoomFactor) - (y / 2);
 		
 		if (x < 0) { x = 0;}
 		if (y < 0) { y = 0; }
+		
+		LogMsgln("viewport corner adj: " + Utility.dispVal(x, y));
 		
 		regexAnalysisScroll.getViewport().setViewPosition(new Point(x, y));
 	}
@@ -175,15 +185,16 @@ class RegexExpress extends JPanel {
 		return String.format("Layer %1$d", ++layerIdx);
 	}
 	
-	static void addCoordText(Point2D.Double pt2D) {
-		textAreaCoords.setText(displayPt(pt2D));
+	static void addCoordText(Point pt2D) {
+		textAreaCoords.setText(dispVal(pt2D));
 	}
 	
 	// unspecified test
 	private ActionListener btn6 = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent actionEvent) {
-			regexLayerPane.zoomTo(new Point2D.Double(100,100));
+//			regexLayerPane.testPointer();
+			regexLayerPane.zoomTo(2.0, new Point(CANVASX / 2,CANVASY / 2));
 		}
 	};
 	
@@ -205,7 +216,7 @@ class RegexExpress extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent actionEvent) {
 			
-			regexLayerPane.zoomView(.5);
+			regexLayerPane.zoomToScale(.5);
 			regexAnalysisScroll.getVerticalScrollBar().repaint();
 			regexAnalysisScroll.getViewport().repaint();
 		}
@@ -215,7 +226,8 @@ class RegexExpress extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent actionEvent) {
 			
-			regexLayerPane.zoomView(2.0);
+			
+			regexLayerPane.zoomToScale(2.0);
 			regexAnalysisScroll.getVerticalScrollBar().repaint();
 			regexAnalysisScroll.getViewport().repaint();
 		}
@@ -229,17 +241,17 @@ class RegexExpress extends JPanel {
 			LogMsgln("\n**************************************************");
 			LogMsgln("scroll panel");
 			LogMsgln(viewSizes(regexAnalysisScroll, viewSizeMask.all()));
-			LogMsgln("vp bounds: " + displayRect(regexAnalysisScroll.getViewportBorderBounds()));
+			LogMsgln("vp bounds: " + Utility.dispVal(regexAnalysisScroll.getViewportBorderBounds()));
 			
 			ScrollPaneLayout layout = (ScrollPaneLayout) regexAnalysisScroll.getLayout();
 			LogMsgln("\nscroll panel layout");
-			LogMsgln("     size: " + displayDim(layout.preferredLayoutSize(regexAnalysisScroll)));
+			LogMsgln("     size: " + Utility.dispVal(layout.preferredLayoutSize(regexAnalysisScroll)));
 			
 			LogMsgln("\nviewport");
 			LogMsgln(viewSizes(regexAnalysisScroll.getViewport(), viewSizeMask.all()));
-			LogMsgln("view size: " + displayDim(regexAnalysisScroll.getViewport().getViewSize()));
-			LogMsgln(" ext size: " + displayDim(regexAnalysisScroll.getViewport().getExtentSize()));
-			LogMsgln(" view pos: " + displayPt(regexAnalysisScroll.getViewport().getViewPosition()));
+			LogMsgln("view size: " + Utility.dispVal(regexAnalysisScroll.getViewport().getViewSize()));
+			LogMsgln(" ext size: " + Utility.dispVal(regexAnalysisScroll.getViewport().getExtentSize()));
+			LogMsgln(" view pos: " + dispVal(regexAnalysisScroll.getViewport().getViewPosition()));
 			
 			LogMsgln("\nlayered pane");
 			LogMsgln(viewSizes(regexLayerPane, viewSizeMask.all()));
@@ -252,39 +264,9 @@ class RegexExpress extends JPanel {
 //					" ::blk inc " + sb.getBlockIncrement());
 //			LogMsgln("minimum: " + sb.getMinimum());
 //			LogMsgln("visible: " + sb.getVisibleAmount());
-//			LogMsgln(" min sz: " + displayDim(sb.getMinimumSize()));
-//			LogMsgln(" max sz: " + displayDim(sb.getMaximumSize()));
+//			LogMsgln(" min sz: " + dispVal(sb.getMinimumSize()));
+//			LogMsgln(" max sz: " + dispVal(sb.getMaximumSize()));
 
 		}
 	};
-	
-//	@Override
-//	public void componentResized(ComponentEvent e) {
-////
-////		Dimension2dx dxPerf =
-////				Dimension2dx.toDimension2dx(regexAnalysisScroll.getViewport().getPreferredSize());
-////		Dimension2dx dxSize =
-////				Dimension2dx.toDimension2dx(regexAnalysisScroll.getViewport().getSize());
-////
-////		if (dxSize.eitherGreaterThan(dxPerf)) {
-////			regexAnalysisScroll.getViewport().setPreferredSize(dxSize.toDimension());
-////			layPane.updateSize();
-////		}
-//
-//	}
-//
-//	@Override
-//	public void componentMoved(ComponentEvent e) {
-//
-//	}
-//
-//	@Override
-//	public void componentShown(ComponentEvent e) {
-//
-//	}
-//
-//	@Override
-//	public void componentHidden(ComponentEvent e) {
-//
-//	}
 }
