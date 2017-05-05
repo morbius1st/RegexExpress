@@ -9,7 +9,7 @@ import java.awt.event.MouseWheelEvent;
  *         Project: RegexExpress
  */
 
-interface iMWListener {
-	
+interface iMWListener extends iListener {
 	void mouseWheelMoved(MouseWheelEvent e);
+//	String getName();
 }

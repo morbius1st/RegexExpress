@@ -58,7 +58,7 @@ class RegexZero extends JPanel implements iRxLayer {
 		Graphics2D g2 = (Graphics2D) g;
 
 		g2.setColor(Color.CYAN);
-		g2.drawRect(20,20, CANVASX - 40, CANVASY - 40);
+		g2.drawRect(20,20, LAYPANEX - 40, LAYPANEY - 40);
 	}
 
 }

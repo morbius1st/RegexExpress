@@ -65,6 +65,15 @@ class RegexScroll extends JScrollPane implements MouseWheelListener, MouseListen
 			mlChain.add(ml);
 		}
 	}
+
+	private <T extends iListener> String  listListeners(ArrayList<T> chain) {
+		StringBuilder sb = new StringBuilder();
+		for (T al : chain) {
+			sb.append(al.getClass()).append("\n");
+			sb.append(al.getName()).append("\n");
+		}
+		return sb.toString();
+	}
 	
 	@Override
 	public void componentResized(ComponentEvent e) {
@@ -73,18 +82,31 @@ class RegexScroll extends JScrollPane implements MouseWheelListener, MouseListen
 		}
 	}
 	
+	String listCompListeners() {
+		return listListeners(clChain);
+	}
+
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
 		for (iMWListener mwl : mwlChain) {
 			mwl.mouseWheelMoved(e);
 		}
 	}
+
+	String listMouseWheelListeners() {
+		return listListeners(mwlChain);
+	}
+	
 	
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		for (iMouseListener ml : mlChain) {
 			ml.mouseClicked(e);
 		}
+	}
+	
+	String listMouseClickListeners() {
+		return listListeners(mlChain);
 	}
 	
 	@Override

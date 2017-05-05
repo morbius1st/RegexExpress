@@ -9,6 +9,7 @@ import java.awt.event.MouseEvent;
  *         Project: RegexExpress
  */
 
-interface iMouseListener {
+interface iMouseListener extends iListener {
 	void mouseClicked(MouseEvent e);
+//	String getName();
 }

@@ -9,6 +9,7 @@ import java.awt.event.*;
  *         Project: RegexExpress
  */
 
-interface iCompListener {
+interface iCompListener extends iListener {
 	void componentResized(ComponentEvent e);
+//	String getName();
 }

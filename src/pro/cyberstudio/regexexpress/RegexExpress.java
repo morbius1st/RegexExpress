@@ -17,7 +17,7 @@ import static pro.cyberstudio.regexexpress.Utility.*;
 
 class RegexExpress extends JPanel {
 
-	static RegexScroll regexAnalysisScroll  = new RegexScroll();
+	static RegexScroll regexScroll = new RegexScroll();
 	
 	private static JFrame frame;
 	private static RegexExpress rx;
@@ -26,17 +26,20 @@ class RegexExpress extends JPanel {
 
 	private static RegexLayeredPane regexLayerPane = RegexLayeredPane.getInstance();
 	
-	static final int CANVASX = 1000;
-	static final int CANVASY = 750;
-
-	private static final int FRAMEPREFWIDTH = CANVASX - 250;
-	private static final int FRAMEPREFHEIGHT = CANVASY - 150;
-
-	private static final int SCROLLPREFWIDTH = CANVASX;
-	private static final int SCROLLPREFHEIGHT = CANVASY;
+	static final int LAYPANEX = 1000;
+	static final int LAYPANEY = 750;
 	
-	static final int IMAGEPOSX = (CANVASX / 2) - 50;
-	static final int IMAGEPOSY = (CANVASY / 2) - 50;
+	static final int LAYERX = 3500;	// approx 36" @ 92 dpi
+	static final int LAYERY = 2200; // approx 24" @ 92 dpi
+
+	private static final int FRAMEPREFWIDTH = LAYPANEX - 250;
+	private static final int FRAMEPREFHEIGHT = LAYPANEY - 150;
+
+	private static final int SCROLLPREFWIDTH = LAYPANEX;
+	private static final int SCROLLPREFHEIGHT = LAYPANEY;
+	
+	static final int IMAGEPOSX = (LAYPANEX / 2) - 50;
+	static final int IMAGEPOSY = (LAYPANEY / 2) - 50;
 	
 	private static double zoomFactor = 1.0;
 	
@@ -108,30 +111,32 @@ class RegexExpress extends JPanel {
 
 		this.add(Box.createRigidArea(new Dimension(0,5)));
 		
-		regexLayerPane.setMinimumSize(new Dimension(CANVASX, CANVASY));
-		regexLayerPane.setPreferredSize(new Dimension(CANVASX, CANVASY));
+//		regexLayerPane.setMinimumSize(new Dimension(LAYPANEX, LAYPANEY));
+//		regexLayerPane.setPreferredSize(new Dimension(LAYPANEX, LAYPANEY));
+		regexLayerPane.setMinimumSize(new Dimension(LAYERX, LAYERY));
+		regexLayerPane.setPreferredSize(new Dimension(LAYERX, LAYERY));
 		regexLayerPane.setBackground(Color.LIGHT_GRAY);
-		regexLayerPane.initialize(regexAnalysisScroll.getHorizontalScrollBar(),
-				regexAnalysisScroll.getVerticalScrollBar(), (new Dimension2dx(CANVASX, CANVASY)));
+		regexLayerPane.initialize(regexScroll.getHorizontalScrollBar(),
+				regexScroll.getVerticalScrollBar(), (new Dimension2dx(LAYERX, LAYERY)));
 		regexLayerPane.add(getLayer());
 		
-		regexAnalysisScroll.setViewportView(regexLayerPane);
+		regexScroll.setViewportView(regexLayerPane);
 //		regexAnalysisScroll.setMinimumSize(new Dimension(SCROLLPREFWIDTH, SCROLLPREFHEIGHT)); - do not use
-		regexAnalysisScroll.setPreferredSize(new Dimension(SCROLLPREFWIDTH, SCROLLPREFHEIGHT));
-		regexAnalysisScroll.setViewportBorder(BorderFactory.createBevelBorder(3, Color.WHITE, Color.BLUE));
-		regexAnalysisScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
-		regexAnalysisScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		regexAnalysisScroll.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 5 ));
-		regexAnalysisScroll.setWheelScrollingEnabled(false);
-		regexAnalysisScroll.setName("scroll pane");
+		regexScroll.setPreferredSize(new Dimension(SCROLLPREFWIDTH, SCROLLPREFHEIGHT));
+		regexScroll.setViewportBorder(BorderFactory.createBevelBorder(3, Color.WHITE, Color.BLUE));
+		regexScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+		regexScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		regexScroll.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 5 ));
+		regexScroll.setWheelScrollingEnabled(false);
+		regexScroll.setName("scroll pane");
 		
-		regexViewport = regexAnalysisScroll.getViewport();
+		regexViewport = regexScroll.getViewport();
 		regexViewport.setName("viewport");
 		
 		RegexScroll.addCL(regexLayerPane);
 		RegexScroll.addML(regexLayerPane);
 
-		add(regexAnalysisScroll);
+		add(regexScroll);
 
 		setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 	}
@@ -157,14 +162,14 @@ class RegexExpress extends JPanel {
 		
 //		scrollView(CANVASX / 2,CANVASY / 2);
 		
-		regexLayerPane.zoomTo(1.0, new Point(CANVASX / 2 - 50,CANVASY / 2 - 50));
+		regexLayerPane.zoomTo(1.0, new Point(LAYPANEX / 2 - 50, LAYPANEY / 2 - 50));
 
 		frame.setVisible(true);
 	}
 	
 	private void scrollView(int centerX, int centerY) {
-		int x = regexAnalysisScroll.getViewport().getWidth();
-		int y = regexAnalysisScroll.getViewport().getHeight();
+		int x = regexScroll.getViewport().getWidth();
+		int y = regexScroll.getViewport().getHeight();
 		
 		LogMsgln("viewport H & w: " + Utility.dispVal(x, y));
 		
@@ -177,7 +182,7 @@ class RegexExpress extends JPanel {
 		
 		LogMsgln("viewport corner adj: " + Utility.dispVal(x, y));
 		
-		regexAnalysisScroll.getViewport().setViewPosition(new Point(x, y));
+		regexScroll.getViewport().setViewPosition(new Point(x, y));
 	}
 
 	
@@ -194,7 +199,11 @@ class RegexExpress extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent actionEvent) {
 //			regexLayerPane.testPointer();
-			regexLayerPane.zoomTo(2.0, new Point(CANVASX / 2 - 50,CANVASY / 2 - 50));
+//			regexLayerPane.zoomTo(2.0, new Point(LAYPANEX / 2 - 50, LAYPANEY / 2 - 50));
+			
+			LogMsgln("comp  listeners: " + regexScroll.listCompListeners());
+			LogMsgln("click listeners: " + regexScroll.listMouseClickListeners());
+			LogMsgln("wheel listeners: " + regexScroll.listMouseWheelListeners());
 		}
 	};
 	
@@ -217,8 +226,8 @@ class RegexExpress extends JPanel {
 		public void actionPerformed(ActionEvent actionEvent) {
 			
 			regexLayerPane.zoomToScale(.5);
-			regexAnalysisScroll.getVerticalScrollBar().repaint();
-			regexAnalysisScroll.getViewport().repaint();
+			regexScroll.getVerticalScrollBar().repaint();
+			regexScroll.getViewport().repaint();
 		}
 	};
 
@@ -228,8 +237,8 @@ class RegexExpress extends JPanel {
 			
 			
 			regexLayerPane.zoomToScale(2.0);
-			regexAnalysisScroll.getVerticalScrollBar().repaint();
-			regexAnalysisScroll.getViewport().repaint();
+			regexScroll.getVerticalScrollBar().repaint();
+			regexScroll.getViewport().repaint();
 		}
 	};
 	
@@ -240,18 +249,18 @@ class RegexExpress extends JPanel {
 			// scroll
 			LogMsgln("\n**************************************************");
 			LogMsgln("scroll panel");
-			LogMsgln(viewSizes(regexAnalysisScroll, viewSizeMask.all()));
-			LogMsgln("vp bounds: " + Utility.dispVal(regexAnalysisScroll.getViewportBorderBounds()));
+			LogMsgln(viewSizes(regexScroll, viewSizeMask.all()));
+			LogMsgln("vp bounds: " + Utility.dispVal(regexScroll.getViewportBorderBounds()));
 			
-			ScrollPaneLayout layout = (ScrollPaneLayout) regexAnalysisScroll.getLayout();
+			ScrollPaneLayout layout = (ScrollPaneLayout) regexScroll.getLayout();
 			LogMsgln("\nscroll panel layout");
-			LogMsgln("     size: " + Utility.dispVal(layout.preferredLayoutSize(regexAnalysisScroll)));
+			LogMsgln("     size: " + Utility.dispVal(layout.preferredLayoutSize(regexScroll)));
 			
 			LogMsgln("\nviewport");
-			LogMsgln(viewSizes(regexAnalysisScroll.getViewport(), viewSizeMask.all()));
-			LogMsgln("view size: " + Utility.dispVal(regexAnalysisScroll.getViewport().getViewSize()));
-			LogMsgln(" ext size: " + Utility.dispVal(regexAnalysisScroll.getViewport().getExtentSize()));
-			LogMsgln(" view pos: " + dispVal(regexAnalysisScroll.getViewport().getViewPosition()));
+			LogMsgln(viewSizes(regexScroll.getViewport(), viewSizeMask.all()));
+			LogMsgln("view size: " + Utility.dispVal(regexScroll.getViewport().getViewSize()));
+			LogMsgln(" ext size: " + Utility.dispVal(regexScroll.getViewport().getExtentSize()));
+			LogMsgln(" view pos: " + dispVal(regexScroll.getViewport().getViewPosition()));
 			
 			LogMsgln("\nlayered pane");
 			LogMsgln(viewSizes(regexLayerPane, viewSizeMask.all()));
