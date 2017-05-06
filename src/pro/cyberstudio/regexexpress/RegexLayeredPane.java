@@ -104,8 +104,10 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 		
 		// assign listeners to pointer so that the coordinates are relative
 		// to layered pane (the container of thees objects)
+		// this assigns the primary listener
 		rxPointer.addMouseListener(RegexExpress.regexScroll);
 		rxPointer.addMouseWheelListener(RegexExpress.regexScroll);
+		rxPointer.addMouseMotionListener(RegexExpress.regexScroll);
 		
 		updateSize();
 	}

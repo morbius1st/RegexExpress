@@ -9,6 +9,7 @@ import java.awt.event.MouseEvent;
  *         Project: RegexExpress
  */
 
-interface iMouseListener extends iListener {
-	void mouseClicked(MouseEvent e);
+interface iMMListener extends iListener {
+	void mouseMoved(MouseEvent e);
+	void mouseDragged(MouseEvent e);
 }

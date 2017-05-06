@@ -2,12 +2,9 @@ package pro.cyberstudio.regexexpress;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.geom.*;
 import java.util.ArrayList;
 
 import javax.swing.*;
-
-import static pro.cyberstudio.regexexpress.Utility.*;
 
 /**
  * @author jeffs
@@ -16,11 +13,13 @@ import static pro.cyberstudio.regexexpress.Utility.*;
  *         Project: RegexExpress
  */
 
-class RegexScroll extends JScrollPane implements MouseWheelListener, MouseListener, ComponentListener {
+class RegexScroll extends JScrollPane implements MouseWheelListener, MouseListener, ComponentListener, MouseMotionListener {
 	
 	private static ArrayList<iMWListener> mwlChain = new ArrayList<>(5);
 	private static ArrayList<iCompListener> clChain = new ArrayList<>(5);
 	private static ArrayList<iMouseListener> mlChain = new ArrayList<>(5);
+	private static ArrayList<iMMListener> mmovlChain = new ArrayList<>(5);
+	private static ArrayList<iMMListener> mdraglChain = new ArrayList<>(5);
 	
 
 	public RegexScroll(Component component, int i, int i1) {
@@ -44,7 +43,6 @@ class RegexScroll extends JScrollPane implements MouseWheelListener, MouseListen
 	
 	private void initialize() {
 	
-//		addMouseWheelListener(this);
 		addComponentListener(this);
 
 	}
@@ -65,7 +63,20 @@ class RegexScroll extends JScrollPane implements MouseWheelListener, MouseListen
 			mlChain.add(ml);
 		}
 	}
-
+	
+	static void addMMovL(iMMListener mml) {
+		if (mml != null && !mmovlChain.contains(mml)) {
+			mmovlChain.add(mml);
+		}
+	}
+	
+	static void addMDragL(iMMListener mdl) {
+		if (mdl != null && !mdraglChain.contains(mdl)) {
+			mmovlChain.add(mdl);
+		}
+	}
+	
+	
 	private <T extends iListener> String  listListeners(ArrayList<T> chain) {
 		StringBuilder sb = new StringBuilder();
 		for (T al : chain) {
@@ -107,38 +118,50 @@ class RegexScroll extends JScrollPane implements MouseWheelListener, MouseListen
 		}
 	}
 	
-	String listMouseClickListeners() {
-		return listListeners(mlChain);
+	String listMouseClickListeners() { return listListeners(mlChain); }
+	
+	@Override
+	public void mouseMoved(MouseEvent e) {
+//		LogMsgFmtln("scroll pane: mouse moved: ", e.getPoint());
+		for (iMMListener mml : mmovlChain) {
+			mml.mouseMoved(e);
+		}
 	}
+	
+	String listMouseMovedListeners() { return listListeners(mmovlChain); }
+	
+	@Override
+	public void mouseDragged(MouseEvent e) {
+//		LogMsgFmtln("scroll pane: mouse moved: ", e.getPoint());
+		for (iMMListener mdl : mdraglChain) {
+			mdl.mouseDragged(e);
+		}
+	}
+	
+	String listMouseDraggedListeners() { return listListeners(mdraglChain); }
 	
 	@Override
 	public void mousePressed(MouseEvent e) {
+//		LogMsgFmtln("scroll: mouse pressed: ", e.getPoint());
 	}
 	
 	@Override
 	public void mouseReleased(MouseEvent e) {
+//		LogMsgFmtln("scroll: mouse released: ", e.getPoint());
 	}
 	
 	@Override
-	public void mouseEntered(MouseEvent e) {
-	}
+	public void mouseEntered(MouseEvent e) { }
 	
 	@Override
-	public void mouseExited(MouseEvent e) {
-	}
+	public void mouseExited(MouseEvent e) { }
 	
 	@Override
-	public void componentMoved(ComponentEvent e) {
-	
-	}
+	public void componentMoved(ComponentEvent e) { }
 	
 	@Override
-	public void componentShown(ComponentEvent e) {
-	
-	}
+	public void componentShown(ComponentEvent e) { }
 	
 	@Override
-	public void componentHidden(ComponentEvent e) {
-	
-	}
+	public void componentHidden(ComponentEvent e) { }
 }
