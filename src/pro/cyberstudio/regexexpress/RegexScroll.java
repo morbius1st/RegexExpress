@@ -46,8 +46,6 @@ class RegexScroll extends JScrollPane implements MouseWheelListener, MouseListen
 		
 		addMouseWheelListener(this);
 		addComponentListener(this);
-		
-		listVPInfo("scroll");
 
 	}
 	

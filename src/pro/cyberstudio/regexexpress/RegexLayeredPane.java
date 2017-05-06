@@ -56,8 +56,6 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 		
 		RegexScroll.addMWL(this);
 		
-		listVPInfo("layered pane");
-		
 	}
 	
 	/**
@@ -188,75 +186,33 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 		return calcInvZoomedPoint(new Point(x, y));
 	}
 	
-	// center in viewport (screen type) coordinates
+	// zoom centerered in viewport (screen type) coordinates
 	void zoomCentered(double zRatio, Point zoomCenter) {
-//
-//		LogMsgln("zoom ratio      : " + zRatio);
-//
-//		LogMsgln("lay pane size  1: " + dispVal(this.getSize()));
-//
-//		LogMsgln("zoomed view sz 1: " + dispVal(getZoomedViewSize()));
-//
-//		LogMsgln("vis rect        : " + dispVal(getVisibleRect().width, getVisibleRect().height));
-//		LogMsgln("center          : " + dispVal(zoomCenter));
-//
+
 		int x = (getVisibleRect().width) / 2;
 		int y = (getVisibleRect().height) / 2;
 		
 		Point drawingCoord = calcZoomedPoint(zoomCenter);
-//
-//		LogMsgln("dwg coord before: " + dispVal(drawingCoord));
-		
 		setZoomRatio(zRatio);
-//
-//		LogMsgln("lay pane size  2: " + dispVal(this.getSize()));
-		
 		Dimension viewSize = getZoomedViewSize();
-//
-//		LogMsgln("zoomed view sz 2: " + dispVal(viewSize));
-		
 		Point zoomedCoord = calcInvZoomedPoint(drawingCoord);
-//
-//		LogMsgln("dwg coord after : " + dispVal(zoomedCoord));
-		
 		Point zoomedOffset = new Point(x, y);
-//		zoomedOffset = calcInvZoomedPoint(zoomedOffset);
-//		zoomedOffset = calcZoomedPoint(zoomedOffset);
-//
-//		LogMsgln("offset          : " + dispVal(x, y));
-//		LogMsgln("zoom offset     : " + dispVal(zoomedOffset));
-		
 		Point vpCorner = new Point(zoomedCoord.x - zoomedOffset.x,
 				zoomedCoord.y - zoomedOffset.y);
-//
-//		LogMsgln("vp corner       : " + dispVal(vpCorner));
-		
 		Point test = new Point(554, 425);
 		
 		zoomViews();
 		
 		JViewport vPort = (JViewport) getParent();
 		vPort.setViewSize(viewSize);
-//
-//		LogMsgln("vp view size    : " + dispVal(vPort.getViewSize()));
-//		LogMsgln("vp ext size     : " + dispVal(vPort.getExtentSize()));
-//		LogMsgln("vp size         : " + dispVal(vPort.getSize()));
-//
-//		if (zRatio == 2.0) {
-//			LogMsgln("zoom 2.0");
-//			vPort.setViewPosition(new Point( 400, 400));
-//		} else {
-//			LogMsgln("zoom 1.0");
-			vPort.setViewPosition(vpCorner);
-//		}
+		vPort.setViewPosition(vpCorner);
 	
 	}
 	
-	// center in viewport (screen type) coordinates
+	// zoom about a point (screen type) coordinates
 	void zoomAboutPoint(double zRatio, Point vpPoint) {
 
 		Point zoomPoint = new Point(vpPoint.x + getVisibleRect().x, vpPoint.y + getVisibleRect().y);
-		
 		Point drawingCoord = calcZoomedPoint(zoomPoint);
 		setZoomRatio(zRatio);
 		Dimension viewSize = getZoomedViewSize();
@@ -264,11 +220,33 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 		Point vpCorner = new Point(zoomedCoord.x - vpPoint.x,
 				zoomedCoord.y - vpPoint.y);
 		zoomViews();
+		
 		JViewport vPort = (JViewport) getParent();
 		vPort.setViewSize(viewSize);
 		vPort.setViewPosition(vpCorner);
 
 	}
+	
+	// zoom about a point (layer type) coordinates
+	void moveToPoint(Point drawingCoord) {
+
+		
+		int x = (getVisibleRect().width / 2);
+		int y = (getVisibleRect().height / 2);
+
+		Point zoomedCoord = calcInvZoomedPoint(drawingCoord);
+		
+		Point vpCorner = new Point(zoomedCoord.x - x, zoomedCoord.y -y);
+		
+//		zoomViews();
+		
+		JViewport vPort = (JViewport) getParent();
+		vPort.setViewPosition(vpCorner);
+		
+	}
+	
+	
+	
 	
 	void setZoomRatio(double zRatio) {
 		zoomRatio = zRatio;
@@ -359,34 +337,11 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 	public void mouseWheelMoved(MouseWheelEvent e) {
 		// positive = dn
 		// negative = up
-
-//		LogMsgln("zooming");
-//		LogMsgln("zoom:      rot: " + e.getWheelRotation());
-//		LogMsgln("zoom:      loc: " + dispVal(e.getPoint()));
-//		LogMsgln("zoom:           " + dispVal(getParent().getAlignmentX(), getParent().getAlignmentY()));
-//		LogMsgln("zoom:           " + dispVal());
-//		getViewportRect();
-
-//		getVisibleRect()
-		
-		LogMsgFmtln("raw zoom point: ", dispVal(e.getPoint()));
-		
-		
-//		Point zoomPoint = new Point((int) (e.getPoint().x + getVisibleRect().getX()),
-//				(int) (e.getPoint().y + getVisibleRect().getY()));
-
-
-//		if (e.getWheelRotation() < 0)
-//			zoomCentered(zoomWheelRatio, zoomPoint);
-//		else
-//			zoomCentered(1 / zoomWheelRatio, zoomPoint);
 		
 		if (e.getWheelRotation() < 0)
 			zoomAboutPoint(zoomWheelRatio, e.getPoint());
 		else
 			zoomAboutPoint(1 / zoomWheelRatio, e.getPoint());
-
-
 
 		rxPointer.updateCursor(getMousePosition());
 	}

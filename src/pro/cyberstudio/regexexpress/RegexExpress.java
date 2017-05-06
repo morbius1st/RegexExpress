@@ -160,37 +160,28 @@ class RegexExpress extends JPanel {
 		
 		frame.pack();
 
-		//		regexLayerPane.zoomCentered(1.0, new Point(LAYPANEX / 2 - 50, LAYPANEY / 2 - 50));
+		regexLayerPane.zoomCentered(1.0, new Point(LAYPANEX / 2 - 50, LAYPANEY / 2 - 50));
 
 		frame.setVisible(true);
-		
-		listVPInfo("root");
-		
-		int x = regexViewport.getWidth() / 2;
-		int y = regexViewport.getHeight() / 2;
-		
-		regexLayerPane.zoomAboutPoint(1.0,
-				new Point((LAYPANEX / 2 - 50) - x,
-						(LAYPANEY / 2 - 50) - y));
 	}
 	
-	private void scrollView(int centerX, int centerY) {
-		int x = regexScroll.getViewport().getWidth();
-		int y = regexScroll.getViewport().getHeight();
-		
-		LogMsgln("viewport H & w: " + Utility.dispVal(x, y));
-		
-		
-		x = (int) (centerX * zoomFactor) - (x / 2);
-		y = (int) (centerY * zoomFactor) - (y / 2);
-		
-		if (x < 0) { x = 0;}
-		if (y < 0) { y = 0; }
-		
-		LogMsgln("viewport corner adj: " + Utility.dispVal(x, y));
-		
-		regexScroll.getViewport().setViewPosition(new Point(x, y));
-	}
+//	private void scrollView(int centerX, int centerY) {
+//		int x = regexScroll.getViewport().getWidth();
+//		int y = regexScroll.getViewport().getHeight();
+//
+//		LogMsgln("viewport H & w: " + Utility.dispVal(x, y));
+//
+//
+//		x = (int) (centerX * zoomFactor) - (x / 2);
+//		y = (int) (centerY * zoomFactor) - (y / 2);
+//
+//		if (x < 0) { x = 0;}
+//		if (y < 0) { y = 0; }
+//
+//		LogMsgln("viewport corner adj: " + Utility.dispVal(x, y));
+//
+//		regexScroll.getViewport().setViewPosition(new Point(x, y));
+//	}
 
 	
 	private String getLayer() {
@@ -207,6 +198,8 @@ class RegexExpress extends JPanel {
 		public void actionPerformed(ActionEvent actionEvent) {
 //			regexLayerPane.testPointer();
 //			regexLayerPane.zoomCentered(2.0, new Point(LAYPANEX / 2 - 50, LAYPANEY / 2 - 50));
+
+			regexLayerPane.moveToPoint(new Point(LAYPANEX / 2 + 50, LAYPANEY / 2 + 50));
 
 //			LogMsgln("comp  listeners: " + regexScroll.listCompListeners());
 //			LogMsgln("click listeners: " + regexScroll.listMouseClickListeners());
