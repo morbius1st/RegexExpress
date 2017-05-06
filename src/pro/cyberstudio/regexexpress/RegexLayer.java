@@ -3,6 +3,7 @@ package pro.cyberstudio.regexexpress;
 import java.awt.*;
 import javax.swing.*;
 import static pro.cyberstudio.regexexpress.RegexExpress.*;
+import static pro.cyberstudio.regexexpress.Utility.*;
 
 /**
  * @author jeffs
@@ -19,8 +20,23 @@ class RegexLayer extends JPanel implements Scrollable, iRxLayer {
 	int position;
 	int offset = 0;
 	
-	static Color[] colors = {Color.RED, Color.GREEN,
-		Color.BLUE, Color.CYAN, Color.MAGENTA};
+	int origin1x = CROSSORIGINX;
+	int origin1y = CROSSORIGINY;
+	int offsetx = LAYPANEX - (origin1x * 2);
+	int offsety = LAYPANEY - (origin1y * 2);
+	
+	private Point[] ctrPoints = {new Point(origin1x, origin1y),
+		new Point(origin1x + offsetx, origin1y),
+		new Point(origin1x, origin1y + offsety),
+		new Point(origin1x + offsetx, origin1y + offsety),
+	};
+	
+	static Color[] colors = {Color.LIGHT_GRAY,
+			Color.RED,
+			Color.MAGENTA,
+			Color.GREEN,
+			Color.BLUE
+			};
 	
 	private int maxUnitIncrement = 1;
 	
@@ -63,12 +79,32 @@ class RegexLayer extends JPanel implements Scrollable, iRxLayer {
 
 		int x = IMAGEPOSX + offset;
 		int y = IMAGEPOSY + offset;
+		
+		int lineLength = 40;
+		int lineLenHalf = lineLength/2;
+		int textOffset = 7;
 
 		g2.setColor(Color.BLUE);
 		g2.drawString("this is a scroll layer: " + getName(), x + 5, y + 20);
 		g2.setColor(colors[position]);
 		g2.drawRect( x, y , 160, 30);
+		
+		
+		for (int i = 0; i < ctrPoints.length; i++) {
+			// line color
+			g2.setColor(colors[position]);
+			
+			Point pt = new Point(ctrPoints[i].x + offset, ctrPoints[i].y + offset);
+			
+			g2.drawLine(pt.x - lineLenHalf, pt.y, pt.x + lineLenHalf, pt.y);
+			g2.drawLine(pt.x, pt.y - lineLenHalf, pt.x, pt.y + lineLenHalf);
+			
+			g2.setColor(colors[position]);
+			g2.drawString(dispVal(pt), pt.x + textOffset, pt.y - textOffset);
+		}
 	}
+	
+	
 	
 	@Override
 	public Dimension getPreferredScrollableViewportSize() {

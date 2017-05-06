@@ -5,6 +5,8 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
+import static pro.cyberstudio.regexexpress.Utility.*;
+
 /**
  * @author jeffs
  *         File:    RegexAnalysis
@@ -69,8 +71,9 @@ class RegexPointer extends JPanel implements Scrollable, iRxLayer, MouseMotionLi
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		cursorPoint = e.getPoint();
-		repaint();
+//		LogMsgFmtln("mouse moved point: ", e.getPoint());
+
+		updateCursor(e.getPoint());
 	}
 	
 	void updateCursor(Point pt) {

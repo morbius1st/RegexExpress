@@ -41,6 +41,9 @@ class RegexExpress extends JPanel {
 	static final int IMAGEPOSX = (LAYPANEX / 2) - 50;
 	static final int IMAGEPOSY = (LAYPANEY / 2) - 50;
 	
+	static final int CROSSORIGINX = 200;
+	static final int CROSSORIGINY = 200;
+	
 	private static double zoomFactor = 1.0;
 	
 	private static int layerIdx = 0;
@@ -199,7 +202,7 @@ class RegexExpress extends JPanel {
 //			regexLayerPane.testPointer();
 //			regexLayerPane.zoomCentered(2.0, new Point(LAYPANEX / 2 - 50, LAYPANEY / 2 - 50));
 
-			regexLayerPane.moveToPoint(new Point(LAYPANEX / 2 + 50, LAYPANEY / 2 + 50));
+			regexLayerPane.moveToPoint2(new Point(CROSSORIGINX, CROSSORIGINY));
 
 //			LogMsgln("comp  listeners: " + regexScroll.listCompListeners());
 //			LogMsgln("click listeners: " + regexScroll.listMouseClickListeners());
