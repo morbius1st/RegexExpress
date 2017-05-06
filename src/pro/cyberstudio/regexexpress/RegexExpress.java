@@ -159,12 +159,19 @@ class RegexExpress extends JPanel {
 		frame.setLocation(((screenX / 2) - (FRAMEPREFWIDTH / 2)) , ((screenY / 3) - (FRAMEPREFHEIGHT / 2)));
 		
 		frame.pack();
-		
-//		scrollView(CANVASX / 2,CANVASY / 2);
-		
-		regexLayerPane.zoomTo(1.0, new Point(LAYPANEX / 2 - 50, LAYPANEY / 2 - 50));
+
+		//		regexLayerPane.zoomCentered(1.0, new Point(LAYPANEX / 2 - 50, LAYPANEY / 2 - 50));
 
 		frame.setVisible(true);
+		
+		listVPInfo("root");
+		
+		int x = regexViewport.getWidth() / 2;
+		int y = regexViewport.getHeight() / 2;
+		
+		regexLayerPane.zoomAboutPoint(1.0,
+				new Point((LAYPANEX / 2 - 50) - x,
+						(LAYPANEY / 2 - 50) - y));
 	}
 	
 	private void scrollView(int centerX, int centerY) {
@@ -199,11 +206,11 @@ class RegexExpress extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent actionEvent) {
 //			regexLayerPane.testPointer();
-//			regexLayerPane.zoomTo(2.0, new Point(LAYPANEX / 2 - 50, LAYPANEY / 2 - 50));
-			
-			LogMsgln("comp  listeners: " + regexScroll.listCompListeners());
-			LogMsgln("click listeners: " + regexScroll.listMouseClickListeners());
-			LogMsgln("wheel listeners: " + regexScroll.listMouseWheelListeners());
+//			regexLayerPane.zoomCentered(2.0, new Point(LAYPANEX / 2 - 50, LAYPANEY / 2 - 50));
+
+//			LogMsgln("comp  listeners: " + regexScroll.listCompListeners());
+//			LogMsgln("click listeners: " + regexScroll.listMouseClickListeners());
+//			LogMsgln("wheel listeners: " + regexScroll.listMouseWheelListeners());
 		}
 	};
 	

@@ -12,7 +12,7 @@ import javax.swing.*;
  *         Project: RegexExpress
  */
 
-class RegexPointer extends JPanel implements Scrollable, iRxLayer, iMWListener, MouseMotionListener {
+class RegexPointer extends JPanel implements Scrollable, iRxLayer, MouseMotionListener { //}, iMWListener {
 	
 	
 	private int maxUnitIncrement = 1;
@@ -72,48 +72,55 @@ class RegexPointer extends JPanel implements Scrollable, iRxLayer, iMWListener, 
 		cursorPoint = e.getPoint();
 		repaint();
 	}
+	
+	void updateCursor(Point pt) {
+		cursorPoint = pt;
+		repaint();
+	}
+
+
 
 //	@Override
-	public void mouseWheelMoved(MouseWheelEvent e) {
-		int adjustment = 5;
-		int value = 0;
-		int min = 0;
-		int max = 0;
-		boolean orientation = false;  // true == vertical, false == horizontal
-		JScrollBar sBar = hScrollBar;
-		
-		if (e.getWheelRotation() > 0 ) {
-			adjustment *= -1;
-		}
-		
-		if (vScrollBar != null && hScrollBar != null) {
-			
-			if (!e.isShiftDown())  {
-				orientation = true;
-				sBar = vScrollBar;
-			}
-			
-			value = sBar.getValue();
-			min = sBar.getMinimum();
-			max = Math.max(sBar.getMaximum() - sBar.getVisibleAmount(), 0);
-
-			if ((adjustment < 0 && ((value > min )
-					|| (value == min && adjustment > 0))) ||
-					(adjustment > 0 && ((value < max )
-							|| (value == max && adjustment < 0)))
-					)
-				{
-				sBar.setValue(value + adjustment);
-				
-				if (orientation) {
-					cursorPoint.y += adjustment;
-				} else {
-					cursorPoint.x += adjustment;
-				}
-				repaint();
-			}
-		}
-	}
+//	public void mouseWheelMoved(MouseWheelEvent e) {
+//		int adjustment = 5;
+//		int value = 0;
+//		int min = 0;
+//		int max = 0;
+//		boolean orientation = false;  // true == vertical, false == horizontal
+//		JScrollBar sBar = hScrollBar;
+//
+//		if (e.getWheelRotation() > 0 ) {
+//			adjustment *= -1;
+//		}
+//
+//		if (vScrollBar != null && hScrollBar != null) {
+//
+//			if (!e.isShiftDown())  {
+//				orientation = true;
+//				sBar = vScrollBar;
+//			}
+//
+//			value = sBar.getValue();
+//			min = sBar.getMinimum();
+//			max = Math.max(sBar.getMaximum() - sBar.getVisibleAmount(), 0);
+//
+//			if ((adjustment < 0 && ((value > min )
+//					|| (value == min && adjustment > 0))) ||
+//					(adjustment > 0 && ((value < max )
+//							|| (value == max && adjustment < 0)))
+//					)
+//				{
+//				sBar.setValue(value + adjustment);
+//
+//				if (orientation) {
+//					cursorPoint.y += adjustment;
+//				} else {
+//					cursorPoint.x += adjustment;
+//				}
+//				repaint();
+//			}
+//		}
+//	}
 	
 	@Override
 	public Dimension getPreferredScrollableViewportSize() {

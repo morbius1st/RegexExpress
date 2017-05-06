@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 import javax.swing.*;
 
-import static pro.cyberstudio.regexexpress.Utility.LogMsgln;
+import static pro.cyberstudio.regexexpress.Utility.*;
 
 /**
  * @author jeffs
@@ -46,6 +46,8 @@ class RegexScroll extends JScrollPane implements MouseWheelListener, MouseListen
 		
 		addMouseWheelListener(this);
 		addComponentListener(this);
+		
+		listVPInfo("scroll");
 
 	}
 	

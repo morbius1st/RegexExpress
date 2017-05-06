@@ -14,12 +14,29 @@ import static pro.cyberstudio.regexexpress.Utility.viewSizeMask.*;
 
 class Utility {
 	
+	static void LogMsgFmtln(String msg1, String msg2) {
+		if (msg2 == null) {msg2 = "";}
+		LogMsgln(String.format("%1$30s%2$s", msg1, msg2));
+	}
+	
 	static void LogMsgln(String msg) {
 		System.out.println(msg);
 	}
 	
 	static void LogMsg(String msg) {
 		System.out.print(msg);
+	}
+	
+	static void listVPInfo(String name) {
+		LogMsgFmtln("*** from: ", name);
+		
+		if (RegexExpress.regexViewport == null) return;
+		
+		LogMsgFmtln("vp vis size: ", dispVal(RegexExpress.regexViewport.getVisibleRect()));
+		LogMsgFmtln("vp view rect: ", dispVal(RegexExpress.regexViewport.getViewRect()));
+		LogMsgFmtln("vp view pos: ", dispVal(RegexExpress.regexViewport.getViewPosition()));
+		LogMsgFmtln("vp loc: ", dispVal(RegexExpress.regexViewport.getLocation()));
+		LogMsgFmtln("vp ext size: ", dispVal(RegexExpress.regexViewport.getExtentSize()));
 	}
 	
 	enum viewSizeMask { min(1), perf(2), max(4), size(8), bounds(16);
