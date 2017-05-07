@@ -147,7 +147,8 @@ class RegexExpress extends JPanel {
 		
 		JPanel buttons2 = new JPanel(new FlowLayout(FlowLayout.LEFT, 10,0));
 		
-		buttons2.add(makeButton(btn7, "Zoom<br>To"));
+		buttons2.add(makeButton(btn7, "Zoom<br>To Pt"));
+		buttons2.add(makeButton(btn8, "Zoom<br>Ctr'd"));
 		
 		buttons2.setMaximumSize(new Dimension(FRAMEPREFWIDTH, 50));
 		buttons2.setPreferredSize(new Dimension(FRAMEPREFWIDTH, 50));
@@ -222,29 +223,21 @@ class RegexExpress extends JPanel {
 		}
 	};
 
-	// no test yet
 	private ActionListener btn7 = actionEvent ->
-			regexLayerPane.moveToPoint2(new Point(CROSSORIGINX, CROSSORIGINY));
+			regexLayerPane.moveToPoint(CROSSORIGINPTS[3]);
+	
+	private ActionListener btn8 = actionEvent ->
+			regexLayerPane.zoomCenteredDwgCoord(1.0, CROSSORIGINPTS[3]);
 	
 	private ActionListener btn5 = actionEvent -> LogMsgln(regexLayerPane.toString());
 	
 	private ActionListener btn4 = actionEvent -> regexLayerPane.add(getLayer());
 	
 	// zoom in
-	private ActionListener btn1 = actionEvent -> {
-		regexLayerPane.zoomIn();
-//		regexLayerPane.zoomToScale(.5);
-//		regexScroll.getVerticalScrollBar().repaint();
-//		regexScroll.getViewport().repaint();
-	};
+	private ActionListener btn1 = actionEvent -> regexLayerPane.zoomIn();
 
-	// zoom our
-	private ActionListener btn2 = actionEvent -> {
-		regexLayerPane.zoomOut();
-//		regexLayerPane.zoomToScale(2.0);
-//		regexScroll.getVerticalScrollBar().repaint();
-//		regexScroll.getViewport().repaint();
-	};
+	// zoom out
+	private ActionListener btn2 = actionEvent -> regexLayerPane.zoomOut();
 	
 	private ActionListener btn3 = new ActionListener() {
 		@Override

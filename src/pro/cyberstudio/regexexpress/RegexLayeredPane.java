@@ -217,29 +217,18 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 	}
 	
 	
+	void zoomCenteredDwgCoord(double zRatio, Point zoomCenterDwgCoord) {
+		zoomCentered(zRatio, calcScnPtFromLayPt(zoomCenterDwgCoord));
+	}
+	
+	
 	// zoom centerered in viewport (screen type) coordinates
 	void zoomCentered(double zRatio, Point zoomCenter) {
 
 		int x = (getVisibleRect().width) / 2;
 		int y = (getVisibleRect().height) / 2;
 		
-		Point drawingCoord = calcLayPtFromScnPt(zoomCenter);
-		setZoomRatio(zRatio);
-		Point zoomedCoord = calcScnPtFromLayPt(drawingCoord);
-		
-		int vpX = zoomedCoord.x - x;
-		int vpY = zoomedCoord.y - y;
-		
-		vpX = vpX > 0 ? vpX : 0;
-		vpY = vpY > 0 ? vpY : 0;
-		
-		Point vpCorner = new Point(vpX, vpY);
-		
-		zoomViews();
-		
-		JViewport vPort = (JViewport) getParent();
-		vPort.setViewPosition(vpCorner);
-	
+		zoom(zRatio, zoomCenter, x, y);
 	}
 	
 	// zoom about a point (layered pane) coordinates
@@ -248,48 +237,43 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 		int x = vpPoint.x - getVisibleRect().x;
 		int y = vpPoint.y - getVisibleRect().y;
 		
-		LogMsgFmtln("vp zoom coord: ", vpPoint);
-
+		zoom(zRatio, vpPoint, x, y);
+	}
+	
+	private void zoom(double zRatio, Point vpPoint, int vpOffsetX, int vpOffsetY) {
 		Point drawingCoord = calcLayPtFromScnPt(vpPoint);
-		
-		LogMsgFmtln("dwg zoom coord: ", drawingCoord);
-		
 		setZoomRatio(zRatio);
-		Point zoomCoord = calcScnPtFromLayPt(drawingCoord);
-		
-		LogMsgFmtln("lay zoom coord (scale adj): ", zoomCoord);
-		LogMsgFmtln("offset: ", x, y);
-
-		int vpX = zoomCoord.x - x;
-		int vpY = zoomCoord.y - y;
-		
-		vpX = vpX > 0 ? vpX : 0;
-		vpY = vpY > 0 ? vpY : 0;
-
-		Point vpCorner = new Point(vpX, vpY);
-		
-		LogMsgFmtln("vp corner: ", vpCorner);
+		Point zoomedCoord = calcScnPtFromLayPt(drawingCoord);
 		
 		zoomViews();
 		
-		JViewport vPort = (JViewport) getParent();
-		vPort.setViewPosition(vpCorner);
-
+		positionViewport(zoomedCoord, vpOffsetX, vpOffsetY);
+	}
+	
+	private void positionViewport(Point zoomedCoord, int vpOffsetX, int vpOffsetY) {
+		int vpX = zoomedCoord.x - vpOffsetX;
+		int vpY = zoomedCoord.y - vpOffsetY;
+		
+		vpX = vpX > 0 ? vpX : 0;
+		vpY = vpY > 0 ? vpY : 0;
+		
+		Point vpCorner = new Point(vpX, vpY);
+		
+		RegexExpress.regexViewport.setViewPosition(vpCorner);
 	}
 	
 	// zoom about a point (layer type) coordinates
-	void moveToPoint2(Point drawingCoord) {
+	void moveToPoint(Point drawingCoord) {
 		
 		Point newPoint = calcScnPtFromLayPt(drawingCoord);
 		Point existPoint = new Point(
 				getVisibleRect().x + getVisibleRect().width/2,
 				getVisibleRect().y + getVisibleRect().height/2);
+		
 		int x = newPoint.x - existPoint.x;
 		int y = newPoint.y - existPoint.y;
-
-		Point vpCorner = new Point(getVisibleRect().x + x, getVisibleRect().y + y);
 		
-		RegexExpress.regexViewport.setViewPosition(vpCorner);
+		positionViewport(new Point(getVisibleRect().x + x, getVisibleRect().y + y), 0, 0);
 	}
 	
 	
