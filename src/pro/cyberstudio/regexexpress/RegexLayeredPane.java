@@ -22,7 +22,7 @@ class viewSizeData {
 	Dimension2dx layerSize;
 }
 
-class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseListener, iMWListener, MouseWheelListener{
+class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseListener, iMWListener  { //, MouseWheelListener{
 	
 	static private final int POINTER_LAYER = JLayeredPane.PALETTE_LAYER - 1;
 	

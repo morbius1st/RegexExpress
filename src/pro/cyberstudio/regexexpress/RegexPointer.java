@@ -5,6 +5,8 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
+import static pro.cyberstudio.regexexpress.Utility.*;
+
 /**
  * @author jeffs
  *         File:    RegexAnalysis
@@ -29,6 +31,7 @@ class RegexPointer extends JPanel implements Scrollable, iRxLayer, iMMListener {
 //		addMouseMotionListener(this);
 		
 		RegexScroll.addMMovL(this);
+		RegexScroll.addMDragL(this);
 	}
 	
 	public void assignScrollBars(JScrollBar hBar, JScrollBar vBar) {
@@ -66,8 +69,8 @@ class RegexPointer extends JPanel implements Scrollable, iRxLayer, iMMListener {
 	}
 
 	// required for mouse motion
-//	@Override
-//	public void mouseDragged(MouseEvent e) { }
+	@Override
+	public void mouseDragged(MouseEvent e) { }
 
 //	@Override
 	public void mouseMoved(MouseEvent e) {
