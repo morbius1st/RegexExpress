@@ -72,7 +72,7 @@ class RegexScroll extends JScrollPane implements MouseWheelListener, MouseListen
 	
 	static void addMDragL(iMMListener mdl) {
 		if (mdl != null && !mdraglChain.contains(mdl)) {
-			mmovlChain.add(mdl);
+			mdraglChain.add(mdl);
 		}
 	}
 	

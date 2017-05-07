@@ -6,6 +6,7 @@ import java.awt.event.*;
 import javax.swing.*;
 
 import static pro.cyberstudio.regexexpress.Utility.*;
+import static pro.cyberstudio.regexexpress.RegexPointer.PointerModes.*;
 
 /**
  * @author jeffs
@@ -16,13 +17,20 @@ import static pro.cyberstudio.regexexpress.Utility.*;
 
 class RegexPointer extends JPanel implements Scrollable, iRxLayer, iMMListener {//MouseMotionListener { //}, iMWListener {
 	
+	private static int maxUnitIncrement = 1;
 	
-	private int maxUnitIncrement = 1;
+	private static JScrollBar vScrollBar;
+	private static JScrollBar hScrollBar;
 	
-	private JScrollBar vScrollBar;
-	private JScrollBar hScrollBar;
+	private static Point cursorPoint = new Point();
 	
-	private Point cursorPoint = new Point();
+	enum PointerModes {NONE, XHAIRS, PANNING, WINDOW, SELECTION }
+	
+	private static PointerModes pointerMode = XHAIRS;
+	
+	private static Color XHAIRCOLOR = Color.MAGENTA;
+	private static Color SELECTIONBOXCOLOR = Color.BLUE;
+	
 	
 	RegexPointer() {
  		setAlignmentX(CENTER_ALIGNMENT);
@@ -53,24 +61,25 @@ class RegexPointer extends JPanel implements Scrollable, iRxLayer, iMMListener {
 	public void paint(Graphics g) {
 		super.paint(g);
 		
-		g.setColor(Color.BLUE);
+		g.setColor(XHAIRCOLOR);
 		// draw cursor lines
 		g.drawLine(0, cursorPoint.y, this.getWidth(), cursorPoint.y);
 		g.drawLine(cursorPoint.x, 0, cursorPoint.x, this.getHeight());
 		
-//		LogMsgln("cursor: " + dispVal(cursorPoint));
 	}
 	
 	@Override
 	public void setZoomScale(double zoomFactor) { }
 	
 	void test() {
-
+		LogMsgFmtln("this is ", "a test");
 	}
 
 	// required for mouse motion
 	@Override
-	public void mouseDragged(MouseEvent e) { }
+	public void mouseDragged(MouseEvent e) {
+		updateCursor(e.getPoint());
+	}
 
 //	@Override
 	public void mouseMoved(MouseEvent e) {

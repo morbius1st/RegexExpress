@@ -20,16 +20,16 @@ class RegexLayer extends JPanel implements Scrollable, iRxLayer {
 	int position;
 	int offset = 0;
 	
-	int origin1x = CROSSORIGINX;
-	int origin1y = CROSSORIGINY;
-	int offsetx = LAYPANEX - (origin1x * 2);
-	int offsety = LAYPANEY - (origin1y * 2);
-	
-	private Point[] ctrPoints = {new Point(origin1x, origin1y),
-		new Point(origin1x + offsetx, origin1y),
-		new Point(origin1x, origin1y + offsety),
-		new Point(origin1x + offsetx, origin1y + offsety),
-	};
+//	int origin1x = CROSSORIGINX;
+//	int origin1y = CROSSORIGINY;
+//	int offsetx = LAYPANEX - (origin1x * 2);
+//	int offsety = LAYPANEY - (origin1y * 2);
+//
+//	private Point[] ctrPoints = {new Point(origin1x, origin1y),
+//		new Point(origin1x + offsetx, origin1y),
+//		new Point(origin1x, origin1y + offsety),
+//		new Point(origin1x + offsetx, origin1y + offsety),
+//	};
 	
 	static Color[] colors = {Color.LIGHT_GRAY,
 			Color.RED,
@@ -90,11 +90,11 @@ class RegexLayer extends JPanel implements Scrollable, iRxLayer {
 		g2.drawRect( x, y , 160, 30);
 		
 		
-		for (int i = 0; i < ctrPoints.length; i++) {
+		for (int i = 0; i < CROSSORIGINPTS.length; i++) {
 			// line color
 			g2.setColor(colors[position]);
 			
-			Point pt = new Point(ctrPoints[i].x + offset, ctrPoints[i].y + offset);
+			Point pt = new Point(CROSSORIGINPTS[i].x + offset, CROSSORIGINPTS[i].y + offset);
 			
 			g2.drawLine(pt.x - lineLenHalf, pt.y, pt.x + lineLenHalf, pt.y);
 			g2.drawLine(pt.x, pt.y - lineLenHalf, pt.x, pt.y + lineLenHalf);
@@ -107,9 +107,7 @@ class RegexLayer extends JPanel implements Scrollable, iRxLayer {
 	
 	
 	@Override
-	public Dimension getPreferredScrollableViewportSize() {
-		return getPreferredSize();
-	}
+	public Dimension getPreferredScrollableViewportSize() { return getPreferredSize(); }
 	
 	@Override
 	public int getScrollableUnitIncrement(Rectangle visibleRectangle, int orientation, int direction) {

@@ -1,6 +1,9 @@
 package pro.cyberstudio.regexexpress;
 
+import com.sun.istack.internal.*;
+
 import org.jetbrains.annotations.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -100,6 +103,9 @@ class Utility {
 	static void LogMsgFmtln(String msg, int x, int y) { LogMsgFmtln(msg, dispVal(x, y)); }
 	
 	static void LogMsgFmtln(String msg, Rectangle rect) { LogMsgFmtln(msg, dispVal(rect)); }
+	
+	@NotNull
+	static String dispZoom(double zoomFactor) { return "zoom factor: " + zoomFactor; }
 	
 	@NotNull
 	static String dispVal(Point pt)  {return dispVal(pt.getX(), pt.getY()); }
