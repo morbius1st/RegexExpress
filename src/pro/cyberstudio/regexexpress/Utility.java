@@ -8,6 +8,8 @@ import org.jetbrains.annotations.NotNull;
 import java.awt.*;
 import java.awt.geom.Point2D;
 
+import pro.cyberstudio.regexexpress.RegexPointer.PointerModes;
+
 import static pro.cyberstudio.regexexpress.Utility.viewSizeMask.*;
 
 /**
@@ -18,18 +20,49 @@ import static pro.cyberstudio.regexexpress.Utility.viewSizeMask.*;
  */
 
 class Utility {
-	
-	static void listVPInfo(String name) {
-		LogMsgFmtln("*** from: ", name);
-		
-		if (RegexExpress.regexViewport == null) return;
-		
-		LogMsgFmtln("vp vis size: ", dispVal(RegexExpress.regexViewport.getVisibleRect()));
-		LogMsgFmtln("vp view rect: ", dispVal(RegexExpress.regexViewport.getViewRect()));
-		LogMsgFmtln("vp view pos: ", dispVal(RegexExpress.regexViewport.getViewPosition()));
-		LogMsgFmtln("vp loc: ", dispVal(RegexExpress.regexViewport.getLocation()));
-		LogMsgFmtln("vp ext size: ", dispVal(RegexExpress.regexViewport.getExtentSize()));
+
+	// point math
+	// add one point to another = add x1 to x2 and y1 to y2
+	static Point addPoints(Point p1, Point p2) {
+		return  new Point(p1.x + p2.x, p1.y + p2.y);
 	}
+
+	static Point addToPoint(Point p1, int x, int y) {
+		return new Point(p1.x + 1, p1.y + y);
+	}
+	
+	
+	static Point.Double addPoints(Point.Double p1, Point.Double p2) {
+		return  new Point.Double(p1.x + p2.x, p1.y + p2.y);
+	}
+	
+	// subtract a point from another = subtract x2 from x1 and y2 from y1
+	static Point subtractPoints(Point p1, Point p2) {
+		return new Point(p1.x - p2.x, p1.y - p2.y);
+	}
+	
+	static Point subtractFromPoint(Point p1, int x, int y) {
+		return new Point(p1.x - x, p1.y - y);
+	}
+	
+	// multiply a point = multiply x1 by double d1 and y1 by double d2
+	static Point multiplyPoint(Point p1, double dx, double dy) {
+		return new Point((int) (p1.x * dx), (int) (p1.y * dy));
+	}
+	
+	static boolean pointsEqual(Point p1, Point p2) {
+		return (p1.x == p2.x) && (p1.y == p2.y);
+	}
+	
+	static boolean pointsXEqual(Point p1, Point p2) {
+		return (p1.x == p2.x);
+	}
+	
+	static boolean pointsYEqual(Point p1, Point p2) {
+		return (p1.y == p2.y);
+	}
+	
+	
 	
 	enum viewSizeMask { min(1), perf(2), max(4), size(8), bounds(16);
 		int value;
@@ -87,7 +120,7 @@ class Utility {
 	
 	static void LogMsgFmtln(String msg1, String msg2) {
 		if (msg2 == null) {msg2 = "";}
-		LogMsgln(String.format("%1$30s%2$s", msg1, msg2));
+		LogMsgln(String.format("%1$35s%2$s", msg1, msg2));
 	}
 	
 	static void LogMsgFmtln(String msg, Point pt) { LogMsgFmtln(msg, dispVal(pt)); }
@@ -104,8 +137,15 @@ class Utility {
 	
 	static void LogMsgFmtln(String msg, Rectangle rect) { LogMsgFmtln(msg, dispVal(rect)); }
 	
+	static void LogMsgFmtln(String msg, int i) { LogMsgFmtln(msg, dispVal(i)); }
+	
+	static void LogMsgFmtln(String msg, double d) { LogMsgFmtln(msg, dispVal(d)); }
+	
+	static String dispVal(int i)  {return String.valueOf(i); }
+	static String dispVal(double d)  {return String.valueOf(d); }
+	
 	@NotNull
-	static String dispZoom(double zoomFactor) { return "zoom factor: " + zoomFactor; }
+	static String dispZoom(double zoomFactor) { return "zoom factor| " + zoomFactor; }
 	
 	@NotNull
 	static String dispVal(Point pt)  {return dispVal(pt.getX(), pt.getY()); }
@@ -123,14 +163,14 @@ class Utility {
 	
 	@NotNull
 	@Contract(pure = true)
-	static String dispVal(double x, double y) { return "x: " + x + " y: " + y; }
+	static String dispVal(double x, double y) { return "x| " + x + " y| " + y; }
 	
 	@NotNull
 	@Contract(pure = true)
-	static String dispVal(int x, int y) { return "x: " + x + " y: " + y; }
+	static String dispVal(int x, int y) { return "x| " + x + " y| " + y; }
 	
 	@NotNull
 	@Contract(pure = true)
-	static String dispVal(Rectangle rect) { return "x: " + rect.x + " y: " + rect.y + " w: " + rect.width + " h: " + rect.height; }
+	static String dispVal(Rectangle rect) { return "x| " + rect.x + " y| " + rect.y + " w| " + rect.width + " h| " + rect.height; }
 	
 }

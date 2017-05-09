@@ -12,8 +12,8 @@ import java.awt.geom.Dimension2D;
 
 class Dimension2dx extends Dimension2D {
 	
-	double height;
-	double width;
+	double height; // same as x
+	double width;  // same as y
 	
 	public Dimension2dx() {
 		width = Double.NaN;
@@ -36,10 +36,14 @@ class Dimension2dx extends Dimension2D {
 		return width;
 	}
 	
+	public double getX() {return width; }
+	
 	@Override
 	public double getHeight() {
 		return height;
 	}
+	
+	public double getY() {return height; }
 	
 	@Override
 	public void setSize(double w, double h) {

@@ -40,12 +40,16 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 	
 	private double zoomFactor = 1.0;
 	private double zoomRatio = 1.0;
+	private double zoomMin = 0.16;
+	private double zoomMax = 12.0;
 	
 	private static final double ZOOMWHEELRATIOOUT = 1.2;
 	private static final double ZOOMWHEELRATIOIN = 1 / ZOOMWHEELRATIOOUT;
 	private static final double ZOOMRATIOINOUT = 1.5;
 	
 	static boolean inPanningMode = true;
+	
+	static Point panPriorPt = new Point(0, 0);
 	
 	// private constructor to prevent creating
 	// an instance of this class
@@ -60,6 +64,7 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 		RegexScroll.addMWL(this);
 		RegexScroll.addCL(this);
 		RegexScroll.addML(this);
+		RegexScroll.addMDragL(this);
 		
 	}
 	
@@ -82,6 +87,7 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 	
 	void initialize(JScrollBar hScrollBar, JScrollBar vScrollBar, Dimension2dx initSize) {
 		viewSizeParams.minSize = initSize.clone();
+		viewSizeParams.layerSize = initSize.clone();
 		viewSizeParams.viewSize = initSize.clone();
 		
 		Dimension layerSize = new Dimension(RegexExpress.LAYERX, RegexExpress.LAYERY);
@@ -97,8 +103,6 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 		rxPointer.setName("pointer");
 		rxPointer.setPreferredSize(layerSize);
 		add(rxPointer, (Integer) (POINTER_LAYER));
-		
-//		RegexScroll.addMWL(rxPointer);
 
 		rxBackground.setBackground(Color.BLACK);
 		rxBackground.setOpaque(true);
@@ -148,6 +152,40 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 	
 	void testPointer() {
 		rxPointer.test();
+	}
+	
+	void listMyInfo() {
+		LogMsgFmtln("lay pane: vis rect| ", dispVal(getVisibleRect()));
+		LogMsgFmtln("lay pane: bounds| ", dispVal(getBounds()));
+		LogMsgFmtln("lay pane: location| ", dispVal(this.getLocation()));
+		LogMsgFmtln("lay pane: pref size| ", dispVal(this.getPreferredSize()));
+		LogMsgFmtln("lay pane: min size| ", dispVal(this.getMinimumSize()));
+		LogMsgFmtln("lay pane: max size| ", dispVal(this.getMaximumSize()));
+		LogMsgFmtln("lay pane: size| ", dispVal(this.getSize()));
+		LogMsgFmtln("lay pane: location on screen| ", dispVal(this.getLocationOnScreen()));
+		
+		LogMsgFmtln("view size param: lay size| ", dispVal(viewSizeParams.layerSize));
+		LogMsgFmtln("lview size param: min size| ", dispVal(viewSizeParams.minSize));
+		LogMsgFmtln("view size param: view size| ", dispVal(viewSizeParams.viewSize));
+	}
+	
+	
+	void testVisRect() {
+		// the corner of the rect as a point / integer
+		LogMsgFmtln("lay pane: vis rect: location| ", getVisibleRect().getLocation());
+		// same as location but as x & y values
+		LogMsgFmtln("lay pane: vis rect: corner x| ", dispVal(getVisibleRect().x) +
+				" y| " + dispVal(getVisibleRect().y));
+		// same as location but as a double
+		LogMsgFmtln("lay pane: vis rect: corner x| ", dispVal(getVisibleRect().getX()) +
+				" y| " + dispVal(getVisibleRect().getY()));
+		// calculated center as an int
+		LogMsgFmtln("lay pane: vis rect: center x| ", dispVal(getVisibleRect().getCenterX()) +
+				" y| " + dispVal(getVisibleRect().getCenterY()));
+		// booth appear to be the same
+		LogMsgFmtln("lay pane: vis rect:| ", getVisibleRect());
+		LogMsgFmtln("lay pane: vis rect: bounds| ", getVisibleRect().getBounds());
+		
 	}
 	
 	private void getViewportRect() {
@@ -250,7 +288,12 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 		positionViewport(zoomedCoord, vpOffsetX, vpOffsetY);
 	}
 	
+	private void positionViewport(Point zoomedCoord, Point vpOffset) {
+		positionViewport(zoomedCoord, vpOffset.x, vpOffset.y);
+	}
+	
 	private void positionViewport(Point zoomedCoord, int vpOffsetX, int vpOffsetY) {
+		
 		int vpX = zoomedCoord.x - vpOffsetX;
 		int vpY = zoomedCoord.y - vpOffsetY;
 		
@@ -262,7 +305,7 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 		RegexExpress.regexViewport.setViewPosition(vpCorner);
 	}
 	
-	// zoom about a point (layer type) coordinates
+	// move to a point (layer type) coordinates
 	void moveToPoint(Point drawingCoord) {
 		
 		Point newPoint = calcScnPtFromLayPt(drawingCoord);
@@ -275,11 +318,21 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 		
 		positionViewport(new Point(getVisibleRect().x + x, getVisibleRect().y + y), 0, 0);
 	}
-	
-	
+
 	private void setZoomRatio(double zRatio) {
-		zoomRatio = zRatio;
-		zoomFactor *= zoomRatio;
+		
+		zoomFactor *= zRatio;
+		
+		if (zoomFactor > zoomMax) {
+			zoomFactor = zoomMax;
+			zoomRatio = 1;
+		} else if (zoomFactor < zoomMin) {
+			zoomFactor = zoomMin;
+			zoomRatio = 1;
+		} else {
+			zoomRatio = zRatio;
+		}
+		
 		aft.setToScale(zoomFactor, zoomFactor);
 		
 		RegexExpress.textAreaZmFactor.setText(dispZoom(zoomFactor));
@@ -345,11 +398,20 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 	
 	@Override
 	public void mouseMoved(MouseEvent e) { }
+
+	static int A = 1;
 	
 	@Override
 	public void mouseDragged(MouseEvent e) {
+
 		if (inPanningMode) {
-		
+			
+			Point newPt = subtractPoints(panPriorPt, e.getPoint());
+			panPriorPt = addPoints(e.getPoint(), newPt);
+			newPt = addPoints(getVisibleRect().getLocation(), newPt);
+
+			positionViewport(newPt, 0, 0);
+
 		}
 	}
 	
@@ -363,35 +425,20 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 	
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		LogMsgFmtln("lay pane: mouse clicked: ", e.getPoint());
-		Point mousePointScaleAdjusted;
-
-		Point mousePointUnscaled;
-		mousePointUnscaled = new Point(e.getX(), e.getY());
-		mousePointScaleAdjusted = calcLayPtFromScnPt(new Point(e.getX(), e.getY()));
-
-		RegexExpress.textAreaCoords.setText(dispVal(mousePointScaleAdjusted));
-
-		LogMsgln("  comp point: " + dispVal(mousePointUnscaled));
-		LogMsgln("scaled point: " + dispVal(mousePointScaleAdjusted));
-	}
-	
-	void listViewSizes() {
-		Component[] comps = getComponentsInLayer(POINTER_LAYER);
+		LogMsgFmtln("lay pane: ", "mouse clicked");
+		LogMsgFmtln("e point: ", e.getPoint());
 		
-		LogMsgln("View Size Listing");
-		LogMsgln("Lay Pane");
-		LogMsg(viewSizes(this, viewSizeMask.perf.value + viewSizeMask.size.value));
-		LogMsgln("canvasSize: " + Utility.dispVal(viewSizeParams.viewSize));
+		Point mousePoint_getXgetY = new Point(e.getX(), e.getY());
+		Point mouseLayPoint = calcLayPtFromScnPt(new Point(e.getX(), e.getY()));
+		Point mouseScnPoint = calcScnPtFromLayPt(new Point(e.getX(), e.getY()));
 
-//		LogMsgln("Pointer Layer");
-//		LogMsgln(viewSizes(comps[0]));
-//		LogMsgln("");
-//		LogMsgln("View Port");
-//		LogMsgln(viewSizes(getParent()));
-	
+		RegexExpress.textAreaCoords.setText(dispVal(mouseLayPoint));
+
+		LogMsgFmtln("comp point: ", mousePoint_getXgetY);
+		LogMsgFmtln("lay point: ", mouseLayPoint);
+		LogMsgFmtln("scn point: ", mouseScnPoint);
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

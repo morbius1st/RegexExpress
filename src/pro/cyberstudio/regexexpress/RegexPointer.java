@@ -15,7 +15,7 @@ import static pro.cyberstudio.regexexpress.RegexPointer.PointerModes.*;
  *         Project: RegexExpress
  */
 
-class RegexPointer extends JPanel implements Scrollable, iRxLayer, iMMListener {//MouseMotionListener { //}, iMWListener {
+class RegexPointer extends JPanel implements Scrollable, iRxLayer, iMMListener { //}, MouseMotionListener { //}, iMWListener {
 	
 	private static int maxUnitIncrement = 1;
 	
@@ -28,8 +28,8 @@ class RegexPointer extends JPanel implements Scrollable, iRxLayer, iMMListener {
 	
 	private static PointerModes pointerMode = XHAIRS;
 	
-	private static Color XHAIRCOLOR = Color.MAGENTA;
-	private static Color SELECTIONBOXCOLOR = Color.BLUE;
+	private static Color XHAIRCOLOR = Color.BLUE;
+	private static Color SELECTIONBOXCOLOR = Color.CYAN;
 	
 	
 	RegexPointer() {
@@ -60,7 +60,9 @@ class RegexPointer extends JPanel implements Scrollable, iRxLayer, iMMListener {
 	@Override
 	public void paint(Graphics g) {
 		super.paint(g);
-		
+
+		if (cursorPoint == null) { return; }
+
 		g.setColor(XHAIRCOLOR);
 		// draw cursor lines
 		g.drawLine(0, cursorPoint.y, this.getWidth(), cursorPoint.y);
@@ -83,14 +85,14 @@ class RegexPointer extends JPanel implements Scrollable, iRxLayer, iMMListener {
 
 //	@Override
 	public void mouseMoved(MouseEvent e) {
-//		LogMsgFmtln("mouse moved point: ", e.getPoint());
-
 		updateCursor(e.getPoint());
 	}
 	
 	void updateCursor(Point pt) {
+//		LogMsgFmtln("mouse moved point: ", pt);
 		cursorPoint = pt;
 		repaint();
+		revalidate();
 	}
 
 

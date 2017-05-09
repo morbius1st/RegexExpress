@@ -5,6 +5,7 @@ import java.awt.event.*;
 import java.util.ArrayList;
 
 import javax.swing.*;
+import static pro.cyberstudio.regexexpress.Utility.*;
 
 /**
  * @author jeffs
@@ -142,7 +143,7 @@ class RegexScroll extends JScrollPane implements MouseWheelListener, MouseListen
 	
 	@Override
 	public void mousePressed(MouseEvent e) {
-//		LogMsgFmtln("scroll: mouse pressed: ", e.getPoint());
+		RegexLayeredPane.panPriorPt = e.getPoint();
 	}
 	
 	@Override

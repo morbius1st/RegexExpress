@@ -28,11 +28,15 @@ class RegexExpress extends JPanel {
 
 	private static RegexLayeredPane regexLayerPane = RegexLayeredPane.getInstance();
 	
+	// initial layer size
+	static final int LAYERX = 5500;	// approx 60" @ 92 dpi
+	static final int LAYERY = 3000; // approx 32" @ 92 dpi
+	
+	// initial layered pane size
 	static final int LAYPANEX = 1000;
 	static final int LAYPANEY = 750;
-	
-	static final int LAYERX = 3500;	// approx 36" @ 92 dpi
-	static final int LAYERY = 2200; // approx 24" @ 92 dpi
+	static final int LAYPANEOFFSETX = (LAYERX - LAYPANEX) / 2;
+	static final int LAYPANEOFFSETY = (LAYERY - LAYPANEY) / 2;
 
 	private static final int FRAMEPREFWIDTH = LAYPANEX - 250;
 	private static final int FRAMEPREFHEIGHT = LAYPANEY - 150;
@@ -40,14 +44,17 @@ class RegexExpress extends JPanel {
 	private static final int SCROLLPREFWIDTH = LAYPANEX;
 	private static final int SCROLLPREFHEIGHT = LAYPANEY;
 	
-	static final int IMAGEPOSX = (LAYPANEX / 2) - 50;
-	static final int IMAGEPOSY = (LAYPANEY / 2) - 50;
+	static final int IMAGEPOSX = ((LAYPANEX / 2) - 50) + LAYPANEOFFSETX;
+	static final int IMAGEPOSY = ((LAYPANEY / 2) - 50) + LAYPANEOFFSETY;
 	
-	static final int CROSSORIGINX = 200;
-	static final int CROSSORIGINY = 200;
+	private static final int CROSSORIGINOFFSETX = 200;
+	private static final int CROSSORIGINOFFSETY = 200;
 	
-	private static final int CROSSOFFSETX = LAYPANEX - (CROSSORIGINX *2);
-	private static final int CROSSOFFSETY = LAYPANEY - (CROSSORIGINY *2);
+	private static final int CROSSOFFSETX = LAYPANEX - (CROSSORIGINOFFSETX *2);
+	private static final int CROSSOFFSETY = LAYPANEY - (CROSSORIGINOFFSETY *2);
+	
+	private static final int CROSSORIGINX = LAYPANEOFFSETX + CROSSORIGINOFFSETX;
+	private static final int CROSSORIGINY = LAYPANEOFFSETY + CROSSORIGINOFFSETY;
 	
 	static final Point[] CROSSORIGINPTS = {
 			new Point(CROSSORIGINX, CROSSORIGINY),
@@ -90,7 +97,7 @@ class RegexExpress extends JPanel {
 		
 		frame.pack();
 		
-		regexLayerPane.zoomCentered(1.0, new Point(LAYPANEX / 2 - 50, LAYPANEY / 2 - 50));
+		regexLayerPane.zoomCentered(1.0, new Point(LAYERX / 2, LAYERY / 2));
 		
 		frame.setVisible(true);
 	}
@@ -194,9 +201,13 @@ class RegexExpress extends JPanel {
 		regexScroll.setWheelScrollingEnabled(false);
 		regexScroll.setName("scroll pane");
 		
+		
+		
+		
 		regexViewport = regexScroll.getViewport();
 		regexViewport.setName("viewport");
-
+		regexViewport.setLocation(new Point(LAYPANEOFFSETX, LAYPANEOFFSETY));
+		
 		add(regexScroll);
 
 		setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -215,17 +226,22 @@ class RegexExpress extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent actionEvent) {
 //			regexLayerPane.testPointer();
+//			regexLayerPane.testVisRect();
+			regexLayerPane.listMyInfo();
+			
 
-			LogMsgln("comp  listeners: " + regexScroll.listCompListeners());
-			LogMsgln("click listeners: " + regexScroll.listMouseClickListeners());
-			LogMsgln("wheel listeners: " + regexScroll.listMouseWheelListeners());
-			LogMsgln("drag  listeners: " + regexScroll.listMouseDraggedListeners());
+//			LogMsgln("comp  listeners: " + regexScroll.listCompListeners());
+//			LogMsgln("click listeners: " + regexScroll.listMouseClickListeners());
+//			LogMsgln("wheel listeners: " + regexScroll.listMouseWheelListeners());
+//			LogMsgln("drag  listeners: " + regexScroll.listMouseDraggedListeners());
 		}
 	};
 
+	// zoom to a point
 	private ActionListener btn7 = actionEvent ->
 			regexLayerPane.moveToPoint(CROSSORIGINPTS[3]);
 	
+	// zoom center on dwg point
 	private ActionListener btn8 = actionEvent ->
 			regexLayerPane.zoomCenteredDwgCoord(1.0, CROSSORIGINPTS[3]);
 	
