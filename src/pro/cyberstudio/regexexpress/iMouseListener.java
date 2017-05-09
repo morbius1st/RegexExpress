@@ -11,4 +11,6 @@ import java.awt.event.MouseEvent;
 
 interface iMouseListener extends iListener {
 	void mouseClicked(MouseEvent e);
+	void mousePressed(MouseEvent e);
+	void mouseReleased(MouseEvent e);
 }

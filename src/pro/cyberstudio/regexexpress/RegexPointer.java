@@ -57,16 +57,32 @@ class RegexPointer extends JPanel implements Scrollable, iRxLayer, iMMListener {
 	protected void paintComponent(Graphics g) {
 	}
 	
+	void setPointerModeWindow() {
+		pointerMode = WINDOW;
+	}
+	
+	void setPointerModeXhairs() {
+		pointerMode = XHAIRS;
+	}
+	
 	@Override
 	public void paint(Graphics g) {
 		super.paint(g);
-
-		if (cursorPoint == null) { return; }
-
-		g.setColor(XHAIRCOLOR);
-		// draw cursor lines
-		g.drawLine(0, cursorPoint.y, this.getWidth(), cursorPoint.y);
-		g.drawLine(cursorPoint.x, 0, cursorPoint.x, this.getHeight());
+		
+		switch (pointerMode) {
+			case XHAIRS:
+				if (cursorPoint == null) {
+					return;
+				}
+				
+				g.setColor(XHAIRCOLOR);
+				// draw cursor lines
+				g.drawLine(0, cursorPoint.y, this.getWidth(), cursorPoint.y);
+				g.drawLine(cursorPoint.x, 0, cursorPoint.x, this.getHeight());
+				break;
+			case WINDOW:
+				break;
+		}
 		
 	}
 	

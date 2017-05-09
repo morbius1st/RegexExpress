@@ -6,6 +6,8 @@ import java.util.*;
 
 import javax.swing.*;
 
+import static pro.cyberstudio.regexexpress.RegexLayeredPane.dragMode.pan;
+import static pro.cyberstudio.regexexpress.RegexLayeredPane.dragMode.window;
 import static pro.cyberstudio.regexexpress.Utility.*;
 
 
@@ -47,9 +49,14 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 	private static final double ZOOMWHEELRATIOIN = 1 / ZOOMWHEELRATIOOUT;
 	private static final double ZOOMRATIOINOUT = 1.5;
 	
-	static boolean inPanningMode = true;
+//	static boolean inPanningMode = true;
+
+	enum dragMode {pan, window, line; }
+	
+	dragMode currentDragMode = pan;
 	
 	static Point panPriorPt = new Point(0, 0);
+	Point winCornerPt = new Point();
 	
 	// private constructor to prevent creating
 	// an instance of this class
@@ -278,6 +285,10 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 		zoom(zRatio, vpPoint, x, y);
 	}
 	
+	void zoomWindow() {
+		currentDragMode = window;
+	}
+	
 	private void zoom(double zRatio, Point vpPoint, int vpOffsetX, int vpOffsetY) {
 		Point drawingCoord = calcLayPtFromScnPt(vpPoint);
 		setZoomRatio(zRatio);
@@ -398,22 +409,35 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 	
 	@Override
 	public void mouseMoved(MouseEvent e) { }
-
-	static int A = 1;
 	
 	@Override
 	public void mouseDragged(MouseEvent e) {
-
-		if (inPanningMode) {
-			
-			Point newPt = subtractPoints(panPriorPt, e.getPoint());
-			panPriorPt = addPoints(e.getPoint(), newPt);
-			newPt = addPoints(getVisibleRect().getLocation(), newPt);
-
-			positionViewport(newPt, 0, 0);
-
-		}
+		switch (currentDragMode) {
+			case pan:
+				Point newPt = subtractPoints(panPriorPt, e.getPoint());
+				panPriorPt = addPoints(e.getPoint(), newPt);
+				newPt = addPoints(getVisibleRect().getLocation(), newPt);
+				positionViewport(newPt, 0, 0);
+				break;
+			case window:
+				winCornerPt = e.getPoint();
+				break;
+			case line:
+				break;
+			}
 	}
+	
+	@Override
+	public void mousePressed(MouseEvent e) {
+		panPriorPt = e.getPoint();
+	}
+	
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		currentDragMode = pan;
+	
+	}
+	
 	
 	@Override
 	public void componentResized(ComponentEvent e) {

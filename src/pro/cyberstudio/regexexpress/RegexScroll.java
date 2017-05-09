@@ -141,14 +141,22 @@ class RegexScroll extends JScrollPane implements MouseWheelListener, MouseListen
 	
 	String listMouseDraggedListeners() { return listListeners(mdraglChain); }
 	
+	// mouse listener
 	@Override
 	public void mousePressed(MouseEvent e) {
-		RegexLayeredPane.panPriorPt = e.getPoint();
+//		LogMsgFmtln("scroll: mouse pressed: ", e.getPoint());
+		for (iMouseListener ml : mlChain) {
+			ml.mousePressed(e);
+		}
 	}
 	
+	// mouse listener
 	@Override
 	public void mouseReleased(MouseEvent e) {
 //		LogMsgFmtln("scroll: mouse released: ", e.getPoint());
+		for (iMouseListener ml : mlChain) {
+			ml.mouseReleased(e);
+		}
 	}
 	
 	@Override

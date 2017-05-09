@@ -124,26 +124,6 @@ class RegexExpress extends JPanel {
 		buttons1.add(makeButton(btn5, "Layer<br>Info"));
 		buttons1.add(makeButton(btn6, "Misc<br>Test"));
 		
-//		JButton btnB = new JButton("Zoom\nDn");
-//		btnB.addActionListener(btn2);
-//		buttons1.add(btnB);
-//
-//		JButton btnC = new JButton("Add");
-//		btnC.addActionListener(btn4);
-//		buttons1.add(btnC);
-//
-//		JButton btnD = new JButton("Layer\nInfo");
-//		btnD.addActionListener(btn5);
-//		buttons1.add(btnD);
-//
-//		JButton btnE = new JButton("View\nInfo");
-//		btnE.addActionListener(btn3);
-//		buttons1.add(btnE);
-//
-//		JButton btnF = new JButton("Test 1");
-//		btnF.addActionListener(btn6);
-//		buttons1.add(btnF);
-		
 		buttons1.setMaximumSize(new Dimension(FRAMEPREFWIDTH, 50));
 		buttons1.setPreferredSize(new Dimension(FRAMEPREFWIDTH, 50));
 		buttons1.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
@@ -156,6 +136,7 @@ class RegexExpress extends JPanel {
 		
 		buttons2.add(makeButton(btn7, "Zoom<br>To Pt"));
 		buttons2.add(makeButton(btn8, "Zoom<br>Ctr'd"));
+		buttons2.add(makeButton(btn9, "Zoom<br>Window"));
 		
 		buttons2.setMaximumSize(new Dimension(FRAMEPREFWIDTH, 50));
 		buttons2.setPreferredSize(new Dimension(FRAMEPREFWIDTH, 50));
@@ -244,6 +225,8 @@ class RegexExpress extends JPanel {
 	// zoom center on dwg point
 	private ActionListener btn8 = actionEvent ->
 			regexLayerPane.zoomCenteredDwgCoord(1.0, CROSSORIGINPTS[3]);
+	
+	private ActionListener btn9 = actionEvent -> regexLayerPane.zoomWindow();
 	
 	private ActionListener btn5 = actionEvent -> LogMsgln(regexLayerPane.toString());
 	
