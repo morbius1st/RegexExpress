@@ -149,8 +149,8 @@ class RegexExpress extends JPanel {
 		JPanel textAreas = new JPanel(new FlowLayout(FlowLayout.LEFT, 10,0));
 		
 		textAreaCoords = new JTextArea("coordinates");
-		textAreaCoords.setMaximumSize(new Dimension(175, 25));
-		textAreaCoords.setPreferredSize(new Dimension(175, 25));
+		textAreaCoords.setMaximumSize(new Dimension(350, 25));
+		textAreaCoords.setPreferredSize(new Dimension(350, 25));
 		textAreaCoords.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5 ));
 		
 		textAreaZmFactor = new JTextArea("coordinates");
@@ -226,7 +226,7 @@ class RegexExpress extends JPanel {
 	private ActionListener btn8 = actionEvent ->
 			regexLayerPane.zoomCenteredDwgCoord(1.0, CROSSORIGINPTS[3]);
 	
-	private ActionListener btn9 = actionEvent -> regexLayerPane.zoomWindow();
+	private ActionListener btn9 = actionEvent -> regexLayerPane.windowZoom();
 	
 	private ActionListener btn5 = actionEvent -> LogMsgln(regexLayerPane.toString());
 	

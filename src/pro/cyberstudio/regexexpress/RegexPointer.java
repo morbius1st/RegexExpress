@@ -6,7 +6,7 @@ import java.awt.event.*;
 import javax.swing.*;
 
 import static pro.cyberstudio.regexexpress.Utility.*;
-import static pro.cyberstudio.regexexpress.RegexPointer.PointerModes.*;
+import static pro.cyberstudio.regexexpress.Utility.DragModes.*;
 
 /**
  * @author jeffs
@@ -23,12 +23,12 @@ class RegexPointer extends JPanel implements Scrollable, iRxLayer, iMMListener {
 	private static JScrollBar hScrollBar;
 	
 	private static Point cursorPoint = new Point();
+	private static Point anchorPoint = new Point();
 	
-	enum PointerModes {NONE, XHAIRS, PANNING, WINDOW, SELECTION }
-	
-	private static PointerModes pointerMode = XHAIRS;
+	private static DragModes dragMode = XHAIRS;
 	
 	private static Color XHAIRCOLOR = Color.BLUE;
+	private static Color WINBOXCOLOR = Color.GREEN;
 	private static Color SELECTIONBOXCOLOR = Color.CYAN;
 	
 	
@@ -58,32 +58,58 @@ class RegexPointer extends JPanel implements Scrollable, iRxLayer, iMMListener {
 	}
 	
 	void setPointerModeWindow() {
-		pointerMode = WINDOW;
+		dragMode = WINDOW;
 	}
 	
 	void setPointerModeXhairs() {
-		pointerMode = XHAIRS;
+		dragMode = XHAIRS;
+	}
+	
+	void setWindowAnchorPoint(Point pt) {
+		anchorPoint = pt;
 	}
 	
 	@Override
 	public void paint(Graphics g) {
 		super.paint(g);
 		
-		switch (pointerMode) {
+		switch (dragMode) {
 			case XHAIRS:
 				if (cursorPoint == null) {
 					return;
 				}
 				
-				g.setColor(XHAIRCOLOR);
-				// draw cursor lines
-				g.drawLine(0, cursorPoint.y, this.getWidth(), cursorPoint.y);
-				g.drawLine(cursorPoint.x, 0, cursorPoint.x, this.getHeight());
+				drawCursor(g);
+				
+//				g.setColor(XHAIRCOLOR);
+//				// draw cursor lines
+//				g.drawLine(0, cursorPoint.y, this.getWidth(), cursorPoint.y);
+//				g.drawLine(cursorPoint.x, 0, cursorPoint.x, this.getHeight());
 				break;
 			case WINDOW:
+				drawCursor(g);
+				// draw a rectangle
+				// fixed corner = anchorPoint
+				g.setColor(WINBOXCOLOR);
+				
+				g.drawRect(anchorPoint.x, anchorPoint.y,
+						cursorPoint.x - anchorPoint.x,
+						cursorPoint.y - anchorPoint.y);
+				
 				break;
 		}
 		
+	}
+	
+	void drawCursor(Graphics g) {
+		if (cursorPoint == null) {
+			return;
+		}
+		
+		g.setColor(XHAIRCOLOR);
+		// draw cursor lines
+		g.drawLine(0, cursorPoint.y, this.getWidth(), cursorPoint.y);
+		g.drawLine(cursorPoint.x, 0, cursorPoint.x, this.getHeight());
 	}
 	
 	@Override
@@ -96,6 +122,7 @@ class RegexPointer extends JPanel implements Scrollable, iRxLayer, iMMListener {
 	// required for mouse motion
 	@Override
 	public void mouseDragged(MouseEvent e) {
+		
 		updateCursor(e.getPoint());
 	}
 

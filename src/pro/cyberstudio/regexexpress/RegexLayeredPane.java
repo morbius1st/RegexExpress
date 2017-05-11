@@ -1,4 +1,6 @@
 package pro.cyberstudio.regexexpress;
+import com.sun.javafx.iio.common.ScalerFactory;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
@@ -6,9 +8,10 @@ import java.util.*;
 
 import javax.swing.*;
 
-import static pro.cyberstudio.regexexpress.RegexLayeredPane.dragMode.pan;
-import static pro.cyberstudio.regexexpress.RegexLayeredPane.dragMode.window;
+import sun.rmi.runtime.Log;
+
 import static pro.cyberstudio.regexexpress.Utility.*;
+import static pro.cyberstudio.regexexpress.Utility.DragModes.*;
 
 
 /**
@@ -49,14 +52,10 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 	private static final double ZOOMWHEELRATIOIN = 1 / ZOOMWHEELRATIOOUT;
 	private static final double ZOOMRATIOINOUT = 1.5;
 	
-//	static boolean inPanningMode = true;
-
-	enum dragMode {pan, window, line; }
+	DragModes dragMode = PAN;
 	
-	dragMode currentDragMode = pan;
-	
-	static Point panPriorPt = new Point(0, 0);
-	Point winCornerPt = new Point();
+	static Point anchorPoint = new Point(0, 0);
+	static Point winCornerPt = new Point();
 	
 	// private constructor to prevent creating
 	// an instance of this class
@@ -109,6 +108,7 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 		rxPointer.setVisible(true);
 		rxPointer.setName("pointer");
 		rxPointer.setPreferredSize(layerSize);
+		rxPointer.setPointerModeXhairs();
 		add(rxPointer, (Integer) (POINTER_LAYER));
 
 		rxBackground.setBackground(Color.BLACK);
@@ -284,9 +284,48 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 		
 		zoom(zRatio, vpPoint, x, y);
 	}
-	
+
 	void zoomWindow() {
-		currentDragMode = window;
+		// got corners of zoom window
+//		RegexExpress.textAreaCoords.setText("start: " +
+//				dispVal(anchorPoint) + "  end: " +
+//				dispVal(winCornerPt));
+		
+		Point visRectCorner = addToPoint(getVisibleRect().getLocation(),
+				getVisibleRect().width, getVisibleRect().height);
+		
+//		LogMsgFmtln("vis rect bounds: ", getVisibleRect().getBounds());
+//		LogMsgFmtln("anchor pt: ", anchorPoint);
+//		LogMsgFmtln("wincornerpt: ", winCornerPt);
+		
+		double viewportDiagonal =
+				calcWindowDiagonal(getVisibleRect().getLocation(),visRectCorner);
+		double zoomWindowDiagonal = calcWindowDiagonal(anchorPoint, winCornerPt);
+		RegexExpress.textAreaCoords.setText(viewportDiagonal + " vs " + zoomWindowDiagonal);
+		
+//		LogMsgFmtln("vis rect loc: ", dispVal(getVisibleRect().getLocation()));
+//		LogMsgFmtln("vis rect alt corner: ", dispVal(visRectCorner));
+		LogMsgFmtln("zoom win corner: ", dispVal(anchorPoint));
+		LogMsgFmtln("zoom win alt corner: ", dispVal(winCornerPt));
+		
+		double scaleRatio =  viewportDiagonal / zoomWindowDiagonal;
+
+		Point center = new Point(anchorPoint.x - (anchorPoint.x - winCornerPt.x) / 2,
+				anchorPoint.y  - (anchorPoint.y - winCornerPt.y) / 2);
+				
+		LogMsgFmtln("z factor| ", dispVal(zoomFactor));
+		LogMsgFmtln("z ratio| ", scaleRatio);
+		LogMsgFmtln("center| ", dispVal(center));
+		LogMsgFmtln("center to scn| ", dispVal(calcScnPtFromLayPt(center)));
+		LogMsgFmtln("center to lay| ", dispVal(calcLayPtFromScnPt(center)));
+		
+//		zoomAboutPoint(scaleRatio, center);
+		zoomAboutPoint(2.0, center);
+	
+	}
+	
+	double calcWindowDiagonal(Point p1, Point p2) {
+		return Math.hypot(p1.x - p2.x, p1.y - p2.y);
 	}
 	
 	private void zoom(double zRatio, Point vpPoint, int vpOffsetX, int vpOffsetY) {
@@ -329,7 +368,11 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 		
 		positionViewport(new Point(getVisibleRect().x + x, getVisibleRect().y + y), 0, 0);
 	}
-
+	
+	void windowZoom() {
+		dragMode = STARTWINDOW;
+	}
+	
 	private void setZoomRatio(double zRatio) {
 		
 		zoomFactor *= zRatio;
@@ -399,11 +442,14 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 		// positive = dn
 		// negative = up
 		
-		if (e.getWheelRotation() < 0)
+		if (e.getWheelRotation() < 0) {
+//			LogMsgFmtln("zoom in| factor| ", ZOOMWHEELRATIOOUT + " @ " + dispVal(e.getPoint()));
 			zoomAboutPoint(ZOOMWHEELRATIOOUT, e.getPoint());
-		else
+		} else {
+//			LogMsgFmtln("zoom out| factor| ", ZOOMWHEELRATIOOUT + " @ " + dispVal(e.getPoint()));
 			zoomAboutPoint(ZOOMWHEELRATIOIN, e.getPoint());
-
+		}
+		
 		rxPointer.updateCursor(getMousePosition());
 	}
 	
@@ -412,29 +458,37 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 	
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		switch (currentDragMode) {
-			case pan:
-				Point newPt = subtractPoints(panPriorPt, e.getPoint());
-				panPriorPt = addPoints(e.getPoint(), newPt);
+		switch (dragMode) {
+			case PAN:
+				Point newPt = subtractPoints(anchorPoint, e.getPoint());
+				anchorPoint = addPoints(e.getPoint(), newPt);
 				newPt = addPoints(getVisibleRect().getLocation(), newPt);
 				positionViewport(newPt, 0, 0);
 				break;
-			case window:
-				winCornerPt = e.getPoint();
-				break;
-			case line:
-				break;
 			}
 	}
-	
+
 	@Override
 	public void mousePressed(MouseEvent e) {
-		panPriorPt = e.getPoint();
+		anchorPoint = e.getPoint();
+		if (dragMode == STARTWINDOW) {
+			dragMode = WINDOW;
+			rxPointer.setPointerModeWindow();
+			rxPointer.setWindowAnchorPoint(anchorPoint);
+		}
 	}
 	
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		currentDragMode = pan;
+		
+		if (dragMode == WINDOW) {
+			dragMode = PAN;
+			rxPointer.setPointerModeXhairs();
+			rxPointer.repaint();
+			winCornerPt = e.getPoint();
+			
+			zoomWindow();
+		}
 	
 	}
 	

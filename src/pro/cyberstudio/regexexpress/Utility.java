@@ -1,14 +1,12 @@
 package pro.cyberstudio.regexexpress;
 
-import com.sun.istack.internal.*;
-
 import org.jetbrains.annotations.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
 
-import pro.cyberstudio.regexexpress.RegexPointer.PointerModes;
+//import pro.cyberstudio.regexexpress.RegexPointer.PointerModes;
 
 import static pro.cyberstudio.regexexpress.Utility.viewSizeMask.*;
 
@@ -28,7 +26,7 @@ class Utility {
 	}
 
 	static Point addToPoint(Point p1, int x, int y) {
-		return new Point(p1.x + 1, p1.y + y);
+		return new Point(p1.x + x, p1.y + y);
 	}
 	
 	
@@ -62,9 +60,9 @@ class Utility {
 		return (p1.y == p2.y);
 	}
 	
+	enum DragModes {NONE, XHAIRS, PAN, STARTWINDOW, WINDOW, SELECTION, LINE }
 	
-	
-	enum viewSizeMask { min(1), perf(2), max(4), size(8), bounds(16);
+	enum viewSizeMask { MIN(1), PERF(2), MAX(4), SIZE(8), BOUNDS(16);
 		int value;
 		viewSizeMask(int val) {
 			value = (byte) val;
@@ -84,27 +82,27 @@ class Utility {
 	static String viewSizes(Component c, int which) {
 		StringBuilder sb = new StringBuilder();
 		
-		if ((which & min.value) > 0) {
+		if ((which & MIN.value) > 0) {
 			sb.append("  Min Size: ").append(dispVal(c.getMinimumSize()));
 			sb.append("\n");
 		}
 		
-		if ((which & perf.value) > 0) {
+		if ((which & PERF.value) > 0) {
 			sb.append(" Pref Size: ").append(dispVal(c.getPreferredSize()));
 			sb.append("\n");
 		}
 		
-		if ((which & max.value) > 0) {
+		if ((which & MAX.value) > 0) {
 			sb.append("  Max Size: ").append(dispVal(c.getMaximumSize()));
 			sb.append("\n");
 		}
 		
-		if ((which & size.value) > 0) {
+		if ((which & SIZE.value) > 0) {
 			sb.append("      Size: ").append(dispVal(c.getSize()));
 			sb.append("\n");
 		}
 		
-		if ((which & bounds.value) > 0) {
+		if ((which & BOUNDS.value) > 0) {
 			sb.append("    Bounds: ").append(dispVal(c.getBounds()));
 			sb.append("\n");
 		}
