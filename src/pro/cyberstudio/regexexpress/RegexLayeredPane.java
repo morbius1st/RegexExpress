@@ -1,5 +1,4 @@
 package pro.cyberstudio.regexexpress;
-import com.sun.javafx.iio.common.ScalerFactory;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -7,8 +6,6 @@ import java.awt.geom.*;
 import java.util.*;
 
 import javax.swing.*;
-
-import sun.rmi.runtime.Log;
 
 import static pro.cyberstudio.regexexpress.Utility.*;
 import static pro.cyberstudio.regexexpress.Utility.DragModes.*;
@@ -356,15 +353,19 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 	}
 	
 	// move to a point (layer type) coordinates
-	void moveToPoint(Point drawingCoord) {
-		
-		Point newPoint = calcScnPtFromLayPt(drawingCoord);
+	void moveToPoint2(Point drawingCoord) {
+		moveToPoint(calcScnPtFromLayPt(drawingCoord));
+	}
+	
+	// move to a point (screen type) coordinates
+	void moveToPoint(Point screenCoord) {
+	
 		Point existPoint = new Point(
 				getVisibleRect().x + getVisibleRect().width/2,
 				getVisibleRect().y + getVisibleRect().height/2);
 		
-		int x = newPoint.x - existPoint.x;
-		int y = newPoint.y - existPoint.y;
+		int x = screenCoord.x - existPoint.x;
+		int y = screenCoord.y - existPoint.y;
 		
 		positionViewport(new Point(getVisibleRect().x + x, getVisibleRect().y + y), 0, 0);
 	}
@@ -501,20 +502,17 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 //		revalidate();
 	}
 	
+	// mouse clicked - point provided is a screen point (scaled)
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		LogMsgFmtln("lay pane: ", "mouse clicked");
-		LogMsgFmtln("e point: ", e.getPoint());
+		LogMsgFmtln("event point: ", e.getPoint());
 		
-		Point mousePoint_getXgetY = new Point(e.getX(), e.getY());
 		Point mouseLayPoint = calcLayPtFromScnPt(new Point(e.getX(), e.getY()));
-		Point mouseScnPoint = calcScnPtFromLayPt(new Point(e.getX(), e.getY()));
 
 		RegexExpress.textAreaCoords.setText(dispVal(mouseLayPoint));
 
-		LogMsgFmtln("comp point: ", mousePoint_getXgetY);
 		LogMsgFmtln("lay point: ", mouseLayPoint);
-		LogMsgFmtln("scn point: ", mouseScnPoint);
 	}
 
 	@Override

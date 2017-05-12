@@ -220,7 +220,7 @@ class RegexExpress extends JPanel {
 
 	// zoom to a point
 	private ActionListener btn7 = actionEvent ->
-			regexLayerPane.moveToPoint(CROSSORIGINPTS[3]);
+			regexLayerPane.moveToPoint2(CROSSORIGINPTS[3]);
 	
 	// zoom center on dwg point
 	private ActionListener btn8 = actionEvent ->
