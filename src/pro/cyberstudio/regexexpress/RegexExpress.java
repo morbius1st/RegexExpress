@@ -41,8 +41,11 @@ class RegexExpress extends JPanel {
 	private static final int FRAMEPREFWIDTH = LAYPANEX - 250;
 	private static final int FRAMEPREFHEIGHT = LAYPANEY - 150;
 
-	private static final int SCROLLPREFWIDTH = LAYPANEX;
-	private static final int SCROLLPREFHEIGHT = LAYPANEY;
+//	private static final int SCROLLPREFWIDTH = LAYPANEX;
+//	private static final int SCROLLPREFHEIGHT = LAYPANEY;
+
+	private static final int SCROLLPREFWIDTH = LAYERX;
+	private static final int SCROLLPREFHEIGHT = LAYERY;
 	
 	static final int IMAGEPOSX = ((LAYPANEX / 2) - 50) + LAYPANEOFFSETX;
 	static final int IMAGEPOSY = ((LAYPANEY / 2) - 50) + LAYPANEOFFSETY;
