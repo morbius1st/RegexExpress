@@ -2,7 +2,7 @@ package pro.cyberstudio.regexexpress;
 
 import java.awt.*;
 import javax.swing.*;
-import static pro.cyberstudio.regexexpress.RegexExpress.*;
+
 import static pro.cyberstudio.regexexpress.Utility.*;
 
 /**
@@ -16,22 +16,11 @@ import static pro.cyberstudio.regexexpress.Utility.*;
 
 class RegexLayer extends JPanel implements Scrollable, iRxLayer {
 	
-	static int idx = 0;
-	int position;
-	int offset = 0;
+	private static int idx = 1;
+	private int layerIndex;
+	private int offset = 0;
 	
-//	int origin1x = CROSSORIGINX;
-//	int origin1y = CROSSORIGINY;
-//	int offsetx = LAYPANEX - (origin1x * 2);
-//	int offsety = LAYPANEY - (origin1y * 2);
-//
-//	private Point[] ctrPoints = {new Point(origin1x, origin1y),
-//		new Point(origin1x + offsetx, origin1y),
-//		new Point(origin1x, origin1y + offsety),
-//		new Point(origin1x + offsetx, origin1y + offsety),
-//	};
-	
-	static Color[] colors = {Color.LIGHT_GRAY,
+	static private Color[] colors = {Color.LIGHT_GRAY,
 			Color.RED,
 			Color.MAGENTA,
 			Color.GREEN,
@@ -42,13 +31,11 @@ class RegexLayer extends JPanel implements Scrollable, iRxLayer {
 	
 	private double zoomFactor = 1.0;
 	
-//	AffineTransform afInv = new AffineTransform();
-	
 	
 	RegexLayer() {
 		super();
-		position = idx++;
-		offset = position * 10;
+		layerIndex = idx++;
+		offset = (layerIndex - 1) * 10;
 		setAutoscrolls(true);
 		setAlignmentX(CENTER_ALIGNMENT);
 		setAlignmentX(CENTER_ALIGNMENT);
@@ -74,34 +61,73 @@ class RegexLayer extends JPanel implements Scrollable, iRxLayer {
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
+		
+		int lineLength = 30;
+		int lineLenHalf = lineLength/2;
+		int textOffsetHoriz = 10;
+		int textOffsetVert = 15 + (7 * (layerIndex-1));
+		
+		Font font = new Font("Verdana", Font.PLAIN, 10);
+		
+		Point pt = new Point(0, 0);
 
 		Graphics2D g2 = (Graphics2D) g;
-
-		int x = IMAGEPOSX + offset;
-		int y = IMAGEPOSY + offset;
 		
-		int lineLength = 40;
-		int lineLenHalf = lineLength/2;
-		int textOffset = 7;
-
-		g2.setColor(Color.BLUE);
-		g2.drawString("this is a scroll layer: " + getName(), x + 5, y + 20);
-		g2.setColor(colors[position]);
-		g2.drawRect( x, y , 160, 30);
-		
-		
-		for (int i = 0; i < CROSSORIGINPTS.length; i++) {
-			// line color
-			g2.setColor(colors[position]);
+		if (layerIndex == 1) {
+//			LogMsgFmtln("layer index| ", layerIndex
+//					+ "  **size| " + dispVal(getSize())
+//					+ "  **min| " + dispVal(getMinimumSize())
+//					+ "  **max| " + dispVal(getMaximumSize())
+//					+ "  **pref scrol vp| " + dispVal(getPreferredScrollableViewportSize())
+//					+ "  **pref| " + dispVal(getPreferredSize()));
 			
-			Point pt = new Point(CROSSORIGINPTS[i].x + offset, CROSSORIGINPTS[i].y + offset);
+			LogMsgFmtln("layer index| ", layerIndex
+					+ "  min width| " + getMinimumSize().width
+					+ "  min height| " + getMinimumSize().height);
 			
-			g2.drawLine(pt.x - lineLenHalf, pt.y, pt.x + lineLenHalf, pt.y);
-			g2.drawLine(pt.x, pt.y - lineLenHalf, pt.x, pt.y + lineLenHalf);
+			g2.setColor(colors[layerIndex-1]);
+			g2.setFont(font);
 			
-			g2.setColor(colors[position]);
-			g2.drawString(dispVal(pt), pt.x + textOffset, pt.y - textOffset);
+			for (; pt.x < getMinimumSize().width; pt.x += 100) {
+				for (; pt.y < getMinimumSize().height; pt.y += 100) {
+					
+					// draw the horizontal ine
+					g2.drawLine(pt.x - lineLenHalf, pt.y, pt.x + lineLenHalf, pt.y);
+					
+					// draw the vertical line
+					g2.drawLine(pt.x, pt.y - lineLenHalf, pt.x, pt.y + lineLenHalf);
+					
+					
+					g2.drawString("x: " + pt.x, pt.x + textOffsetHoriz, pt.y + textOffsetVert);
+					g2.drawString("y: " + pt.y, pt.x + textOffsetHoriz, pt.y + textOffsetVert + 10);
+				}
+				pt.y = 0;
+			}
 		}
+
+//		int x = IMAGEPOSX + offset;
+//		int y = IMAGEPOSY + offset;
+//
+
+//
+//		g2.setColor(Color.BLUE);
+//		g2.drawString("this is a scroll layer: " + getName(), x + 5, y + 20);
+//		g2.setColor(colors[layerIndex-1]);
+//		g2.drawRect( x, y , 160, 30);
+//
+//
+//		for (int i = 0; i < CROSSORIGINPTS.length; i++) {
+//			// line color
+//			g2.setColor(colors[layerIndex-1]);
+//
+//			Point pt = new Point(CROSSORIGINPTS[i].x + offset, CROSSORIGINPTS[i].y + offset);
+//
+//			g2.drawLine(pt.x - lineLenHalf, pt.y, pt.x + lineLenHalf, pt.y);
+//			g2.drawLine(pt.x, pt.y - lineLenHalf, pt.x, pt.y + lineLenHalf);
+//
+//			g2.setColor(colors[layerIndex-1]);
+//			g2.drawString(dispVal(pt), pt.x + textOffset, pt.y - textOffset);
+//		}
 	}
 	
 	
