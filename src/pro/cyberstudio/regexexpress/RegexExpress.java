@@ -157,7 +157,8 @@ class RegexExpress extends JPanel {
 		buttons3.add(makeButton(btn2, "Zoom In<br>New"));
 		buttons3.add(makeButton(btn32, "Zoom Ratio<br>x 2.0"));
 		buttons3.add(makeButton(btn33, "Zoom to<br>500x1000"));
-		buttons3.add(makeButton(btn9, "Zoom<br>Window"));
+		buttons3.add(makeButton(btn34, "Zoom<br>Window"));
+		buttons3.add(makeButton(btn35, "Zoom<br>Previous"));
 		
 		buttons3.setMaximumSize(new Dimension(FRAMEPREFWIDTH, 50));
 		buttons3.setPreferredSize(new Dimension(FRAMEPREFWIDTH, 50));
@@ -243,7 +244,11 @@ class RegexExpress extends JPanel {
 	private ActionListener btn33 = actionEvent ->
 			regexLayerPane.moveToPoint2_New(new Point(500, 1000));
 	
+	private ActionListener btn34 = actionEvent ->
+			regexLayerPane.startZoomWindow_New();
 	
+	private ActionListener btn35 = actionEvent ->
+			regexLayerPane.zoomPrevious_New();
 	
 	
 	
@@ -272,7 +277,6 @@ class RegexExpress extends JPanel {
 //	private ActionListener btn8 = actionEvent ->
 //			regexLayerPane.zoomCenteredDwgCoord(1.0, CROSSORIGINPTS[3]);
 	
-	private ActionListener btn9 = actionEvent -> regexLayerPane.startZoomWindow_New();
 	
 	private ActionListener btn5 = actionEvent -> LogMsgln(regexLayerPane.toString());
 	
