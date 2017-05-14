@@ -571,7 +571,10 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 	}
 	
 	void saveCurrentZoom() {
-		priorVPCornerPointScreen = viewport.getLocation();
+		priorVPCornerPointScreen = viewport.getViewPosition();
+		
+//		LogMsgFmtln("save zoom| viewport location| ", viewport.getLocation());
+//		LogMsgFmtln("save zoom| viewport Position| ", viewport.getViewPosition());
 
 	}
 	
