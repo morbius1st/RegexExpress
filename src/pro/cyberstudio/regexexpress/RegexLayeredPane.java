@@ -7,9 +7,6 @@ import java.util.*;
 
 import javax.swing.*;
 
-import javafx.embed.swing.JFXPanel;
-import sun.rmi.log.ReliableLog.LogFile;
-
 import static pro.cyberstudio.regexexpress.Utility.*;
 import static pro.cyberstudio.regexexpress.Utility.DragModes.*;
 
@@ -35,20 +32,24 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 	
 	// hold the actual instance
 	private static RegexLayeredPane me;
+	private static JViewport viewport;
 	private static RegexBackground rxBackground;
 	private static RegexPointer rxPointer;
 	private static RegexZero rxZero;
 	
 	private static viewSizeData viewSizeParams = new viewSizeData();
 	
-	AffineTransform aft = new AffineTransform();
+	AffineTransform aff = new AffineTransform();
 	
-	private double zoomFactor = 1.0;
-	private double zoomRatio = 1.0;
-	private double zoomMin = 0.16;
-	private double zoomMax = 12.0;
-//
+	private static double zoomFactor = 1.0;
+	private static double zoomRatio = 1.0;
+	private static double zoomMin = 0.16;
+	private static double zoomMax = 12.0;
 
+	private static Point priorScreenCoordinate;
+	private static double priorZoomRatio;
+	
+	
 //	private static final double ZOOMWHEELRATIOOUT = 1.2;
 	private static final double ZOOMWHEELRATIOOUT = 1.1;
 	private static final double ZOOMWHEELRATIOIN = 1 / ZOOMWHEELRATIOOUT;
@@ -57,7 +58,9 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 	DragModes dragMode = PAN;
 	
 	static Point anchorPoint = new Point(0, 0);
-	static Point winCornerPt = new Point();
+	static Point winCornerPoint = new Point();
+	
+	private static RegexLayer firstLayer = null;
 	
 	// private constructor to prevent creating
 	// an instance of this class
@@ -67,7 +70,9 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 		viewSizeParams.viewSize = new Dimension2dx(100, 100);
 		viewSizeParams.layerSize = new Dimension2dx(100, 100);
 		setName("RegexLayeredPane");
-		aft.setToScale(zoomFactor, zoomFactor);
+		
+		
+		aff.setToScale(zoomFactor, zoomFactor);
 		
 		RegexScroll.addMWL(this);
 		RegexScroll.addCL(this);
@@ -132,15 +137,22 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 		rxPointer.addMouseWheelListener(RegexExpress.regexScroll);
 		rxPointer.addMouseMotionListener(RegexExpress.regexScroll);
 		
+		viewport = ((JViewport) getParent());
+		
+		setZoomRatio_New(zoomFactor);
 		updateSize();
 	}
+	
+	void getLayerOneInfo() {
+		LogMsgln(firstLayer.toString());
+	}
+	
 
 	Component add(String layerName) {
 		RegexLayer layer = new RegexLayer();
-		
+		layer.setName(layerName);
 		layer.setMinimumSize(rxZero.getMinimumSize());
 		layer.setPreferredSize(rxZero.getMinimumSize());
-		layer.setName(layerName);
 		layer.setSize(getPreferredSize());
 		layer.setOpaque(false);
 		layer.setVisible(true);
@@ -148,6 +160,10 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 		
 		add(layer, (Integer) (layerTable.size() + 1));
 		layerTable.put(layerName, layer);
+		
+		if (firstLayer == null) {
+			firstLayer = layer;
+		}
 		
 		return layer;
 	}
@@ -186,7 +202,7 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 	}
 	
 	
-	void testVisRect() {
+	void listVisRect() {
 		// the corner of the rect as a point / integer
 		LogMsgFmtln("lay pane: vis rect: location| ", getVisibleRect().getLocation());
 		// same as location but as x & y values
@@ -204,102 +220,66 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 		
 	}
 	
-	private void getViewportRect() {
+	void listVisRect2() {
+		LogMsgFmtln("lay pane: vis rect:| ", getVisibleRect());
+		LogMsgFmtln("lay pane: vis rect: bounds| ", getVisibleRect().getBounds());
+	}
+	
+	private void listViewportRect() {
 
-		Point srcPt = new Point(RegexExpress.regexViewport.getViewRect().x, RegexExpress.regexViewport.getViewRect().y);
+		Point srcPt = new Point(viewport.getViewRect().x, viewport.getViewRect().y);
 		Point transPt = SwingUtilities.convertPoint(RegexExpress.regexScroll, srcPt, this);
 		
-		LogMsgln("vp  view rect: " + Utility.dispVal(RegexExpress.regexViewport.getViewRect()));
+		LogMsgln("vp  view rect: " + Utility.dispVal(viewport.getViewRect()));
 		LogMsgln("vp loc pt raw: " + dispVal(srcPt));
 		LogMsgln("vp loc pt adj: " + dispVal(transPt));
 		
-		LogMsgln("vp   vis rect: " + Utility.dispVal(RegexExpress.regexViewport.getVisibleRect()));
-		LogMsgln("vp    ext dim: " + Utility.dispVal(RegexExpress.regexViewport.getExtentSize()));
-		LogMsgln("vp to view co: " + Utility.dispVal(RegexExpress.regexViewport.toViewCoordinates(RegexExpress.regexViewport.getExtentSize())));
+		LogMsgln("vp   vis rect: " + Utility.dispVal(viewport.getVisibleRect()));
+		LogMsgln("vp    ext dim: " + Utility.dispVal(viewport.getExtentSize()));
+		LogMsgln("vp to view co: " + Utility.dispVal(viewport.toViewCoordinates(viewport.getExtentSize())));
 		LogMsgln("this vis rect: " + Utility.dispVal(getVisibleRect())); // yes
 		LogMsgln("this     size: " + Utility.dispVal(getSize()));  // no
 		LogMsgln("this    w x h: " + Utility.dispVal(getWidth(), getHeight()));  // no
 	}
-	
-	private Point calcLayPtFromScnPt(Point ptSrc) {
-		Point ptDest = new Point();
-		
-		try {
-			aft.inverseTransform(ptSrc, ptDest);
-		} catch (Exception e) {}
-		
-		return ptDest;
-	}
-	
-	private Point calcLayPtFromScnPt(int x, int y) {
-		return calcLayPtFromScnPt(new Point(x, y));
-	}
-	
-	private Point calcScnPtFromLayPt(Point ptSrc) {
-		Point ptDest = new Point();
-		
-		try {
-			aft.transform(ptSrc, ptDest);
-		} catch (Exception e) {}
-		
-		return ptDest;
-	}
-	
-	private Point calcScnPtFromLayPt(int x, int y) {
-		return calcScnPtFromLayPt(new Point(x, y));
-	}
-	
-	void zoomOut() {
-		int x = (getVisibleRect().width) / 2;
-		int y = (getVisibleRect().height) / 2;
-		
-		Point vpCenter = new Point(getVisibleRect().x + x,
-				getVisibleRect().y + y);
-		
-		zoomCentered(ZOOMRATIOINOUT, vpCenter);
-	}
-	
-	
-	void zoomIn() {
-		int x = (getVisibleRect().width) / 2;
-		int y = (getVisibleRect().height) / 2;
-		
-		Point vpCenter = new Point(getVisibleRect().x + x,
-				getVisibleRect().y + y);
-		
-		zoomCentered(1 / ZOOMRATIOINOUT, vpCenter);
-	}
-	
-	
-	void zoomCenteredDwgCoord(double zRatio, Point zoomCenterDwgCoord) {
-		zoomCentered(zRatio, calcScnPtFromLayPt(zoomCenterDwgCoord));
-	}
-	
-	
-	// zoom centerered in viewport (screen) coordinates
-	void zoomCentered(double zRatio, Point zoomCenter) {
+//
+//	void zoomOut() {
+//		int x = (getVisibleRect().width) / 2;
+//		int y = (getVisibleRect().height) / 2;
+//
+//		Point vpCenter = new Point(getVisibleRect().x + x,
+//				getVisibleRect().y + y);
+//
+//		zoomCentered(ZOOMRATIOINOUT, vpCenter);
+//	}
+//
+//
+//	void zoomIn() {
+//		int x = (getVisibleRect().width) / 2;
+//		int y = (getVisibleRect().height) / 2;
+//
+//		Point vpCenter = new Point(getVisibleRect().x + x,
+//				getVisibleRect().y + y);
+//
+//		zoomCentered(1 / ZOOMRATIOINOUT, vpCenter);
+//	}
 
-		int x = (getVisibleRect().width) / 2;
-		int y = (getVisibleRect().height) / 2;
-		
-		zoom(zRatio, zoomCenter, x, y);
-	}
+
+//	void zoomCenteredDwgCoord(double zRatio, Point zoomCenterDwgCoord) {
+//		zoomCentered(zRatio, calcScnPtFromLayerPt(zoomCenterDwgCoord));
+//	}
+//
+//
+//	// zoom centerered in viewport (screen) coordinates
+//	void zoomCentered(double zRatio, Point zoomCenter) {
+//
+//		int x = (getVisibleRect().width) / 2;
+//		int y = (getVisibleRect().height) / 2;
+//
+//		zoom(zRatio, zoomCenter, x, y);
+//	}
 	
-	// zoom about a point (screen) coordinates
-	private void zoomAboutPoint(double zRatio, Point vpPoint) {
-	
-//		LogMsgFmtln("zoomAboutPt| ratio| ", zRatio + "  point| " + dispVal(vpPoint));
-		
-		int x = vpPoint.x - getVisibleRect().x;
-		int y = vpPoint.y - getVisibleRect().y;
-		
-		zoom(zRatio, vpPoint, x, y);
-	}
-	
-	void windowZoom() {
-		dragMode = STARTWINDOW;
-	}
-	
+
+
 	void zoomWindow() {
 		// got corners of zoom window
 		// points are in screen (scaled) coordinates
@@ -316,8 +296,8 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 
 		// determine scale ratio - use the smaller of the comparison of
 		// the sides
-		int winWidth = Math.abs(anchorPoint.x - winCornerPt.x);
-		int winHeight = Math.abs(anchorPoint.y - winCornerPt.y);
+		int winWidth = Math.abs(anchorPoint.x - winCornerPoint.x);
+		int winHeight = Math.abs(anchorPoint.y - winCornerPoint.y);
 		
 		double ratioX = getVisibleRect().getWidth() / winWidth;
 		double ratioY = getVisibleRect().getHeight() / winHeight;
@@ -328,13 +308,13 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 				getVisibleRect().getHeight() / winHeight);
 		
 		
-		Point center = new Point(anchorPoint.x - (anchorPoint.x - winCornerPt.x) / 2,
-				anchorPoint.y  - (anchorPoint.y - winCornerPt.y) / 2);
+		Point center = new Point(anchorPoint.x - (anchorPoint.x - winCornerPoint.x) / 2,
+				anchorPoint.y  - (anchorPoint.y - winCornerPoint.y) / 2);
 		
 		LogMsgFmtln("anchor pt: ", anchorPoint);
-		LogMsgFmtln("wincornerpt: ", winCornerPt);
+		LogMsgFmtln("wincornerpt: ", winCornerPoint);
 		LogMsgFmtln("center| ", center);
-//		LogMsgFmtln("center to lay| ", dispVal(calcLayPtFromScnPt(center)));
+//		LogMsgFmtln("center to lay| ", dispVal(calcLayerPtFromScnPt(center)));
 //		LogMsgFmtln("z ratio| ", scaleRatio);
 //		LogMsgFmtln("z factor| ", dispVal(zoomFactor));
 //		LogMsgFmtln("z factor final| ", dispVal(zoomFactor * scaleRatio));
@@ -343,52 +323,32 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 //		if (scaleRatio > 2.0)
 //			scaleRatio = 1.9;
 
-		Point dwgCoord = calcLayPtFromScnPt(center);
+		Point dwgCoord = calcLayerPtFromScnPt(center);
 		
-		aft.transform(dwgCoord, center);
-//		center = calcScnPtFromLayPt(center);
+		aff.transform(dwgCoord, center);
+//		center = calcScnPtFromLayerPt(center);
 		
 		moveToPoint(center);
-		zoomAboutPoint(scaleRatio, center);
+		zoomAboutPoint_New(scaleRatio, center);
 	
-	}
-	
-	double calcWindowDiagonal(Point p1, Point p2) {
-		return Math.hypot(p1.x - p2.x, p1.y - p2.y);
 	}
 	
 	private void zoom(double zRatio, Point vpPoint, int vpOffsetX, int vpOffsetY) {
-		Point drawingCoord = calcLayPtFromScnPt(vpPoint);
+		Point drawingCoord = calcLayerPtFromScnPt(vpPoint);
 		setZoomRatio(zRatio);
-		Point zoomedCoord = calcScnPtFromLayPt(drawingCoord);
+		Point zoomedCoord = calcScnPtFromLayerPt(drawingCoord);
 		
-		positionViewport(zoomedCoord, vpOffsetX, vpOffsetY);
+		positionViewport_New(zoomedCoord, vpOffsetX, vpOffsetY);
 		
 		zoomViews();
 		
-//		positionViewport(zoomedCoord, vpOffsetX, vpOffsetY);
+//		positionViewport_New(zoomedCoord, vpOffsetX, vpOffsetY);
 	}
 	
-	private void positionViewport(Point zoomedCoord, Point vpOffset) {
-		positionViewport(zoomedCoord, vpOffset.x, vpOffset.y);
-	}
-	
-	private void positionViewport(Point zoomedCoord, int vpOffsetX, int vpOffsetY) {
-		
-		int vpX = zoomedCoord.x - vpOffsetX;
-		int vpY = zoomedCoord.y - vpOffsetY;
-		
-		vpX = vpX > 0 ? vpX : 0;
-		vpY = vpY > 0 ? vpY : 0;
-		
-		Point vpCorner = new Point(vpX, vpY);
-		
-		RegexExpress.regexViewport.setViewPosition(vpCorner);
-	}
-	
+
 	// move to a point (layer type) coordinates
 	void moveToPoint2(Point drawingCoord) {
-		moveToPoint(calcScnPtFromLayPt(drawingCoord));
+		moveToPoint(calcScnPtFromLayerPt(drawingCoord));
 	}
 	
 	// move to a point (screen type) coordinates
@@ -401,7 +361,7 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 		int x = screenCoord.x - existPoint.x;
 		int y = screenCoord.y - existPoint.y;
 		
-		positionViewport(new Point(getVisibleRect().x + x, getVisibleRect().y + y), 0, 0);
+		positionViewport_New(new Point(getVisibleRect().x + x, getVisibleRect().y + y), 0, 0);
 	}
 
 	private void setZoomRatio(double zRatio) {
@@ -420,7 +380,7 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 			zoomRatio = zRatio;
 		}
 		
-		aft.setToScale(zoomFactor, zoomFactor);
+		aff.setToScale(zoomFactor, zoomFactor);
 		
 		RegexExpress.textAreaZmFactor.setText(dispZoom(zoomFactor));
 		
@@ -428,7 +388,7 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 	
 	private void zoomViews() {
 		Dimension viewSize = getZoomedViewSize();
-
+		
 		// set this (Layered Pane's) size
 		setPreferredSize(viewSize);
 		revalidate();
@@ -452,7 +412,7 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 		viewSizeParams.viewSize = viewSizeParams.viewSize.multiply(zoomRatio);
 		
 		LogMsgFmtln("getZoomedViewSize| viewsize 1| ", dispVal(viewSizeParams.viewSize));
-
+		
 		Dimension2dx result = new Dimension2dx();
 		Dimension2dx proposed = viewSizeParams.viewSize.clone();
 		Dimension2dx viewport = Dimension2dx.toDimension2dx(getParent().getSize());
@@ -488,14 +448,217 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 		return result.toDimension();
 	}
 	
+	
+	
+	
+	
+	
+	
+	// ***** new **********************************************************
+	
+	// ***** zoom functions ***********************************************
+	// zoom to a user selected window
+	void zoomWindow_New() {
+		// window corner points set
+		// points are in screen coordinates
+		// anchorPoint is the first point entered
+		// winCornerPt is the opposite corner
+		
+		// determine the scale ratio - the smaller of the ratios of the
+		// comparison sides to the visible rectangle versus user
+		// selected window
+		int zoomWindowWidth = Math.abs(anchorPoint.x - winCornerPoint.x);
+		int zoomWindowHeight = Math.abs(anchorPoint.y - winCornerPoint.y);
+		
+		double zRatio = Math.min(getVisibleRect().getWidth() / zoomWindowWidth,
+				getVisibleRect().getHeight() / zoomWindowHeight);
+		
+		
+		Point vpCenterScreen = new Point(anchorPoint.x - (anchorPoint.x - winCornerPoint.x) / 2,
+				anchorPoint.y  - (anchorPoint.y - winCornerPoint.y) / 2);
+		
+//		Point vpCenterLayer = calcLayerPtFromScnPt(vpCenterScreen);
+		
+		zoomAboutPoint_New(zRatio, vpCenterScreen);
+		
+	}
+	
+	
+	
+	// zoom about a point (screen) coordinates
+	private void zoomAboutPoint_New(double zRatio, Point vpPtScreen) {
+		
+		int x = vpPtScreen.x - getVisibleRect().x;
+		int y = vpPtScreen.y - getVisibleRect().y;
+		
+		zoom_New(zRatio, vpPtScreen, x, y);
+	}
+	
+	void zoomOut_New() {
+		Point vpCenterScreen = new Point((int) getVisibleRect().getCenterX(),
+				(int) getVisibleRect().getCenterY());
+		Point vpCenterLayer = calcLayerPtFromScnPt(vpCenterScreen);
+		
+		setZoomRatio_New(0.5);
+		moveToPoint2_New(vpCenterLayer);
+	}
+	
+
+	void zoomIn_New() {
+		Point vpCenterScreen = new Point((int) getVisibleRect().getCenterX(),
+				(int) getVisibleRect().getCenterY());
+		Point vpCenterLayer = calcLayerPtFromScnPt(vpCenterScreen);
+		
+//		LogMsgFmtln("vis rect| ", dispVal(getVisibleRect())
+//			+ " centerX| " + getVisibleRect().getCenterX()
+//			+ " centerY| " + getVisibleRect().getCenterY());
+//		LogMsgFmtln("scn coord| ", vpCenterScreen);
+//		LogMsgFmtln("dwg coord| ", vpCenterLayer);
+		
+		setZoomRatio_New(2.0);
+		moveToPoint2_New(vpCenterLayer);
+		
+	}
+	
+	private void zoom_New(double zRatio, Point vpPoint, int vpOffsetX, int vpOffsetY) {
+		Point layerCoord = calcLayerPtFromScnPt(vpPoint);
+
+		setZoomRatio_New(zRatio);
+
+		Point screenCoord = calcScnPtFromLayerPt(layerCoord);
+		
+		positionViewport_New(screenCoord, vpOffsetX, vpOffsetY);
+	}
+	
+	
+	// ***** display position functions ***********************************************
+	void moveToPoint2_New(Point layerCoord) {
+		LogMsgFmtln("move 2| lay pt| ", layerCoord);
+		moveToPoint_New(calcScnPtFromLayerPt(layerCoord));
+	}
+	
+	void moveToPoint_New(Point screenCoord) {
+		
+		int x = getVisibleRect().width / 2;
+		int y = getVisibleRect().height / 2;
+		
+//		LogMsgFmtln("move 2| vis rect| ", getVisibleRect());
+//		LogMsgFmtln("move 2| scn adj| ", dispVal(screenCoord)
+//				+ "  x| " + x
+//				+ "  y| " + y);
+		
+		positionViewport_New(screenCoord, x, y);
+	}
+	
+	// ***** display utility functions ***********************************************
+	void startZoomWindow_New() {
+		dragMode = STARTWINDOW;
+	}
+	
+	void setZoomRatio_New(double zRatio) {
+		
+		Dimension newSize = new Dimension((int) (getMinimumSize().getWidth() * zoomFactor * zRatio),
+				(int) (getMinimumSize().getHeight() * zoomFactor * zRatio));
+		
+		if (newSize.width < getVisibleRect().width ||
+				newSize.height < getVisibleRect().height) {
+			
+			// no size change
+			zRatio = 1.0;
+			newSize.width = getVisibleRect().width;
+			newSize.height = getVisibleRect().height;
+		}
+		
+		
+		zoomFactor *= zRatio;
+		aff.setToScale(zoomFactor, zoomFactor);
+
+		RegexExpress.textAreaZmFactor.setText(dispZoom(zoomFactor));
+		
+		setPreferredSize(newSize);
+		
+		// required to make sure that the size is current
+		setSize(newSize);
+		revalidate();
+		repaint();
+		
+		// parent is the viewport - required to update the
+		// view port and keep its size current
+		getParent().doLayout();
+		
+		for (int i = lowestLayer(); i <= highestLayer(); i++) {
+			Component[] comps = getComponentsInLayer(i);
+			if (comps.length > 0) {
+				for (Component c : comps) {
+					c.setSize(newSize);
+					((iRxLayer) c).setZoomScale(zoomFactor);
+					c.revalidate();
+					c.repaint();
+				}
+			}
+		}
+	}
+	
+	private void positionViewport_New(Point zoomedCoord, Point vpOffset) {
+		positionViewport_New(zoomedCoord, vpOffset.x, vpOffset.y);
+	}
+	
+	private void positionViewport_New(Point zoomedCoord, int vpOffsetX, int vpOffsetY) {
+		
+		int vpX = zoomedCoord.x - vpOffsetX;
+		int vpY = zoomedCoord.y - vpOffsetY;
+		
+		vpX = vpX > 0 ? vpX : 0;
+		vpY = vpY > 0 ? vpY : 0;
+		
+		Point vpCorner = new Point(vpX, vpY);
+		
+		// parent is the viewport
+		viewport.setViewPosition(vpCorner);
+
+//		RegexExpress.regexViewport.setViewPosition(vpCorner);
+	}
+	
+	// ***** zoom math functions ***********************************************
+	private Point calcLayerPtFromScnPt(Point ptSrc) {
+		Point ptDest = new Point();
+		
+		try {
+			aff.inverseTransform(ptSrc, ptDest);
+		} catch (Exception e) {}
+		
+		return ptDest;
+	}
+	
+	private Point calcLayerPtFromScnPt(int x, int y) {
+		return calcLayerPtFromScnPt(new Point(x, y));
+	}
+	
+	private Point calcScnPtFromLayerPt(Point ptSrc) {
+		Point ptDest = new Point();
+		
+		try {
+			aff.transform(ptSrc, ptDest);
+		} catch (Exception e) {}
+		
+		return ptDest;
+	}
+	
+	private Point calcScnPtFromLayerPt(int x, int y) {
+		return calcScnPtFromLayerPt(new Point(x, y));
+	}
+	
+	
+	
+	// ***** mouse functions ***********************************************
 	public void mouseWheelMoved(MouseWheelEvent e) {
 		// positive = dn
 		// negative = up
 		
 		if (e.getWheelRotation() < 0) {
-			zoomAboutPoint(ZOOMWHEELRATIOOUT, e.getPoint());
+			zoomAboutPoint_New(ZOOMWHEELRATIOOUT, e.getPoint());
 		} else {
-			zoomAboutPoint(ZOOMWHEELRATIOIN, e.getPoint());
+			zoomAboutPoint_New(ZOOMWHEELRATIOIN, e.getPoint());
 		}
 		
 		rxPointer.updateCursor(getMousePosition());
@@ -511,7 +674,7 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 				Point newPt = subtractPoints(anchorPoint, e.getPoint());
 				anchorPoint = addPoints(e.getPoint(), newPt);
 				newPt = addPoints(getVisibleRect().getLocation(), newPt);
-				positionViewport(newPt, 0, 0);
+				positionViewport_New(newPt, 0, 0);
 				break;
 			}
 	}
@@ -528,16 +691,14 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 	
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		
 		if (dragMode == WINDOW) {
 			dragMode = PAN;
 			rxPointer.setPointerModeXhairs();
 			rxPointer.repaint();
-			winCornerPt = e.getPoint();
+			winCornerPoint = e.getPoint();
 			
-			zoomWindow();
+			zoomWindow_New();
 		}
-	
 	}
 	
 	
@@ -552,14 +713,19 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 	// mouse clicked - point provided is a screen point (scaled)
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		LogMsgFmtln("lay pane: ", "mouse clicked");
-		LogMsgFmtln("event point: ", e.getPoint());
 		
-		Point mouseLayPoint = calcLayPtFromScnPt(new Point(e.getX(), e.getY()));
+		// determine the layer point coordinate from a screen coordinate
+		Point mouseLayPoint = calcLayerPtFromScnPt(new Point(e.getX(), e.getY()));
+		
+		// revert - calculate the layer coordinate from a drawing coordinate
+		Point mouseScnPoint = calcScnPtFromLayerPt(mouseLayPoint);
 
 		RegexExpress.textAreaCoords.setText(dispVal(mouseLayPoint));
 
+		LogMsgFmtln("lay pane: ", "mouse clicked");
+		LogMsgFmtln("scn point: ", e.getPoint());
 		LogMsgFmtln("lay point: ", mouseLayPoint);
+		LogMsgFmtln("back to scn point: ", mouseScnPoint);
 	}
 
 	@Override

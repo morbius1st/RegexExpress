@@ -29,8 +29,8 @@ class RegexExpress extends JPanel {
 	private static RegexLayeredPane regexLayerPane = RegexLayeredPane.getInstance();
 	
 	// initial layer size
-	static final int LAYERX = 5500;	// approx 60" @ 92 dpi
-	static final int LAYERY = 3000; // approx 32" @ 92 dpi
+	static final int LAYERX = 8000;
+	static final int LAYERY = 4000;
 	
 	// initial layered pane size
 	static final int LAYPANEX = 1000;
@@ -99,8 +99,10 @@ class RegexExpress extends JPanel {
 		frame.setLocation(((screenX / 2) - (FRAMEPREFWIDTH / 2)) , ((screenY / 3) - (FRAMEPREFHEIGHT / 2)));
 		
 		frame.pack();
-		
-		regexLayerPane.zoomCentered(1.0, new Point(LAYERX / 2, LAYERY / 2));
+//
+
+//		regexLayerPane.zoomCentered(1.0, new Point(LAYERX / 2, LAYERY / 2));
+		regexLayerPane.moveToPoint2_New(new Point(new Point(LAYERX / 2, LAYERY / 2)));
 		
 		frame.setVisible(true);
 	}
@@ -120,12 +122,12 @@ class RegexExpress extends JPanel {
 
 //		JButton btnA = new JButton("Zoom\nUp");
 //		btnA.addActionListener(btn1);
-		buttons1.add(makeButton(btn1, "Zoom<br>Out"));
-		buttons1.add(makeButton(btn2, "Zoom<br>In"));
+		
 		buttons1.add(makeButton(btn4, "Add<br>Layer"));
 		buttons1.add(makeButton(btn3, "View<br>Info"));
 		buttons1.add(makeButton(btn5, "Layer<br>Info"));
-		buttons1.add(makeButton(btn6, "Misc<br>Test"));
+		buttons1.add(makeButton(btn31, "Layer 1<br>Info"));
+		
 		
 		buttons1.setMaximumSize(new Dimension(FRAMEPREFWIDTH, 50));
 		buttons1.setPreferredSize(new Dimension(FRAMEPREFWIDTH, 50));
@@ -137,15 +139,31 @@ class RegexExpress extends JPanel {
 		
 		JPanel buttons2 = new JPanel(new FlowLayout(FlowLayout.LEFT, 10,0));
 		
-		buttons2.add(makeButton(btn7, "Zoom<br>To Pt"));
-		buttons2.add(makeButton(btn8, "Zoom<br>Ctr'd"));
-		buttons2.add(makeButton(btn9, "Zoom<br>Window"));
+		buttons2.add(makeButton(btn6, "Misc<br>Test"));
+		
 		
 		buttons2.setMaximumSize(new Dimension(FRAMEPREFWIDTH, 50));
 		buttons2.setPreferredSize(new Dimension(FRAMEPREFWIDTH, 50));
 		buttons2.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 		
 		add(buttons2);
+		
+		this.add(Box.createRigidArea(new Dimension(0,10)));
+		
+		JPanel buttons3 = new JPanel(new FlowLayout(FlowLayout.LEFT, 10,0));
+		
+		
+		buttons3.add(makeButton(btn1, "Zoom Out<br>New"));
+		buttons3.add(makeButton(btn2, "Zoom In<br>New"));
+		buttons3.add(makeButton(btn32, "Zoom Ratio<br>x 2.0"));
+		buttons3.add(makeButton(btn33, "Zoom to<br>500x1000"));
+		buttons3.add(makeButton(btn9, "Zoom<br>Window"));
+		
+		buttons3.setMaximumSize(new Dimension(FRAMEPREFWIDTH, 50));
+		buttons3.setPreferredSize(new Dimension(FRAMEPREFWIDTH, 50));
+		buttons3.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+		
+		add(buttons3);
 		
 		this.add(Box.createRigidArea(new Dimension(0,5)));
 		
@@ -171,9 +189,6 @@ class RegexExpress extends JPanel {
 		regexLayerPane.setMinimumSize(new Dimension(LAYERX, LAYERY));
 		regexLayerPane.setPreferredSize(new Dimension(LAYERX, LAYERY));
 		regexLayerPane.setBackground(Color.LIGHT_GRAY);
-		regexLayerPane.initialize(regexScroll.getHorizontalScrollBar(),
-				regexScroll.getVerticalScrollBar(), (new Dimension2dx(LAYERX, LAYERY)));
-		regexLayerPane.add(getLayer());
 		
 		regexScroll.setViewportView(regexLayerPane);
 //		regexAnalysisScroll.setMinimumSize(new Dimension(SCROLLPREFWIDTH, SCROLLPREFHEIGHT)); - do not use
@@ -185,12 +200,13 @@ class RegexExpress extends JPanel {
 		regexScroll.setWheelScrollingEnabled(false);
 		regexScroll.setName("scroll pane");
 		
-		
-		
-		
 		regexViewport = regexScroll.getViewport();
 		regexViewport.setName("viewport");
 		regexViewport.setLocation(new Point(LAYPANEOFFSETX, LAYPANEOFFSETY));
+		
+		regexLayerPane.initialize(regexScroll.getHorizontalScrollBar(),
+				regexScroll.getVerticalScrollBar(), (new Dimension2dx(LAYERX, LAYERY)));
+		regexLayerPane.add(getLayer());
 		
 		add(regexScroll);
 
@@ -204,15 +220,42 @@ class RegexExpress extends JPanel {
 	static void addCoordText(Point pt2D) {
 		textAreaCoords.setText(dispVal(pt2D));
 	}
+
 	
+// **** new ****************************************************
+	
+	// zoom out
+	private ActionListener btn1 = actionEvent -> regexLayerPane.zoomOut_New();
+	
+	// zoom in
+	private ActionListener btn2 = actionEvent -> regexLayerPane.zoomIn_New();
+	
+	// layer info
+	private ActionListener btn31 = actionEvent ->
+			regexLayerPane.getLayerOneInfo();
+	
+	// set zoom scale x3.0
+	private ActionListener btn32 = actionEvent -> {
+		regexLayerPane.setZoomRatio_New(3.0);
+	};
+	
+	// move to coordinate
+	private ActionListener btn33 = actionEvent ->
+			regexLayerPane.moveToPoint2_New(new Point(500, 1000));
+	
+	
+	
+	
+	
+// **** old ****************************************************
 	// unspecified test
 	private ActionListener btn6 = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent actionEvent) {
 //			regexLayerPane.testPointer();
-//			regexLayerPane.testVisRect();
-			regexLayerPane.listMyInfo();
-			
+			regexLayerPane.listVisRect2();
+//			regexLayerPane.listMyInfo();
+
 
 //			LogMsgln("comp  listeners: " + regexScroll.listCompListeners());
 //			LogMsgln("click listeners: " + regexScroll.listMouseClickListeners());
@@ -225,21 +268,16 @@ class RegexExpress extends JPanel {
 	private ActionListener btn7 = actionEvent ->
 			regexLayerPane.moveToPoint2(CROSSORIGINPTS[3]);
 	
-	// zoom center on dwg point
-	private ActionListener btn8 = actionEvent ->
-			regexLayerPane.zoomCenteredDwgCoord(1.0, CROSSORIGINPTS[3]);
+//	// zoom center on dwg point
+//	private ActionListener btn8 = actionEvent ->
+//			regexLayerPane.zoomCenteredDwgCoord(1.0, CROSSORIGINPTS[3]);
 	
-	private ActionListener btn9 = actionEvent -> regexLayerPane.windowZoom();
+	private ActionListener btn9 = actionEvent -> regexLayerPane.startZoomWindow_New();
 	
 	private ActionListener btn5 = actionEvent -> LogMsgln(regexLayerPane.toString());
 	
 	private ActionListener btn4 = actionEvent -> regexLayerPane.add(getLayer());
-	
-	// zoom in
-	private ActionListener btn1 = actionEvent -> regexLayerPane.zoomIn();
 
-	// zoom out
-	private ActionListener btn2 = actionEvent -> regexLayerPane.zoomOut();
 	
 	private ActionListener btn3 = new ActionListener() {
 		@Override

@@ -19,8 +19,8 @@ class RegexPointer extends JPanel implements Scrollable, iRxLayer, iMMListener {
 	
 	private static int maxUnitIncrement = 1;
 	
-	private static JScrollBar vScrollBar;
-	private static JScrollBar hScrollBar;
+//	private static JScrollBar vScrollBar;
+//	private static JScrollBar hScrollBar;
 	
 	private static Point cursorPoint = new Point();
 	private static Point anchorPoint = new Point();
@@ -36,15 +36,14 @@ class RegexPointer extends JPanel implements Scrollable, iRxLayer, iMMListener {
  		setAlignmentX(CENTER_ALIGNMENT);
 		setAlignmentX(CENTER_ALIGNMENT);
 		setAutoscrolls(true);
-//		addMouseMotionListener(this);
 		
 		RegexScroll.addMMovL(this);
 		RegexScroll.addMDragL(this);
 	}
 	
 	public void assignScrollBars(JScrollBar hBar, JScrollBar vBar) {
-		hScrollBar = hBar;
-		vScrollBar = vBar;
+//		hScrollBar = hBar;
+//		vScrollBar = vBar;
 //
 	
 	}
@@ -78,13 +77,7 @@ class RegexPointer extends JPanel implements Scrollable, iRxLayer, iMMListener {
 				if (cursorPoint == null) {
 					return;
 				}
-				
 				drawCursor(g);
-				
-//				g.setColor(XHAIRCOLOR);
-//				// draw cursor lines
-//				g.drawLine(0, cursorPoint.y, this.getWidth(), cursorPoint.y);
-//				g.drawLine(cursorPoint.x, 0, cursorPoint.x, this.getHeight());
 				break;
 			case WINDOW:
 				drawCursor(g);

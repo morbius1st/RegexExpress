@@ -36,18 +36,18 @@ class RegexLayer extends JPanel implements Scrollable, iRxLayer {
 		super();
 		layerIndex = idx++;
 		offset = (layerIndex - 1) * 10;
-		setAutoscrolls(true);
-		setAlignmentX(CENTER_ALIGNMENT);
-		setAlignmentX(CENTER_ALIGNMENT);
+//		setAutoscrolls(true);
+//		setAlignmentX(CENTER_ALIGNMENT);
+//		setAlignmentX(CENTER_ALIGNMENT);
 	}
 	
 	public void setZoomScale(double zoomFactor) {
 		this.zoomFactor = zoomFactor;
 	}
 	
-	public Dimension getPreferredSize() {
-		return super.getPreferredSize();
-	}
+//	public Dimension getPreferredSize() {
+//		return super.getPreferredSize();
+//	}
 
 	@Override
 	public void paint(Graphics g) {
@@ -74,16 +74,7 @@ class RegexLayer extends JPanel implements Scrollable, iRxLayer {
 		Graphics2D g2 = (Graphics2D) g;
 		
 		if (layerIndex == 1) {
-//			LogMsgFmtln("layer index| ", layerIndex
-//					+ "  **size| " + dispVal(getSize())
-//					+ "  **min| " + dispVal(getMinimumSize())
-//					+ "  **max| " + dispVal(getMaximumSize())
-//					+ "  **pref scrol vp| " + dispVal(getPreferredScrollableViewportSize())
-//					+ "  **pref| " + dispVal(getPreferredSize()));
 			
-			LogMsgFmtln("layer index| ", layerIndex
-					+ "  min width| " + getMinimumSize().width
-					+ "  min height| " + getMinimumSize().height);
 			
 			g2.setColor(colors[layerIndex-1]);
 			g2.setFont(font);
@@ -130,8 +121,6 @@ class RegexLayer extends JPanel implements Scrollable, iRxLayer {
 //		}
 	}
 	
-	
-	
 	@Override
 	public Dimension getPreferredScrollableViewportSize() { return getPreferredSize(); }
 	
@@ -153,5 +142,17 @@ class RegexLayer extends JPanel implements Scrollable, iRxLayer {
 	public boolean getScrollableTracksViewportHeight() {
 		return false;
 	}
-
+	
+	@Override
+	public String toString() {
+		if (layerIndex == 1) {
+			return "layer index| " + layerIndex
+					+ "  **size| " + dispVal(getSize())
+					+ "  **min| " + dispVal(getMinimumSize())
+					+ "  **max| " + dispVal(getMaximumSize())
+					+ "  **pref scrol vp| " + dispVal(getPreferredScrollableViewportSize())
+					+ "  **pref| " + dispVal(getPreferredSize());
+		}
+		return "layer index| " + layerIndex;
+	}
 }
