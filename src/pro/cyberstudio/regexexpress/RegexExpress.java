@@ -101,8 +101,7 @@ class RegexExpress extends JPanel {
 		frame.pack();
 //
 
-//		regexLayerPane.zoomCentered(1.0, new Point(LAYERX / 2, LAYERY / 2));
-		regexLayerPane.moveToPoint2_New(new Point(new Point(LAYERX / 2, LAYERY / 2)));
+		regexLayerPane.setInitialZoom(1.0, new Point(new Point(LAYERX / 2, LAYERY / 2)));
 		
 		frame.setVisible(true);
 	}
@@ -153,8 +152,8 @@ class RegexExpress extends JPanel {
 		JPanel buttons3 = new JPanel(new FlowLayout(FlowLayout.LEFT, 10,0));
 		
 		
-		buttons3.add(makeButton(btn1, "Zoom Out<br>New"));
 		buttons3.add(makeButton(btn2, "Zoom In<br>New"));
+		buttons3.add(makeButton(btn1, "Zoom Out<br>New"));
 		buttons3.add(makeButton(btn32, "Zoom Ratio<br>x 2.0"));
 		buttons3.add(makeButton(btn33, "Zoom to<br>500x1000"));
 		buttons3.add(makeButton(btn34, "Zoom<br>Window"));
@@ -212,6 +211,32 @@ class RegexExpress extends JPanel {
 		add(regexScroll);
 
 		setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		
+		
+		CircularList<Integer> x = new CircularList<>(10);
+		x.add(5);
+		x.add(10);
+		x.add(15);
+		x.add(25);
+		x.add(30);
+		x.add(45);
+		x.add(55);
+		x.add(60);
+		x.add(75);
+		x.add(85);
+		x.add(90);
+		x.add(105);
+		x.add(115);
+		x.add(120);
+		x.add(135);
+		
+		int i = 0;
+		for (Integer I : x) {
+			
+			if (I != null) {
+				LogMsgFmtln("Integer| " + i + " | ", I);
+			}
+		}
 	}
 	
 	private String getLayer() {
@@ -226,10 +251,10 @@ class RegexExpress extends JPanel {
 // **** new ****************************************************
 	
 	// zoom out
-	private ActionListener btn1 = actionEvent -> regexLayerPane.zoomOut_New();
+	private ActionListener btn1 = actionEvent -> regexLayerPane.zoomOut();
 	
 	// zoom in
-	private ActionListener btn2 = actionEvent -> regexLayerPane.zoomIn_New();
+	private ActionListener btn2 = actionEvent -> regexLayerPane.zoomIn();
 	
 	// layer info
 	private ActionListener btn31 = actionEvent ->
@@ -237,18 +262,18 @@ class RegexExpress extends JPanel {
 	
 	// set zoom scale x3.0
 	private ActionListener btn32 = actionEvent -> {
-		regexLayerPane.setZoomRatio_New(3.0);
+		regexLayerPane.setZoomRatio(3.0);
 	};
 	
 	// move to coordinate
 	private ActionListener btn33 = actionEvent ->
-			regexLayerPane.moveToPoint2_New(new Point(500, 1000));
+			regexLayerPane.moveToPoint2(new Point(500, 1000));
 	
 	private ActionListener btn34 = actionEvent ->
-			regexLayerPane.startZoomWindow_New();
+			regexLayerPane.startZoomWindow();
 	
 	private ActionListener btn35 = actionEvent ->
-			regexLayerPane.zoomPrevious_New();
+			regexLayerPane.zoomPrevious();
 	
 	
 	
