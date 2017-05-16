@@ -213,30 +213,34 @@ class RegexExpress extends JPanel {
 		setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		
 		
-		CircularList<Integer> x = new CircularList<>(10);
-		x.add(5);
-		x.add(10);
-		x.add(15);
-		x.add(25);
-		x.add(30);
-		x.add(45);
-		x.add(55);
-		x.add(60);
-		x.add(75);
-		x.add(85);
-		x.add(90);
-		x.add(105);
-		x.add(115);
-		x.add(120);
-		x.add(135);
-		
-		int i = 0;
-		for (Integer I : x) {
-			
-			if (I != null) {
-				LogMsgFmtln("Integer| " + i + " | ", I);
-			}
-		}
+//		CircularStack<Integer> x = new CircularStack<>(10);
+//		x.push(5);
+//		x.push(10);
+//		x.push(15);
+//		x.push(25);
+//		x.push(30);
+//		x.push(45);
+//		x.push(55);
+//		x.push(60);
+//		x.push(75);
+//		x.push(85);
+//		x.push(90);
+//		x.push(105);
+//		x.push(115);
+//		x.push(120);
+//		x.push(135);
+//
+//		LogMsgFmtln(" stack size| ", x.size());
+//
+//		Integer I;
+//
+//		while ((I = x.pop()) != null) {
+//			LogMsgln("I = " + I);
+//		}
+//
+//		for (Integer y : x) {
+//			LogMsgln("I2 = " + y);
+//		}
 	}
 	
 	private String getLayer() {
