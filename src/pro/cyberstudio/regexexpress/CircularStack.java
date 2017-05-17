@@ -63,6 +63,13 @@ class CircularStack<T> implements Iterable<T>{
 		return null;
 	}
 	
+	T peek() {
+		if (isEmpty())
+			return null;
+		
+		return stack.get(cursor);
+	}
+	
 	public boolean isEmpty() {
 		return size == 0;
 	}

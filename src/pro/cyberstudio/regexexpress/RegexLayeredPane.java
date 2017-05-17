@@ -51,10 +51,11 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 	
 	private static double zoomFactor = 1.0;
 	private static double zoomRatio = 1.0;
-	private static double zoomMin = 0.16;
-	private static double zoomMax = 12.0;
 	
-	private static final int MAXPRIORZOOMS = 20;
+	private static double zoomFactorMax = 8.0;
+	private static double zoomFactorMin = 1 / zoomFactorMax;
+	
+	
 	
 	private static final double ZOOMWHEELRATIOIN = 1.1;
 	private static final double ZOOMRATIOIN = 1.5;
@@ -72,8 +73,8 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 	
 	private static RegexLayer firstLayer = null;
 	
-	private static Point priorVPCornerPointScreen;
-	private static double priorZoomFactor = 1.0;
+	private static final int MAXPRIORZOOMS = 3;
+	private static PriorZoom rootPriorZoom = new PriorZoom();
 	private static boolean priorSaved = false;
 	
 	private TreeMap<String, RegexLayer> layerTable = new TreeMap<>();
@@ -156,6 +157,10 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 		rxPointer.addMouseMotionListener(RegexExpress.regexScroll);
 		
 		viewport = ((JViewport) getParent());
+		
+		// default settings if no initial zoom location set
+		rootPriorZoom.priorZoomFactor = 1.0;
+		rootPriorZoom.priorVPCornerPtScreen = new Point(0, 0);
 		
 		setZoomRatio(zoomFactor);
 		updateSize();
@@ -315,12 +320,13 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 	// this is an exception - it does not go through the zoom method that
 	// saves the current viewport location
 	void zoomPrevious() {
+		PriorZoom pz;
 
 		if (priorZooms.isEmpty()) {
-			return;
+			pz = rootPriorZoom;
+		} else {
+			pz = priorZooms.pop();
 		}
-		
-		PriorZoom pz = priorZooms.pop();
 		
 		setZoomRatio(pz.priorZoomFactor / zoomFactor);
 		positionViewport(pz.priorVPCornerPtScreen, 0, 0);
@@ -349,11 +355,14 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 	
 	// ***** display position functions ***********************************************
 	void setInitialZoom(double zFactor, Point layerPoint) {
+		
 		setZoomRatio(zFactor / zoomFactor);
 		moveToPoint2(layerPoint);
 		
 		priorZooms.clear();
 		saveCurrentZoom();
+
+		rootPriorZoom = priorZooms.peek();
 	}
 	
 	void moveToPoint2(Point layerPoint) {
@@ -388,6 +397,10 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 		dragMode = STARTWINDOW;
 	}
 	
+	void stopZoomWindow() {
+		dragMode = PAN;
+	}
+	
 	private void saveCurrentZoom() {
 		
 		PriorZoom pz = new PriorZoom();
@@ -398,6 +411,11 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 	}
 	
 	void setZoomRatio(double zRatio) {
+
+		if (zoomFactor * zRatio > zoomFactorMax || zoomFactor * zRatio < zoomFactorMin) {
+			zRatio = 1.0;
+		}
+
 		Dimension newSize = new Dimension((int) (getMinimumSize().getWidth() * zoomFactor * zRatio),
 				(int) (getMinimumSize().getHeight() * zoomFactor * zRatio));
 		
@@ -520,6 +538,10 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 	public void mouseDragged(MouseEvent e) {
 		switch (dragMode) {
 			case PAN:
+				if (!priorSaved) {
+					saveCurrentZoom();
+					priorSaved = true;
+				}
 				Point newPt = subtractPoints(anchorPoint, e.getPoint());
 				anchorPoint = addPoints(e.getPoint(), newPt);
 				newPt = addPoints(getVisibleRect().getLocation(), newPt);
@@ -541,7 +563,7 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		if (dragMode == WINDOW) {
-			dragMode = PAN;
+			dragMode = STARTWINDOW;
 			rxPointer.setPointerModeXhairs();
 			rxPointer.repaint();
 			winCornerPoint = e.getPoint();
