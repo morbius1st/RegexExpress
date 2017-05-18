@@ -37,13 +37,6 @@ class RegexPointer extends JPanel implements Scrollable, iRxLayer, iMMListener {
 		RegexScroll.addMMovL(this);
 		RegexScroll.addMDragL(this);
 	}
-	
-	public void assignScrollBars(JScrollBar hBar, JScrollBar vBar) {
-//		hScrollBar = hBar;
-//		vScrollBar = vBar;
-//
-	
-	}
 
 	public Dimension getPreferredSize() {
 		return super.getPreferredSize();
@@ -124,17 +117,14 @@ class RegexPointer extends JPanel implements Scrollable, iRxLayer, iMMListener {
 	// required for mouse motion
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		
 		updateCursor(e.getPoint());
 	}
 
-//	@Override
 	public void mouseMoved(MouseEvent e) {
 		updateCursor(e.getPoint());
 	}
 	
 	void updateCursor(Point pt) {
-//		LogMsgFmtln("mouse moved point: ", pt);
 		cursorPoint = pt;
 		repaint();
 		revalidate();

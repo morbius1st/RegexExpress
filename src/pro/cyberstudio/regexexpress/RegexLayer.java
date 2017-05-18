@@ -7,7 +7,7 @@ import static pro.cyberstudio.regexexpress.Utility.*;
 
 /**
  * @author jeffs
- *         File:    RegexAnalysis
+ *         File:    RegexLayer
  *         Created: 4/15/2017 @ 10:21 PM
  *         Project: RegexExpress
  */
@@ -36,18 +36,11 @@ class RegexLayer extends JPanel implements Scrollable, iRxLayer {
 		super();
 		layerIndex = idx++;
 		offset = (layerIndex - 1) * 10;
-//		setAutoscrolls(true);
-//		setAlignmentX(CENTER_ALIGNMENT);
-//		setAlignmentX(CENTER_ALIGNMENT);
 	}
 	
 	public void setZoomScale(double zoomFactor) {
 		this.zoomFactor = zoomFactor;
 	}
-	
-//	public Dimension getPreferredSize() {
-//		return super.getPreferredSize();
-//	}
 
 	@Override
 	public void paint(Graphics g) {
@@ -95,30 +88,6 @@ class RegexLayer extends JPanel implements Scrollable, iRxLayer {
 				pt.y = 0;
 			}
 		}
-
-//		int x = IMAGEPOSX + offset;
-//		int y = IMAGEPOSY + offset;
-//
-
-//
-//		g2.setColor(Color.BLUE);
-//		g2.drawString("this is a scroll layer: " + getName(), x + 5, y + 20);
-//		g2.setColor(colors[layerIndex-1]);
-//		g2.drawRect( x, y , 160, 30);
-//
-//
-//		for (int i = 0; i < CROSSORIGINPTS.length; i++) {
-//			// line color
-//			g2.setColor(colors[layerIndex-1]);
-//
-//			Point pt = new Point(CROSSORIGINPTS[i].x + offset, CROSSORIGINPTS[i].y + offset);
-//
-//			g2.drawLine(pt.x - lineLenHalf, pt.y, pt.x + lineLenHalf, pt.y);
-//			g2.drawLine(pt.x, pt.y - lineLenHalf, pt.x, pt.y + lineLenHalf);
-//
-//			g2.setColor(colors[layerIndex-1]);
-//			g2.drawString(dispVal(pt), pt.x + textOffset, pt.y - textOffset);
-//		}
 	}
 	
 	@Override

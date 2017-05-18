@@ -77,15 +77,18 @@ class RegexScroll extends JScrollPane implements MouseWheelListener, MouseListen
 		}
 	}
 	
-	
 	private <T extends iListener> String  listListeners(ArrayList<T> chain) {
 		StringBuilder sb = new StringBuilder();
 		for (T al : chain) {
-			sb.append(al.getClass()).append("\n");
-			sb.append(al.getName()).append("\n");
+			sb.append("\n");
+			sb.append(al.getName()).append(" (");
+			sb.append(al.getClass()).append(")");
+//			sb.append("\n");
 		}
 		return sb.toString();
 	}
+	
+	String listCompListeners() { return listListeners(clChain); }
 	
 	@Override
 	public void componentResized(ComponentEvent e) {
@@ -94,57 +97,48 @@ class RegexScroll extends JScrollPane implements MouseWheelListener, MouseListen
 		}
 	}
 	
-	String listCompListeners() {
-		return listListeners(clChain);
-	}
-
+	String listMouseWheelListeners() { return listListeners(mwlChain); }
+	
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
-//		LogMsgFmtln("scroll pane: mouse wheel: ", e.getPoint());
 		for (iMWListener mwl : mwlChain) {
 			mwl.mouseWheelMoved(e);
-		}
-	}
-
-	String listMouseWheelListeners() {
-		return listListeners(mwlChain);
-	}
-	
-	
-	@Override
-	public void mouseClicked(MouseEvent e) {
-//		LogMsgFmtln("scroll pane: mouse clicked: ", e.getPoint());
-		for (iMouseListener ml : mlChain) {
-			ml.mouseClicked(e);
 		}
 	}
 	
 	String listMouseClickListeners() { return listListeners(mlChain); }
 	
 	@Override
+	public void mouseClicked(MouseEvent e) {
+		for (iMouseListener ml : mlChain) {
+			ml.mouseClicked(e);
+		}
+	}
+	
+	String listMouseMoveListeners() { return listListeners(mmovlChain); }
+	
+	@Override
 	public void mouseMoved(MouseEvent e) {
-//		LogMsgFmtln("scroll pane: mouse moved: ", e.getPoint());
 		for (iMMListener mml : mmovlChain) {
 			mml.mouseMoved(e);
 		}
 	}
 	
-	String listMouseMovedListeners() { return listListeners(mmovlChain); }
+	String listMouseDragListeners() { return listListeners(mdraglChain); }
 	
 	@Override
 	public void mouseDragged(MouseEvent e) {
-//		LogMsgFmtln("scroll pane: mouse moved: ", e.getPoint());
 		for (iMMListener mdl : mdraglChain) {
 			mdl.mouseDragged(e);
 		}
 	}
 	
-	String listMouseDraggedListeners() { return listListeners(mdraglChain); }
+	
+	String listMouseListeners() { return listListeners(mlChain); }
 	
 	// mouse listener
 	@Override
 	public void mousePressed(MouseEvent e) {
-//		LogMsgFmtln("scroll: mouse pressed: ", e.getPoint());
 		for (iMouseListener ml : mlChain) {
 			ml.mousePressed(e);
 		}
@@ -153,7 +147,6 @@ class RegexScroll extends JScrollPane implements MouseWheelListener, MouseListen
 	// mouse listener
 	@Override
 	public void mouseReleased(MouseEvent e) {
-//		LogMsgFmtln("scroll: mouse released: ", e.getPoint());
 		for (iMouseListener ml : mlChain) {
 			ml.mouseReleased(e);
 		}

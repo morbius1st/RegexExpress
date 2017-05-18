@@ -27,11 +27,6 @@ class viewSizeData {
 class PriorZoom {
 	double priorZoomFactor;
 	Point priorVPCornerPtScreen;
-	
-//	PriorZoom(double zFactor, Point vpCornerScreen) {
-//		priorZoomFactor = zFactor;
-//		priorVPCornerPtScreen = vpCornerScreen;
-//	}
 }
 
 class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseListener, iMWListener, iMMListener  { //, MouseWheelListener{
@@ -54,8 +49,6 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 	
 	private static double zoomFactorMax = 8.0;
 	private static double zoomFactorMin = 1 / zoomFactorMax;
-	
-	
 	
 	private static final double ZOOMWHEELRATIOIN = 1.1;
 	private static final double ZOOMRATIOIN = 1.5;
@@ -117,7 +110,7 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 		return me;
 	}
 	
-	void initialize(JScrollBar hScrollBar, JScrollBar vScrollBar, Dimension2dx initSize) {
+	void initialize(Dimension2dx initSize) {
 		viewSizeParams.minSize = initSize.clone();
 		viewSizeParams.layerSize = initSize.clone();
 		viewSizeParams.viewSize = initSize.clone();
@@ -133,7 +126,6 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 		
 		rxPointer.setMinimumSize(layerSize);
 		rxPointer.setPreferredSize(layerSize);
-		rxPointer.assignScrollBars(hScrollBar, vScrollBar);
 		rxPointer.setOpaque(false);
 		rxPointer.setVisible(true);
 		rxPointer.setName("pointer");
@@ -216,14 +208,11 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 		// the corner of the rect as a point / integer
 		LogMsgFmtln("lay pane: vis rect: location| ", getVisibleRect().getLocation());
 		// same as location but as x & y values
-		LogMsgFmtln("lay pane: vis rect: corner x| ", dispVal(getVisibleRect().x) +
-				" y| " + dispVal(getVisibleRect().y));
+		LogMsgFmtln("lay pane: vis rect: corner| ", dispVal(getVisibleRect().x, getVisibleRect().y));
 		// same as location but as a double
-		LogMsgFmtln("lay pane: vis rect: corner x| ", dispVal(getVisibleRect().getX()) +
-				" y| " + dispVal(getVisibleRect().getY()));
+		LogMsgFmtln("lay pane: vis rect: corner| ", dispVal(getVisibleRect().getX(), getVisibleRect().getY()));
 		// calculated center as an int
-		LogMsgFmtln("lay pane: vis rect: center x| ", dispVal(getVisibleRect().getCenterX()) +
-				" y| " + dispVal(getVisibleRect().getCenterY()));
+		LogMsgFmtln("lay pane: vis rect: center| ", dispVal(getVisibleRect().getCenterX(), getVisibleRect().getCenterY()));
 		// booth appear to be the same
 		LogMsgFmtln("lay pane: vis rect:| ", getVisibleRect());
 		LogMsgFmtln("lay pane: vis rect: bounds| ", getVisibleRect().getBounds());
@@ -235,21 +224,21 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 		LogMsgFmtln("lay pane: vis rect: bounds| ", getVisibleRect().getBounds());
 	}
 	
-	private void listViewportRect() {
+	void listViewportRect() {
 
 		Point srcPt = new Point(viewport.getViewRect().x, viewport.getViewRect().y);
 		Point transPt = SwingUtilities.convertPoint(RegexExpress.regexScroll, srcPt, this);
 		
-		LogMsgln("vp  view rect: " + Utility.dispVal(viewport.getViewRect()));
-		LogMsgln("vp loc pt raw: " + dispVal(srcPt));
-		LogMsgln("vp loc pt adj: " + dispVal(transPt));
-		
-		LogMsgln("vp   vis rect: " + Utility.dispVal(viewport.getVisibleRect()));
-		LogMsgln("vp    ext dim: " + Utility.dispVal(viewport.getExtentSize()));
-		LogMsgln("vp to view co: " + Utility.dispVal(viewport.toViewCoordinates(viewport.getExtentSize())));
-		LogMsgln("this vis rect: " + Utility.dispVal(getVisibleRect())); // yes
-		LogMsgln("this     size: " + Utility.dispVal(getSize()));  // no
-		LogMsgln("this    w x h: " + Utility.dispVal(getWidth(), getHeight()));  // no
+		LogMsgFmtln("view", "port");
+		LogMsgFmtln("vp view rect| ", viewport.getViewRect());
+		LogMsgFmtln("vp loc pt raw| ", srcPt);
+		LogMsgFmtln("vp loc pt adj| ", transPt);
+		LogMsgFmtln("vp vis rect| ", viewport.getVisibleRect());
+		LogMsgFmtln("vp ext dim| ", viewport.getExtentSize());
+		LogMsgFmtln("vp to view co| ", viewport.toViewCoordinates(viewport.getExtentSize()));
+		LogMsgFmtln("this vis rect| ", getVisibleRect()); // yes
+		LogMsgFmtln("this size| ", getSize());  // no
+		LogMsgFmtln("this w x h| ", getWidth(), getHeight());  // no
 	}
 
 	
@@ -572,13 +561,15 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 		}
 	}
 	
-	
 	@Override
 	public void componentResized(ComponentEvent e) {
-//		Dimension2dx zoomedSize = Dimension2dx.toDimension2dx(getZoomedViewSize());
-//		setPreferredSize(zoomedSize.toDimension());
-//		updateSize();
-//		revalidate();
+		
+		double wRatio = getSize().getWidth() / getPreferredSize().getWidth();
+		double hRatio = getSize().getHeight() / getPreferredSize().getHeight();
+		
+		double zRatio = wRatio > hRatio ? wRatio : hRatio;
+		
+		setZoomRatio(zRatio);
 	}
 	
 	// mouse clicked - point provided is a screen point (scaled)
@@ -587,52 +578,53 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 		
 		// determine the layer point coordinate from a screen coordinate
 		Point mouseLayPoint = calcLayerPtFromScnPt(new Point(e.getX(), e.getY()));
-		
-		// revert - calculate the layer coordinate from a drawing coordinate
-		Point mouseScnPoint = calcScnPtFromLayerPt(mouseLayPoint);
 
 		RegexExpress.textAreaCoords.setText(dispVal(mouseLayPoint));
-
-		LogMsgFmtln("lay pane: ", "mouse clicked");
-		LogMsgFmtln("scn point: ", e.getPoint());
-		LogMsgFmtln("lay point: ", mouseLayPoint);
-		LogMsgFmtln("back to scn point: ", mouseScnPoint);
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		
-		sb.append("layer table:  Count: " + layerTable.size());
+		sb.append(LogMsgStr("layer table|  Count|  ", dispVal(layerTable.size())));
 		sb.append("\n");
 		
 		for (Map.Entry<String, RegexLayer> entry : layerTable.entrySet()) {
-			sb.append("name 1: ").append(entry.getKey())
-					.append(" name 2: ").append(entry.getValue().getName());
+			sb.append(LogMsgStr("name 1|  ", entry.getKey()))
+					.append(" name 2| ").append(entry.getValue().getName());
 			sb.append("\n");
 		}
 		
-		sb.append("component count: ").append(getComponentCount());
-		sb.append("\n");
-		sb.append("paramString: ").append(paramString());
+		sb.append(LogMsgStr("component count|  ", dispVal(getComponentCount())));
 		sb.append("\n");
 		
-		sb.append("lowest layer : ").append(lowestLayer()).append("\n");
-		sb.append("highest layer: ").append(highestLayer()).append("\n");
+		sb.append(LogMsgStr("paramString|  ", paramString()));
+		sb.append("\n");
+		
+		sb.append(LogMsgStr("lowest layer|  ", dispVal(lowestLayer())));
+		sb.append("\n");
+		
+		sb.append(LogMsgStr("highest layer|  ", dispVal(highestLayer())));
+		sb.append("\n");
 		
 		for (int i = lowestLayer(); i <= highestLayer(); i++) {
 			Component[] comps = getComponentsInLayer(i);
 			
 			if (comps.length > 0) {
-				sb.append("components in layer: ").append(i).append(" = ").append(comps.length);
+				sb.append(LogMsgStr("components in layer|  ", dispVal(i)))
+						.append(" = ").append(comps.length);
 				sb.append("\n");
 				
 				for (int j = 0; j < comps.length; j++) {
-					sb.append("component #").append(j).append(" in layer: name= ").append(comps[j].getName());
-					sb.append("\n\t     size: " + Utility.dispVal(comps[j].getSize()));
-					sb.append("\n\tperf size: " + Utility.dispVal(comps[j].getPreferredSize()));
-					sb.append("\n\t min size: " + Utility.dispVal(comps[j].getMinimumSize()));
-					sb.append("\n\t max size: " + Utility.dispVal(comps[j].getMaximumSize()));
+					sb.append(LogMsgStr("component #|  ", dispVal(j))).append(" in layer| name= ").append(comps[j].getName());
+					sb.append("\n");
+					sb.append(LogMsgStr("size|  ", dispVal(comps[j].getSize())));
+					sb.append("\n");
+					sb.append(LogMsgStr("perf size|  ", dispVal(comps[j].getPreferredSize())));
+					sb.append("\n");
+					sb.append(LogMsgStr("min size|  ", dispVal(comps[j].getMinimumSize())));
+					sb.append("\n");
+					sb.append(LogMsgStr("max size|  ", dispVal(comps[j].getMaximumSize())));
 					sb.append("\n");
 				}
 			}

@@ -79,38 +79,24 @@ class Utility {
 		}
 	}
 	
-	static String viewSizes(Component c, int which) {
-		StringBuilder sb = new StringBuilder();
-		
-		if ((which & MIN.value) > 0) {
-			sb.append("  Min Size: ").append(dispVal(c.getMinimumSize()));
-			sb.append("\n");
-		}
-		
-		if ((which & PERF.value) > 0) {
-			sb.append(" Pref Size: ").append(dispVal(c.getPreferredSize()));
-			sb.append("\n");
-		}
-		
-		if ((which & MAX.value) > 0) {
-			sb.append("  Max Size: ").append(dispVal(c.getMaximumSize()));
-			sb.append("\n");
-		}
-		
-		if ((which & SIZE.value) > 0) {
-			sb.append("      Size: ").append(dispVal(c.getSize()));
-			sb.append("\n");
-		}
-		
-		if ((which & BOUNDS.value) > 0) {
-			sb.append("    Bounds: ").append(dispVal(c.getBounds()));
-			sb.append("\n");
-		}
-		
-		
-		return sb.toString();
+
+//	static String FmtXY(int x, int y) {
+//		return FmtXY((double) x, (double) y);
+//	}
+	
+	static String FmtXY(double x, double y) {
+		return String.format("x| %1$8.2f  y| %2$8.2f", x, y);
+	}
+	
+	static String FmtWH(double w, double h) {
+		return String.format("w| %1$8.2f  h| %2$8.2f", w, h);
 	}
 
+	
+	static String LogMsgStr(String msg1, String msg2) {
+		if (msg2 == null) {msg2 = "";}
+		return String.format("%1$35s%2$s", msg1, msg2);
+	}
 	
 	static void LogMsgln(String msg) { System.out.println(msg); }
 	
@@ -118,7 +104,7 @@ class Utility {
 	
 	static void LogMsgFmtln(String msg1, String msg2) {
 		if (msg2 == null) {msg2 = "";}
-		LogMsgln(String.format("%1$35s%2$s", msg1, msg2));
+		LogMsgln(LogMsgStr(msg1, msg2));
 	}
 	
 	static void LogMsgFmtln(String msg, Point pt) { LogMsgFmtln(msg, dispVal(pt)); }
@@ -161,14 +147,14 @@ class Utility {
 	
 	@NotNull
 	@Contract(pure = true)
-	static String dispVal(double x, double y) { return "x| " + x + " y| " + y; }
+	static String dispVal(double x, double y) { return FmtXY(x, y); }
 	
 	@NotNull
 	@Contract(pure = true)
-	static String dispVal(int x, int y) { return "x| " + x + " y| " + y; }
+	static String dispVal(int x, int y) { return FmtXY(x, y); }
 	
 	@NotNull
 	@Contract(pure = true)
-	static String dispVal(Rectangle rect) { return "x| " + rect.x + " y| " + rect.y + " w| " + rect.width + " h| " + rect.height; }
-	
+	static String dispVal(Rectangle rect) { return FmtXY(rect.x, rect.y) + "  " +  FmtWH(rect.width, rect.height); }
+
 }

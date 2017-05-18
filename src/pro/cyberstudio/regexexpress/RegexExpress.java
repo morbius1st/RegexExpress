@@ -5,10 +5,9 @@ import java.awt.Toolkit;
 import java.awt.event.*;
 
 import javax.swing.*;
-import javax.swing.border.*;
-import javax.swing.plaf.basic.BasicBorders.ButtonBorder;
 
 import static pro.cyberstudio.regexexpress.Utility.*;
+import static pro.cyberstudio.regexexpress.Utility.viewSizeMask.*;
 
 /**
  * @author jeffs
@@ -47,29 +46,16 @@ class RegexExpress extends JPanel {
 	private static final int SCROLLPREFWIDTH = LAYERX;
 	private static final int SCROLLPREFHEIGHT = LAYERY;
 	
+	private static final int BUTTONHEIGHT = 40;
+	private static final int BUTTONWEIGHT = 85;
+	
+	private static final Dimension BUTTONDIM =
+			new Dimension(BUTTONWEIGHT, BUTTONHEIGHT);
+	
 	private static final String ESCAPE = "ESCAPE";
 	
 	private static JButton btnZWindow;
 	private static boolean zWindowMode = false;
-
-//	static final int IMAGEPOSX = ((LAYPANEX / 2) - 50) + LAYPANEOFFSETX;
-//	static final int IMAGEPOSY = ((LAYPANEY / 2) - 50) + LAYPANEOFFSETY;
-
-//	private static final int CROSSORIGINOFFSETX = 200;
-//	private static final int CROSSORIGINOFFSETY = 200;
-//
-//	private static final int CROSSOFFSETX = LAYPANEX - (CROSSORIGINOFFSETX *2);
-//	private static final int CROSSOFFSETY = LAYPANEY - (CROSSORIGINOFFSETY *2);
-//
-//	private static final int CROSSORIGINX = LAYPANEOFFSETX + CROSSORIGINOFFSETX;
-//	private static final int CROSSORIGINY = LAYPANEOFFSETY + CROSSORIGINOFFSETY;
-//
-//	static final Point[] CROSSORIGINPTS = {
-//			new Point(CROSSORIGINX, CROSSORIGINY),
-//			new Point(CROSSORIGINX + CROSSOFFSETX, CROSSORIGINY),
-//			new Point(CROSSORIGINX, CROSSORIGINY + CROSSOFFSETY),
-//			new Point(CROSSORIGINX + CROSSOFFSETX, CROSSORIGINY + CROSSOFFSETY)};
-	
 	
 	private static int layerIdx = 0;
 	
@@ -119,6 +105,8 @@ class RegexExpress extends JPanel {
 	
 	private JButton makeButton(ActionListener b, String text) {
 		JButton jb = new JButton("<html><center>" + text + "</center></html>");
+		jb.setPreferredSize(BUTTONDIM);
+		jb.setFocusPainted(false);
 		jb.addActionListener(b);
 		return jb;
 	}
@@ -129,18 +117,16 @@ class RegexExpress extends JPanel {
 		this.add(Box.createRigidArea(new Dimension(0, 10)));
 		
 		JPanel buttons1 = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
-
-//		JButton btnA = new JButton("Zoom\nUp");
-//		btnA.addActionListener(btn1);
 		
 		buttons1.add(makeButton(btn4, "Add<br>Layer"));
 		buttons1.add(makeButton(btn3, "View<br>Info"));
 		buttons1.add(makeButton(btn5, "Layer<br>Info"));
 		buttons1.add(makeButton(btn31, "Layer 1<br>Info"));
+		buttons1.add(makeButton(btn6, "Misc<br>Test"));
 		
 		
-		buttons1.setMaximumSize(new Dimension(FRAMEPREFWIDTH, 50));
-		buttons1.setPreferredSize(new Dimension(FRAMEPREFWIDTH, 50));
+		buttons1.setMaximumSize(new Dimension(FRAMEPREFWIDTH, BUTTONHEIGHT));
+		buttons1.setPreferredSize(new Dimension(FRAMEPREFWIDTH, BUTTONHEIGHT));
 		buttons1.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 		
 		add(buttons1);
@@ -149,33 +135,19 @@ class RegexExpress extends JPanel {
 		
 		JPanel buttons2 = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
 		
-		buttons2.add(makeButton(btn6, "Misc<br>Test"));
-		
+		buttons2.add(makeButton(btn2, "Zoom<br>In"));
+		buttons2.add(makeButton(btn1, "Zoom<br>Out"));
+		buttons2.add(makeButton(btn32, "Zoom<br>x 2.0"));
+		buttons2.add(makeButton(btn33, "Zoom to<br>500x1000"));
+		btnZWindow = makeButton(btn34, "Zoom<br>Window");
+		buttons2.add((btnZWindow));
+		buttons2.add(makeButton(btn35, "Zoom<br>Previous"));
 		
 		buttons2.setMaximumSize(new Dimension(FRAMEPREFWIDTH, 50));
 		buttons2.setPreferredSize(new Dimension(FRAMEPREFWIDTH, 50));
 		buttons2.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 		
 		add(buttons2);
-		
-		this.add(Box.createRigidArea(new Dimension(0, 10)));
-		
-		JPanel buttons3 = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
-		
-		
-		buttons3.add(makeButton(btn2, "Zoom In<br>New"));
-		buttons3.add(makeButton(btn1, "Zoom Out<br>New"));
-		buttons3.add(makeButton(btn32, "Zoom Ratio<br>x 2.0"));
-		buttons3.add(makeButton(btn33, "Zoom to<br>500x1000"));
-		btnZWindow = makeButton(btn34, "Zoom<br>Window");
-		buttons3.add((btnZWindow));
-		buttons3.add(makeButton(btn35, "Zoom<br>Previous"));
-		
-		buttons3.setMaximumSize(new Dimension(FRAMEPREFWIDTH, 50));
-		buttons3.setPreferredSize(new Dimension(FRAMEPREFWIDTH, 50));
-		buttons3.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-		
-		add(buttons3);
 		
 		this.add(Box.createRigidArea(new Dimension(0, 5)));
 		
@@ -186,7 +158,7 @@ class RegexExpress extends JPanel {
 		textAreaCoords.setPreferredSize(new Dimension(350, 25));
 		textAreaCoords.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		
-		textAreaZmFactor = new JTextArea("coordinates");
+		textAreaZmFactor = new JTextArea("Zoom Factor");
 		textAreaZmFactor.setMaximumSize(new Dimension(175, 25));
 		textAreaZmFactor.setPreferredSize(new Dimension(175, 25));
 		textAreaZmFactor.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -216,8 +188,7 @@ class RegexExpress extends JPanel {
 		regexViewport.setName("viewport");
 		regexViewport.setLocation(new Point(LAYPANEOFFSETX, LAYPANEOFFSETY));
 		
-		regexLayerPane.initialize(regexScroll.getHorizontalScrollBar(),
-				regexScroll.getVerticalScrollBar(), (new Dimension2dx(LAYERX, LAYERY)));
+		regexLayerPane.initialize(new Dimension2dx(LAYERX, LAYERY));
 		regexLayerPane.add(getLayer());
 		
 		add(regexScroll);
@@ -324,49 +295,76 @@ class RegexExpress extends JPanel {
 			case 35:
 				regexLayerPane.zoomPrevious();
 				break;
+				// misc tests
 			case 6:
 				//			regexLayerPane.testPointer();
-				regexLayerPane.listVisRect2();
-				//			regexLayerPane.listMyInfo();
-				//			LogMsgln("comp  listeners: " + regexScroll.listCompListeners());
-				//			LogMsgln("click listeners: " + regexScroll.listMouseClickListeners());
-				//			LogMsgln("wheel listeners: " + regexScroll.listMouseWheelListeners());
-				//			LogMsgln("drag  listeners: " + regexScroll.listMouseDraggedListeners());
+//				regexLayerPane.listVisRect();
+//				regexLayerPane.listVisRect2();
+//				regexLayerPane.listViewportRect();
+//				regexLayerPane.listMyInfo();
+				LogMsgln("\ncomponent listeners: " + regexScroll.listCompListeners());
+				LogMsgln("\nclick listeners: " + regexScroll.listMouseClickListeners());
+				LogMsgln("\nwheel listeners: " + regexScroll.listMouseWheelListeners());
+				LogMsgln("\ndrag listeners: " + regexScroll.listMouseDragListeners());
+				LogMsgln("\nmove listeners: " + regexScroll.listMouseMoveListeners());
+				LogMsgln("\nmouse listeners: " + regexScroll.listMouseListeners());
+				
 				break;
 			case 3:
-				// scroll
-				LogMsgln("\n**************************************************");
-				LogMsgln("scroll panel");
-				LogMsgln(viewSizes(regexScroll, viewSizeMask.all()));
-				LogMsgln("vp bounds: " + Utility.dispVal(regexScroll.getViewportBorderBounds()));
+				LogMsgFmtln("*******************", "*******************************");
+				LogMsgFmtln("scroll", " panel");
+				LogMsg(viewSizes(regexScroll, viewSizeMask.all()));
+				LogMsgFmtln("vp bounds| ", Utility.dispVal(regexScroll.getViewportBorderBounds()));
 				
 				ScrollPaneLayout layout = (ScrollPaneLayout) regexScroll.getLayout();
-				LogMsgln("\nscroll panel layout");
-				LogMsgln("     size: " + Utility.dispVal(layout.preferredLayoutSize(regexScroll)));
+				LogMsg("\n");
+				LogMsgFmtln("scroll", " panel");
+				LogMsgFmtln("layout size| ", Utility.dispVal(layout.preferredLayoutSize(regexScroll)));
 				
-				LogMsgln("\nviewport");
-				LogMsgln(viewSizes(regexScroll.getViewport(), viewSizeMask.all()));
-				LogMsgln("view size: " + Utility.dispVal(regexScroll.getViewport().getViewSize()));
-				LogMsgln(" ext size: " + Utility.dispVal(regexScroll.getViewport().getExtentSize()));
-				LogMsgln(" view pos: " + dispVal(regexScroll.getViewport().getViewPosition()));
+				LogMsg("\n");
+				LogMsgFmtln("viewport", "");
+				LogMsg(viewSizes(regexScroll.getViewport(), viewSizeMask.all()));
+				LogMsgFmtln("view size| ", Utility.dispVal(regexScroll.getViewport().getViewSize()));
+				LogMsgFmtln(" ext size| ", Utility.dispVal(regexScroll.getViewport().getExtentSize()));
+				LogMsgFmtln(" view pos| ", dispVal(regexScroll.getViewport().getViewPosition()));
 				
-				LogMsgln("\nlayered pane");
-				LogMsgln(viewSizes(regexLayerPane, viewSizeMask.all()));
-				//
-				//			JScrollBar sb = regexAnalysisScroll.getVerticalScrollBar();
-				//
-				//			LogMsgln("\nvScrollBar");
-				//			LogMsgln("maximum: " + sb.getMaximum() +
-				//					" ::Inc " + sb.getUnitIncrement() +
-				//					" ::blk inc " + sb.getBlockIncrement());
-				//			LogMsgln("minimum: " + sb.getMinimum());
-				//			LogMsgln("visible: " + sb.getVisibleAmount());
-				//			LogMsgln(" min sz: " + dispVal(sb.getMinimumSize()));
-				//			LogMsgln(" max sz: " + dispVal(sb.getMaximumSize()));
+				LogMsg("\n");
+				LogMsgFmtln("layered", " pane");
+				LogMsg(viewSizes(regexLayerPane, viewSizeMask.all()));
 				break;
 				
 		}
 	}
 	
+	String viewSizes(Component c, int which) {
+		StringBuilder sb = new StringBuilder();
+		
+		if ((which & MIN.value) > 0) {
+			sb.append(LogMsgStr("Min Size| ", dispVal(c.getMinimumSize())));
+			sb.append("\n");
+		}
+		
+		if ((which & PERF.value) > 0) {
+			sb.append(LogMsgStr("Pref Size: ", dispVal(c.getPreferredSize())));
+			sb.append("\n");
+		}
+		
+		if ((which & MAX.value) > 0) {
+			sb.append(LogMsgStr("Max Size: ", dispVal(c.getMaximumSize())));
+			sb.append("\n");
+		}
+		
+		if ((which & SIZE.value) > 0) {
+			sb.append(LogMsgStr("Size: ", dispVal(c.getSize())));
+			sb.append("\n");
+		}
+		
+		if ((which & BOUNDS.value) > 0) {
+			sb.append(LogMsgStr("Bounds: ", dispVal(c.getBounds())));
+			sb.append("\n");
+		}
+		
+		return sb.toString();
+	}
 
 }
