@@ -64,43 +64,12 @@ class RegexLayer extends JPanel implements Scrollable, iRxLayer {
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		
-		int lineLength = 30;
-		int lineLenHalf = lineLength/2;
-		int textOffsetHoriz = 10;
-		int textOffsetVert = 15 + (7 * (layerIndex-1));
-		
-		Font font = new Font("Verdana", Font.PLAIN, 10);
-		
-		Point pt = new Point(0, 0);
-
 		Graphics2D g2 = (Graphics2D) g;
 		
 		int colorIdx = (layerIndex - 1) % colors.length;
-		
-//		colorIdx = colorIdx > colors.length - 1 ? colors.length - 1 : colorIdx;
-		
 		g2.setColor(colors[colorIdx]);
 		
-		if (layerIndex == 1) {
-			
-			g2.setFont(font);
-			
-			for (; pt.x < getMinimumSize().width; pt.x += 100) {
-				for (; pt.y < getMinimumSize().height; pt.y += 100) {
-					
-					// draw the horizontal ine
-					g2.drawLine(pt.x - lineLenHalf, pt.y, pt.x + lineLenHalf, pt.y);
-					
-					// draw the vertical line
-					g2.drawLine(pt.x, pt.y - lineLenHalf, pt.x, pt.y + lineLenHalf);
-					
-					
-					g2.drawString("x: " + pt.x, pt.x + textOffsetHoriz, pt.y + textOffsetVert);
-					g2.drawString("y: " + pt.y, pt.x + textOffsetHoriz, pt.y + textOffsetVert + 10);
-				}
-				pt.y = 0;
-			}
-		}
+		Font font;
 		
 		int x = (getMinimumSize().width / 2) + offsetX;
 		int y = (getMinimumSize().height / 2) + offsetY;
@@ -108,9 +77,7 @@ class RegexLayer extends JPanel implements Scrollable, iRxLayer {
 		font = new Font("Arial", Font.BOLD + Font.ITALIC, 12);
 		
 		g2.setFont(font);
-		g2.drawString("layer| " + getName(), x, y);
-		
-		
+		g2.drawString("layer: " + getName(), x, y);
 	}
 	
 	@Override

@@ -10,24 +10,26 @@ import static pro.cyberstudio.regexexpress.Utility.*;
  *         Project: RegexExpress
  */
 
-class CircularStack<T> implements Iterable<T>{
-	
-	private ArrayList<T> stack;
+class CircularStack<T> { //implements Iterable<T>{
+
+//	private ArrayList<T> stack;
+	private T[] stack;
 	private int capacity;
 	private int cursor = -1;
 	private int size = 0;
 	
 	CircularStack(int capacity) {
 		// stack is based on an ArrayList
-		stack = new ArrayList<>(capacity);
+//		stack = new ArrayList<>(capacity);
+		stack = (T[]) new Object[capacity];
 		this.capacity = capacity;
 		
-		// pre assign the whold list so that the
-		// stack.set method will work correctly
-		for (int i = 0; i < capacity; i++) {
-			stack.add(i, null);
-		}
-		
+//		// pre assign the whole list so that the
+//		// stack.set method will work correctly
+//		for (int i = 0; i < capacity; i++) {
+//			stack.add(i, null);
+//		}
+	
 	}
 	
 	boolean push(T element) {
@@ -41,7 +43,8 @@ class CircularStack<T> implements Iterable<T>{
 			size++;
 		}
 		
-		stack.set(cursor, element);
+//		stack.set(cursor, element);
+		stack[cursor] = element;
 		
 		return true;
 	}
@@ -58,8 +61,10 @@ class CircularStack<T> implements Iterable<T>{
 				}
 			}
 			
-			return stack.get(index);
+//			return stack.get(index);
+			return stack[index];
 		}
+		
 		return null;
 	}
 	
@@ -67,7 +72,8 @@ class CircularStack<T> implements Iterable<T>{
 		if (isEmpty())
 			return null;
 		
-		return stack.get(cursor);
+//		return stack.get(cursor);
+		return stack[cursor];
 	}
 	
 	public boolean isEmpty() {
@@ -82,9 +88,9 @@ class CircularStack<T> implements Iterable<T>{
 		return capacity;
 	}
 	
-	public Iterator<T> iterator() {
-		return stack.iterator();
-	}
+//	public Iterator<T> iterator() {
+//		return stack.iterator();
+//	}
 	
 	void clear() {
 		cursor = -1;

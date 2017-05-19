@@ -102,6 +102,38 @@ class RegexExpress extends JPanel {
 		btnZWindow.setPreferredSize(btnZWindow.getSize());
 		btnZWindow.setMinimumSize(btnZWindow.getSize());
 		btnZWindow.setFocusPainted(false);
+		
+//		CircularStack<Integer> cx = new CircularStack<>(10);
+//
+//		cx.push(10);
+//		cx.push(20);
+//		cx.push(30);
+//		cx.push(40);
+//		cx.push(50);
+//		cx.push(60);
+//		cx.push(70);
+//		cx.push(80);
+//		cx.push(90);
+//		cx.push(100);
+//		cx.push(110);
+//		cx.push(120);
+//		cx.push(130);
+//		cx.push(140);
+//		cx.push(150);
+//		cx.pop();
+//		cx.pop();
+//		cx.pop();
+//
+//		LogMsgln("stack size| " + cx.size());
+//
+//		int stackSize = cx.size();
+//
+//		for (int i = 0; i < stackSize; i++ ) {
+//			LogMsgFmtln("cStack| ", "item # " + i + " = " + cx.pop());
+//		}
+//
+//		LogMsgln("stack size| " + cx.size());
+	
 	}
 	
 	
@@ -251,7 +283,13 @@ class RegexExpress extends JPanel {
 	private ActionListener btn33 = actionEvent -> processFunction(33);
 	
 	// zoom window
-	private ActionListener btn34 = actionEvent -> processFunction(34);
+	private ActionListener btn34 = actionEvent -> {
+		if (!zWindowMode) {
+			processFunction(34);
+		} else {
+			cancelZWindow();
+		}
+	};
 	
 	// zoom previous
 	private ActionListener btn35 = actionEvent -> processFunction(35);
@@ -289,7 +327,6 @@ class RegexExpress extends JPanel {
 			case 2:
 				regexLayerPane.zoomIn();
 				break;
-			
 			case 4:
 				regexLayerPane.add(getLayer());
 				break;
