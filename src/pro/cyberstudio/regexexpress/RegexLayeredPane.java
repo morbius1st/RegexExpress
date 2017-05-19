@@ -64,14 +64,17 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 	private static Point anchorPoint = new Point(0, 0);
 	private static Point winCornerPoint = new Point();
 	
-	private static RegexLayer firstLayer = null;
-	
 	private static final int MAXPRIORZOOMS = 3;
 	private static PriorZoom rootPriorZoom = new PriorZoom();
 	private static boolean priorSaved = false;
 	
-	private TreeMap<String, RegexLayer> layerTable = new TreeMap<>();
-	private CircularStack<PriorZoom> priorZooms = new CircularStack<>(MAXPRIORZOOMS);
+	private static TreeMap<String, RegexLayer> layerTable = new TreeMap<>();
+	private static CircularStack<PriorZoom> priorZooms = new CircularStack<>(MAXPRIORZOOMS);
+	
+	private static int layerID = 1;
+	
+	private static RegexLayer foundLayer;
+	
 	
 	// private constructor to prevent creating
 	// an instance of this class
@@ -122,6 +125,7 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 		rxZero.setOpaque(false);
 		rxZero.setVisible(true);
 		rxZero.setName("zero");
+		rxZero.setZoomScale(zoomFactor);
 		add(rxZero, JLayeredPane.DEFAULT_LAYER);
 		
 		rxPointer.setMinimumSize(layerSize);
@@ -159,12 +163,12 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 	}
 	
 	void getLayerOneInfo() {
-		LogMsgln(firstLayer.toString());
+		LogMsgln(layerTable.firstEntry().getValue().toString());
 	}
 	
 
 	Component add(String layerName) {
-		RegexLayer layer = new RegexLayer();
+		RegexLayer layer = new RegexLayer(layerName, getLayerID());
 		layer.setName(layerName);
 		layer.setMinimumSize(rxZero.getMinimumSize());
 		layer.setPreferredSize(rxZero.getMinimumSize());
@@ -175,15 +179,36 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 		
 		add(layer, (Integer) (layerTable.size() + 1));
 		layerTable.put(layerName, layer);
-		
-		if (firstLayer == null) {
-			firstLayer = layer;
-		}
-		
+
 		return layer;
 	}
 	
-
+	private int getLayerID() {
+		return layerID++;
+	}
+	
+	boolean layerOff(String name) {
+		foundLayer = layerTable.get(name);
+		
+		if (foundLayer == null) { return false; }
+		
+		foundLayer.setVisible(false);
+		
+		return true;
+	}
+	
+	boolean layerOn(String name) {
+		foundLayer = layerTable.get(name);
+		
+		if (foundLayer == null) { return false; }
+		
+		foundLayer.setVisible(true);
+		
+		return true;
+	}
+	
+	
+	
 	void testPointer() {
 		rxPointer.test();
 	}

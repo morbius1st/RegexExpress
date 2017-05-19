@@ -92,6 +92,7 @@ class RegexExpress extends JPanel {
 		
 		regexLayerPane.setInitialZoom(1.0, new Point(new Point(LAYERX / 2, LAYERY / 2)));
 		
+		// watch for the escape key
 		this.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 				.put(KeyStroke.getKeyStroke(ESCAPE), ESCAPE);
 		this.getActionMap().put(ESCAPE, key1);
@@ -103,14 +104,6 @@ class RegexExpress extends JPanel {
 		btnZWindow.setFocusPainted(false);
 	}
 	
-	private JButton makeButton(ActionListener b, String text) {
-		JButton jb = new JButton("<html><center>" + text + "</center></html>");
-		jb.setPreferredSize(BUTTONDIM);
-		jb.setFocusPainted(false);
-		jb.addActionListener(b);
-		return jb;
-	}
-	
 	
 	public void RegexExpressUI() {
 		
@@ -118,7 +111,7 @@ class RegexExpress extends JPanel {
 		
 		JPanel buttons1 = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
 		
-		buttons1.add(makeButton(btn4, "Add<br>Layer"));
+		
 		buttons1.add(makeButton(btn3, "View<br>Info"));
 		buttons1.add(makeButton(btn5, "Layer<br>Info"));
 		buttons1.add(makeButton(btn31, "Layer 1<br>Info"));
@@ -148,6 +141,16 @@ class RegexExpress extends JPanel {
 		buttons2.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 		
 		add(buttons2);
+		
+		this.add(Box.createRigidArea(new Dimension(0, 10)));
+		
+		JPanel buttons3 = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+		
+		buttons3.add(makeButton(btn4, "Layer<br>Add"));
+		buttons3.add(makeButton(btn36, "Layer<br>Off"));
+		buttons3.add(makeButton(btn37, "Layer<br>On"));
+		
+		add(buttons3);
 		
 		this.add(Box.createRigidArea(new Dimension(0, 5)));
 		
@@ -197,6 +200,14 @@ class RegexExpress extends JPanel {
 		
 	}
 	
+	private JButton makeButton(ActionListener b, String text) {
+		JButton jb = new JButton("<html><center>" + text + "</center></html>");
+		jb.setPreferredSize(BUTTONDIM);
+		jb.setFocusPainted(false);
+		jb.addActionListener(b);
+		return jb;
+	}
+	
 	private String getLayer() {
 		return String.format("Layer %1$d", ++layerIdx);
 	}
@@ -244,6 +255,13 @@ class RegexExpress extends JPanel {
 	
 	// zoom previous
 	private ActionListener btn35 = actionEvent -> processFunction(35);
+	
+	// layer off
+	private ActionListener btn36 = actionEvent -> processFunction(36);
+	
+	// layer on
+	private ActionListener btn37 = actionEvent -> processFunction(37);
+	
 	
 	
 // **** old ****************************************************
@@ -295,7 +313,17 @@ class RegexExpress extends JPanel {
 			case 35:
 				regexLayerPane.zoomPrevious();
 				break;
-				// misc tests
+
+			// layer off
+			case 36:
+				regexLayerPane.layerOff("Layer 2");
+				break;
+			// layer on
+			case 37:
+				regexLayerPane.layerOn("Layer 2");
+				break;
+			
+			// misc tests
 			case 6:
 				//			regexLayerPane.testPointer();
 //				regexLayerPane.listVisRect();

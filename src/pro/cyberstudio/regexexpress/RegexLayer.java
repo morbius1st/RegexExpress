@@ -18,7 +18,8 @@ class RegexLayer extends JPanel implements Scrollable, iRxLayer {
 	
 	private static int idx = 1;
 	private int layerIndex;
-	private int offset = 0;
+	private int offsetY = 0;
+	private int offsetX = 10;
 	
 	static private Color[] colors = {Color.LIGHT_GRAY,
 			Color.RED,
@@ -31,11 +32,19 @@ class RegexLayer extends JPanel implements Scrollable, iRxLayer {
 	
 	private double zoomFactor = 1.0;
 	
+	private int layerID;
 	
-	RegexLayer() {
+	
+	RegexLayer(String name, int layerID) {
 		super();
+		setName(name);
+		this.layerID = layerID;
 		layerIndex = idx++;
-		offset = (layerIndex - 1) * 10;
+		offsetY = 6 + (layerIndex) * -12;
+	}
+	
+	int getLayerID() {
+		return layerID;
 	}
 	
 	public void setZoomScale(double zoomFactor) {
@@ -66,10 +75,14 @@ class RegexLayer extends JPanel implements Scrollable, iRxLayer {
 
 		Graphics2D g2 = (Graphics2D) g;
 		
+		int colorIdx = (layerIndex - 1) % colors.length;
+		
+//		colorIdx = colorIdx > colors.length - 1 ? colors.length - 1 : colorIdx;
+		
+		g2.setColor(colors[colorIdx]);
+		
 		if (layerIndex == 1) {
 			
-			
-			g2.setColor(colors[layerIndex-1]);
 			g2.setFont(font);
 			
 			for (; pt.x < getMinimumSize().width; pt.x += 100) {
@@ -88,6 +101,16 @@ class RegexLayer extends JPanel implements Scrollable, iRxLayer {
 				pt.y = 0;
 			}
 		}
+		
+		int x = (getMinimumSize().width / 2) + offsetX;
+		int y = (getMinimumSize().height / 2) + offsetY;
+		
+		font = new Font("Arial", Font.BOLD + Font.ITALIC, 12);
+		
+		g2.setFont(font);
+		g2.drawString("layer| " + getName(), x, y);
+		
+		
 	}
 	
 	@Override
