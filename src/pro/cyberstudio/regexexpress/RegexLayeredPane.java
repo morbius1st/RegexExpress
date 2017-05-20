@@ -9,6 +9,7 @@ import javax.swing.*;
 
 import static pro.cyberstudio.regexexpress.Utility.*;
 import static pro.cyberstudio.regexexpress.Utility.DragModes.*;
+import static pro.cyberstudio.regexexpress.RegexExpress.viewSizes;
 
 
 /**
@@ -74,6 +75,8 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 	private static int layerID = 1;
 	
 	private static RegexLayer foundLayer;
+	
+	private static final String compName = "lay pane| ";
 	
 	
 	// private constructor to prevent creating
@@ -211,59 +214,6 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 	
 	void testPointer() {
 		rxPointer.test();
-	}
-	
-	void listMyInfo() {
-		LogMsgFmtln("lay pane: vis rect| ", dispVal(getVisibleRect()));
-		LogMsgFmtln("lay pane: bounds| ", dispVal(getBounds()));
-		LogMsgFmtln("lay pane: location| ", dispVal(this.getLocation()));
-		LogMsgFmtln("lay pane: pref size| ", dispVal(this.getPreferredSize()));
-		LogMsgFmtln("lay pane: min size| ", dispVal(this.getMinimumSize()));
-		LogMsgFmtln("lay pane: max size| ", dispVal(this.getMaximumSize()));
-		LogMsgFmtln("lay pane: size| ", dispVal(this.getSize()));
-		LogMsgFmtln("lay pane: location on screen| ", dispVal(this.getLocationOnScreen()));
-		
-		LogMsgFmtln("view size param: lay size| ", dispVal(viewSizeParams.layerSize));
-		LogMsgFmtln("lview size param: min size| ", dispVal(viewSizeParams.minSize));
-		LogMsgFmtln("view size param: view size| ", dispVal(viewSizeParams.viewSize));
-	}
-	
-	
-	void listVisRect() {
-		// the corner of the rect as a point / integer
-		LogMsgFmtln("lay pane: vis rect: location| ", getVisibleRect().getLocation());
-		// same as location but as x & y values
-		LogMsgFmtln("lay pane: vis rect: corner| ", dispVal(getVisibleRect().x, getVisibleRect().y));
-		// same as location but as a double
-		LogMsgFmtln("lay pane: vis rect: corner| ", dispVal(getVisibleRect().getX(), getVisibleRect().getY()));
-		// calculated center as an int
-		LogMsgFmtln("lay pane: vis rect: center| ", dispVal(getVisibleRect().getCenterX(), getVisibleRect().getCenterY()));
-		// booth appear to be the same
-		LogMsgFmtln("lay pane: vis rect:| ", getVisibleRect());
-		LogMsgFmtln("lay pane: vis rect: bounds| ", getVisibleRect().getBounds());
-		
-	}
-	
-	void listVisRect2() {
-		LogMsgFmtln("lay pane: vis rect:| ", getVisibleRect());
-		LogMsgFmtln("lay pane: vis rect: bounds| ", getVisibleRect().getBounds());
-	}
-	
-	void listViewportRect() {
-
-		Point srcPt = new Point(viewport.getViewRect().x, viewport.getViewRect().y);
-		Point transPt = SwingUtilities.convertPoint(RegexExpress.regexScroll, srcPt, this);
-		
-		LogMsgFmtln("view", "port");
-		LogMsgFmtln("vp view rect| ", viewport.getViewRect());
-		LogMsgFmtln("vp loc pt raw| ", srcPt);
-		LogMsgFmtln("vp loc pt adj| ", transPt);
-		LogMsgFmtln("vp vis rect| ", viewport.getVisibleRect());
-		LogMsgFmtln("vp ext dim| ", viewport.getExtentSize());
-		LogMsgFmtln("vp to view co| ", viewport.toViewCoordinates(viewport.getExtentSize()));
-		LogMsgFmtln("this vis rect| ", getVisibleRect()); // yes
-		LogMsgFmtln("this size| ", getSize());  // no
-		LogMsgFmtln("this w x h| ", getWidth(), getHeight());  // no
 	}
 
 	
@@ -606,54 +556,134 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 
 		RegexExpress.textAreaCoords.setText(dispVal(mouseLayPoint));
 	}
-
-	@Override
-	public String toString() {
+	
+	void listLayPaneInfo() {
+		listLayPane();
+		listVisRect();
+		listViewSize();
+		listViewportRect();
+	}
+	
+	void listLayPane() {
+		LogMsgln(toString());
+	}
+	
+	void listVisRect() {
+		Rectangle visRect = getVisibleRect();
+		String subComponent = "vis rect| ";
+		
+		LogMsg("\n");
+		LogMsgFmtln("********* layered pane ", "vis rect *******************************");
+		
+		LogMsgFmtln(compName + subComponent + "rect| ", visRect);
+		LogMsgFmtln(compName + subComponent + "corner x, y| ", visRect.x, visRect.y);
+		LogMsgFmtln(compName + subComponent + "getX, getY| ", visRect.getX(), visRect.getY());
+		LogMsgFmtln(compName + subComponent + "center| ", visRect.getCenterX(), visRect.getCenterY());
+		LogMsgFmtln(compName + subComponent + "bounds| ", visRect.getBounds());
+	}
+	
+	void listViewSize() {
+		String subComponent = "v size param| ";
+		
+		LogMsg("\n");
+		LogMsgFmtln("********* layered pane ", "view size param *******************************");
+		
+		LogMsgFmtln(compName + subComponent + "lay size| ", viewSizeParams.layerSize);
+		LogMsgFmtln(compName + subComponent + "min size| ", viewSizeParams.minSize);
+		LogMsgFmtln(compName + subComponent + "view size| ", viewSizeParams.viewSize);
+	}
+	
+	void listViewportRect() {
+		Point srcPt = new Point(viewport.getViewRect().x, viewport.getViewRect().y);
+		Point transPt = SwingUtilities.convertPoint(RegexExpress.regexScroll, srcPt, this);
+		String subComponent = "vp| ";
+		
+		LogMsg("\n");
+		LogMsgFmtln("********* layered pane ", "viewport *******************************");
+		
+		LogMsgFmtln(compName + subComponent + "view rect| ", viewport.getViewRect());
+		LogMsgFmtln(compName + subComponent + "loc pt raw| ", srcPt);
+		LogMsgFmtln(compName + subComponent + "loc pt adj| ", transPt);
+		LogMsgFmtln(compName + subComponent + "vis rect| ", viewport.getVisibleRect());
+		LogMsgFmtln(compName + subComponent + "ext dim| ", viewport.getExtentSize());
+		LogMsgFmtln(compName + subComponent + "to view coord| ", viewport.toViewCoordinates(viewport.getExtentSize()));
+	}
+	
+	void listLayers() {
 		StringBuilder sb = new StringBuilder();
 		
-		sb.append(LogMsgStr("layer table|  Count|  ", dispVal(layerTable.size())));
+		sb.append("\n");
+		sb.append(LogMsgStr("********* layer ", "info *******************************"));
+		sb.append("\n");
+		
+		sb.append(LogMsgStr("layer table|  Count| ", dispVal(layerTable.size())));
 		sb.append("\n");
 		
 		for (Map.Entry<String, RegexLayer> entry : layerTable.entrySet()) {
-			sb.append(LogMsgStr("name 1|  ", entry.getKey()))
+			sb.append(LogMsgStr("name 1| ", entry.getKey()))
 					.append(" name 2| ").append(entry.getValue().getName());
 			sb.append("\n");
 		}
 		
-		sb.append(LogMsgStr("component count|  ", dispVal(getComponentCount())));
+		sb.append(LogMsgStr("component count| ", dispVal(getComponentCount())));
 		sb.append("\n");
 		
-		sb.append(LogMsgStr("paramString|  ", paramString()));
+		sb.append(LogMsgStr("paramString| ", paramString()));
 		sb.append("\n");
 		
-		sb.append(LogMsgStr("lowest layer|  ", dispVal(lowestLayer())));
+		sb.append(LogMsgStr("lowest layer| ", dispVal(lowestLayer())));
 		sb.append("\n");
 		
-		sb.append(LogMsgStr("highest layer|  ", dispVal(highestLayer())));
+		sb.append(LogMsgStr("highest layer| ", dispVal(highestLayer())));
 		sb.append("\n");
 		
 		for (int i = lowestLayer(); i <= highestLayer(); i++) {
 			Component[] comps = getComponentsInLayer(i);
 			
 			if (comps.length > 0) {
-				sb.append(LogMsgStr("components in layer|  ", dispVal(i)))
-						.append(" = ").append(comps.length);
+				sb.append(LogMsgStr("components in layer "
+						+ dispVal(i) + "| ", "= "))
+						.append(comps.length);
 				sb.append("\n");
 				
 				for (int j = 0; j < comps.length; j++) {
-					sb.append(LogMsgStr("component #|  ", dispVal(j))).append(" in layer| name= ").append(comps[j].getName());
+					sb.append(LogMsgStr("component #" + j + "| ", "in layer name| ")).append(comps[j].getName());
 					sb.append("\n");
-					sb.append(LogMsgStr("size|  ", dispVal(comps[j].getSize())));
-					sb.append("\n");
-					sb.append(LogMsgStr("perf size|  ", dispVal(comps[j].getPreferredSize())));
-					sb.append("\n");
-					sb.append(LogMsgStr("min size|  ", dispVal(comps[j].getMinimumSize())));
-					sb.append("\n");
-					sb.append(LogMsgStr("max size|  ", dispVal(comps[j].getMaximumSize())));
+					sb.append(viewSizes(comps[j], viewSizeMask.all(), false));
 					sb.append("\n");
 				}
 			}
 		}
+		
+		LogMsgln(sb.toString());
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("\n");
+		sb.append(LogMsgStr("********* layered pane ", "*******************************"));
+		sb.append("\n");
+		
+		sb.append(LogMsgStr(compName + "location| ", getLocation()));
+		sb.append("\n");
+		
+		sb.append(LogMsgStr(compName + "pref size| ", getPreferredSize()));
+		sb.append("\n");
+		
+		sb.append(LogMsgStr(compName + "min size| ", getMinimumSize()));
+		sb.append("\n");
+		
+		sb.append(LogMsgStr(compName + "max size| ", getMaximumSize()));
+		sb.append("\n");
+		
+		sb.append(LogMsgStr(compName + "size| ", getSize()));
+		sb.append("\n");
+		
+		sb.append(LogMsgStr(compName + "bounds| ", getBounds()));
+		sb.append("\n");
+		
+		sb.append(LogMsgStr(compName + "location on screen| ", getLocationOnScreen()));
 		
 		return sb.toString();
 	}

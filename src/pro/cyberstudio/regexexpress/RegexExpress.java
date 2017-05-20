@@ -147,6 +147,7 @@ class RegexExpress extends JPanel {
 		buttons1.add(makeButton(btn3, "View<br>Info"));
 		buttons1.add(makeButton(btn5, "Layer<br>Info"));
 		buttons1.add(makeButton(btn31, "Layer 1<br>Info"));
+		buttons1.add(makeButton(btn15, "Lay pane<br>Info"));
 		buttons1.add(makeButton(btn6, "Misc<br>Test"));
 		
 		
@@ -299,10 +300,7 @@ class RegexExpress extends JPanel {
 	
 	// layer on
 	private ActionListener btn37 = actionEvent -> processFunction(37);
-	
-	
-	
-// **** old ****************************************************
+
 	
 	// list layer information
 	private ActionListener btn5 = actionEvent -> processFunction(5);
@@ -315,6 +313,9 @@ class RegexExpress extends JPanel {
 
 	// list view information
 	private ActionListener btn3 = actionEvent ->  processFunction(3);
+	
+	// list layered pane information
+	private ActionListener btn15 = actionEvent ->  processFunction(15);
 	
 	
 // **** process functions ****************************************************
@@ -331,7 +332,10 @@ class RegexExpress extends JPanel {
 				regexLayerPane.add(getLayer());
 				break;
 			case 5:
-				LogMsgln(regexLayerPane.toString());
+				regexLayerPane.listLayers();
+				break;
+			case 15:
+				regexLayerPane.listLayPaneInfo();
 				break;
 			case 31:
 				regexLayerPane.getLayerOneInfo();
@@ -362,23 +366,16 @@ class RegexExpress extends JPanel {
 			
 			// misc tests
 			case 6:
-				//			regexLayerPane.testPointer();
-//				regexLayerPane.listVisRect();
-//				regexLayerPane.listVisRect2();
-//				regexLayerPane.listViewportRect();
-//				regexLayerPane.listMyInfo();
-				LogMsgln("\ncomponent listeners: " + regexScroll.listCompListeners());
-				LogMsgln("\nclick listeners: " + regexScroll.listMouseClickListeners());
-				LogMsgln("\nwheel listeners: " + regexScroll.listMouseWheelListeners());
-				LogMsgln("\ndrag listeners: " + regexScroll.listMouseDragListeners());
-				LogMsgln("\nmove listeners: " + regexScroll.listMouseMoveListeners());
-				LogMsgln("\nmouse listeners: " + regexScroll.listMouseListeners());
+//				regexLayerPane.testPointer();
+				
+				listListeners();
 				
 				break;
 			case 3:
-				LogMsgFmtln("*******************", "*******************************");
+				LogMsg("\n");
+				LogMsgFmtln("********* view ", "info *******************************");
 				LogMsgFmtln("scroll", " panel");
-				LogMsg(viewSizes(regexScroll, viewSizeMask.all()));
+				LogMsg(viewSizes(regexScroll, viewSizeMask.all(), true));
 				LogMsgFmtln("vp bounds| ", Utility.dispVal(regexScroll.getViewportBorderBounds()));
 				
 				ScrollPaneLayout layout = (ScrollPaneLayout) regexScroll.getLayout();
@@ -388,47 +385,82 @@ class RegexExpress extends JPanel {
 				
 				LogMsg("\n");
 				LogMsgFmtln("viewport", "");
-				LogMsg(viewSizes(regexScroll.getViewport(), viewSizeMask.all()));
+				LogMsg(viewSizes(regexScroll.getViewport(), viewSizeMask.all(), true));
 				LogMsgFmtln("view size| ", Utility.dispVal(regexScroll.getViewport().getViewSize()));
 				LogMsgFmtln(" ext size| ", Utility.dispVal(regexScroll.getViewport().getExtentSize()));
 				LogMsgFmtln(" view pos| ", dispVal(regexScroll.getViewport().getViewPosition()));
 				
 				LogMsg("\n");
 				LogMsgFmtln("layered", " pane");
-				LogMsg(viewSizes(regexLayerPane, viewSizeMask.all()));
+				LogMsg(viewSizes(regexLayerPane, viewSizeMask.all(), true));
 				break;
 				
 		}
 	}
+
+	void listListeners() {
+		LogMsg("\n");
+		LogMsgFmtln("********* component ", "listeners *******************************");
+		
+		LogMsgln("\nclick listeners: " + regexScroll.listMouseClickListeners());
+		LogMsgln("\nwheel listeners: " + regexScroll.listMouseWheelListeners());
+		LogMsgln("\ndrag listeners: " + regexScroll.listMouseDragListeners());
+		LogMsgln("\nmove listeners: " + regexScroll.listMouseMoveListeners());
+		LogMsgln("\nmouse listeners: " + regexScroll.listMouseListeners());
+	}
 	
-	String viewSizes(Component c, int which) {
+	
+	static String viewSizes(Component c, int which, boolean newLine) {
 		StringBuilder sb = new StringBuilder();
+		boolean offsetDone = false;
+
+		if ((which & SIZE.value) > 0) {
+			offsetDone = true;
+			sb.append(LogMsgStr("size| ", dispVal(c.getSize())));
+			
+			if (newLine) { sb.append("\n"); }
+		}
 		
 		if ((which & MIN.value) > 0) {
-			sb.append(LogMsgStr("Min Size| ", dispVal(c.getMinimumSize())));
-			sb.append("\n");
+			if (!offsetDone || newLine) {
+				sb.append(LogMsgStr("min Size| ", dispVal(c.getMinimumSize())));
+			} else {
+				sb.append(" || min Size| ").append(dispVal(c.getMinimumSize()));
+			}
+			
+			if (newLine) { sb.append("\n"); }
 		}
 		
 		if ((which & PERF.value) > 0) {
-			sb.append(LogMsgStr("Pref Size: ", dispVal(c.getPreferredSize())));
-			sb.append("\n");
+			if (!offsetDone || newLine) {
+				sb.append(LogMsgStr("pref Size| ", dispVal(c.getPreferredSize())));
+			} else {
+				sb.append(" || pref Size| ").append(dispVal(c.getPreferredSize()));
+			}
+			
+			if (newLine) { sb.append("\n"); }
 		}
 		
 		if ((which & MAX.value) > 0) {
-			sb.append(LogMsgStr("Max Size: ", dispVal(c.getMaximumSize())));
-			sb.append("\n");
-		}
-		
-		if ((which & SIZE.value) > 0) {
-			sb.append(LogMsgStr("Size: ", dispVal(c.getSize())));
-			sb.append("\n");
+			if (!offsetDone || newLine) {
+				sb.append(LogMsgStr("max Size| ", dispVal(c.getMaximumSize())));
+			} else {
+				sb.append(" || max Size| ").append(dispVal(c.getMaximumSize()));
+			}
+			
+			if (newLine) { sb.append("\n"); }
 		}
 		
 		if ((which & BOUNDS.value) > 0) {
-			sb.append(LogMsgStr("Bounds: ", dispVal(c.getBounds())));
-			sb.append("\n");
+			
+			if (!offsetDone || newLine) {
+				sb.append(LogMsgStr("bounds| ", dispVal(c.getBounds())));
+			} else {
+				sb.append(" || bounds| ").append(dispVal(c.getBounds()));
+			}
+			
+			if (newLine) { sb.append("\n"); }
 		}
-		
 		return sb.toString();
 	}
 

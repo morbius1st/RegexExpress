@@ -91,39 +91,35 @@ class Utility {
 	static String FmtWH(double w, double h) {
 		return String.format("w| %1$8.2f  h| %2$8.2f", w, h);
 	}
-
-	
-	static String LogMsgStr(String msg1, String msg2) {
-		if (msg2 == null) {msg2 = "";}
-		return String.format("%1$35s%2$s", msg1, msg2);
-	}
 	
 	static void LogMsgln(String msg) { System.out.println(msg); }
 	
 	static void LogMsg(String msg) {System.out.print(msg); }
 	
-	static void LogMsgFmtln(String msg1, String msg2) {
+	static String LogMsgStr(String msg1, String msg2) {
 		if (msg2 == null) {msg2 = "";}
-		LogMsgln(LogMsgStr(msg1, msg2));
+		return String.format("%1$35s%2$s", msg1, msg2);
 	}
+	static String LogMsgStr(String msg, Point pt) 				{ return LogMsgStr(msg, dispVal(pt)); }
+	static String LogMsgStr(String msg, Point2D.Double pt) 		{ return LogMsgStr(msg, dispVal(pt)); }
+	static String LogMsgStr(String msg, Dimension2dx dim) 		{ return LogMsgStr(msg, dispVal(dim)); }
+	static String LogMsgStr(String msg, Dimension dim) 			{ return LogMsgStr(msg, dispVal(dim)); }
+	static String LogMsgStr(String msg, double x, double y) 	{ return LogMsgStr(msg, dispVal(x, y)); }
+	static String LogMsgStr(String msg, int x, int y) 			{ return LogMsgStr(msg, dispVal(x, y)); }
+	static String LogMsgStr(String msg, Rectangle rect) 		{ return LogMsgStr(msg, dispVal(rect)); }
+	static String LogMsgStr(String msg, int i) 					{ return LogMsgStr(msg, dispVal(i)); }
+	static String LogMsgStr(String msg, double d) 				{ return LogMsgStr(msg, dispVal(d)); }
 	
-	static void LogMsgFmtln(String msg, Point pt) { LogMsgFmtln(msg, dispVal(pt)); }
-	
-	static void LogMsgFmtln(String msg, Point2D.Double pt) { LogMsgFmtln(msg, dispVal(pt)); }
-	
-	static void LogMsgFmtln(String msg, Dimension2dx dim) { LogMsgFmtln(msg, dispVal(dim)); }
-	
-	static void LogMsgFmtln(String msg, Dimension dim) { LogMsgFmtln(msg, dispVal(dim)); }
-	
-	static void LogMsgFmtln(String msg, double x, double y) { LogMsgFmtln(msg, dispVal(x, y)); }
-	
-	static void LogMsgFmtln(String msg, int x, int y) { LogMsgFmtln(msg, dispVal(x, y)); }
-	
-	static void LogMsgFmtln(String msg, Rectangle rect) { LogMsgFmtln(msg, dispVal(rect)); }
-	
-	static void LogMsgFmtln(String msg, int i) { LogMsgFmtln(msg, dispVal(i)); }
-	
-	static void LogMsgFmtln(String msg, double d) { LogMsgFmtln(msg, dispVal(d)); }
+	static void LogMsgFmtln(String msg1, String msg2) 			{ LogMsgln(LogMsgStr(msg1, msg2)); }
+	static void LogMsgFmtln(String msg, Point pt) 				{ LogMsgln(LogMsgStr(msg, pt)); }
+	static void LogMsgFmtln(String msg, Point2D.Double pt) 		{ LogMsgln(LogMsgStr(msg, pt)); }
+	static void LogMsgFmtln(String msg, Dimension2dx dim) 		{ LogMsgln(LogMsgStr(msg, dim)); }
+	static void LogMsgFmtln(String msg, Dimension dim) 			{ LogMsgln(LogMsgStr(msg, dim)); }
+	static void LogMsgFmtln(String msg, double x, double y) 	{ LogMsgln(LogMsgStr(msg, x, y)); }
+	static void LogMsgFmtln(String msg, int x, int y) 			{ LogMsgln(LogMsgStr(msg, x, y)); }
+	static void LogMsgFmtln(String msg, Rectangle rect) 		{ LogMsgln(LogMsgStr(msg, rect)); }
+	static void LogMsgFmtln(String msg, int i) 					{ LogMsgln(LogMsgStr(msg, i)); }
+	static void LogMsgFmtln(String msg, double d) 				{ LogMsgln(LogMsgStr(msg, d)); }
 	
 	static String dispVal(int i)  {return String.valueOf(i); }
 	static String dispVal(double d)  {return String.valueOf(d); }
@@ -156,5 +152,5 @@ class Utility {
 	@NotNull
 	@Contract(pure = true)
 	static String dispVal(Rectangle rect) { return FmtXY(rect.x, rect.y) + "  " +  FmtWH(rect.width, rect.height); }
-
+	
 }
