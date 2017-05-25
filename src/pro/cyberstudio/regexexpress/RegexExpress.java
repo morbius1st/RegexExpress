@@ -6,8 +6,10 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
-import static pro.cyberstudio.regexexpress.Utility.*;
-import static pro.cyberstudio.regexexpress.Utility.viewSizeMask.*;
+import static pro.cyberstudio.regexexpress.Utility2.*;
+import static pro.cyberstudio.regexexpress.Utility2.viewSizeMask.*;
+
+import static pro.cyberstudio.utilities.log.*;
 
 /**
  * @author jeffs
@@ -23,6 +25,7 @@ class RegexExpress extends JPanel {
 	
 	private static JFrame frame;
 	private static RegexExpress rx;
+	
 	static JTextArea textAreaCoords;
 	static JTextArea textAreaZmFactor;
 	
@@ -367,7 +370,7 @@ class RegexExpress extends JPanel {
 			// misc tests
 			case 6:
 //				regexLayerPane.testPointer();
-				
+
 				listListeners();
 				
 				break;
@@ -398,7 +401,7 @@ class RegexExpress extends JPanel {
 		}
 	}
 
-	void listListeners() {
+	private void listListeners() {
 		LogMsg("\n");
 		LogMsgFmtln("********* component ", "listeners *******************************");
 		

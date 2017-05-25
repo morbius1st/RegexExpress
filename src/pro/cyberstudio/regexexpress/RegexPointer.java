@@ -5,8 +5,10 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
+import pro.cyberstudio.regexexpress.RegexLayeredPane.DragModes;
+
 import static pro.cyberstudio.regexexpress.Utility.*;
-import static pro.cyberstudio.regexexpress.Utility.DragModes.*;
+import static pro.cyberstudio.regexexpress.RegexLayeredPane.DragModes.*;
 
 /**
  * @author jeffs

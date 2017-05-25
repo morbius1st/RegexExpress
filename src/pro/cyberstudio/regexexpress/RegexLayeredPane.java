@@ -8,7 +8,7 @@ import java.util.*;
 import javax.swing.*;
 
 import static pro.cyberstudio.regexexpress.Utility.*;
-import static pro.cyberstudio.regexexpress.Utility.DragModes.*;
+import static pro.cyberstudio.regexexpress.RegexLayeredPane.DragModes.*;
 import static pro.cyberstudio.regexexpress.RegexExpress.viewSizes;
 
 
@@ -31,6 +31,8 @@ class PriorZoom {
 }
 
 class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseListener, iMWListener, iMMListener  { //, MouseWheelListener{
+	
+	enum DragModes {NONE, XHAIRS, PAN, STARTWINDOW, WINDOW, SELECTION, LINE }
 	
 	static private final int POINTER_LAYER = JLayeredPane.PALETTE_LAYER - 1;
 	

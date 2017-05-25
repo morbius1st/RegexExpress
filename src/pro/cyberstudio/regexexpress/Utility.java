@@ -60,7 +60,7 @@ class Utility {
 		return (p1.y == p2.y);
 	}
 	
-	enum DragModes {NONE, XHAIRS, PAN, STARTWINDOW, WINDOW, SELECTION, LINE }
+
 	
 	enum viewSizeMask { MIN(1), PERF(2), MAX(4), SIZE(8), BOUNDS(16);
 		int value;
@@ -79,11 +79,14 @@ class Utility {
 		}
 	}
 	
-
-//	static String FmtXY(int x, int y) {
-//		return FmtXY((double) x, (double) y);
-//	}
+	static String LogMsgStr(String msg, Dimension2dx dim) 		{ return LogMsgStr(msg, dispVal(dim)); }
+	static void LogMsgFmtln(String msg, Dimension2dx dim) 		{ LogMsgln(LogMsgStr(msg, dim)); }
 	
+	@NotNull
+	@Contract(pure = true)
+	static String dispVal(Dimension2dx dim) { return dispVal(dim.width, dim.height); }
+	
+
 	static String FmtXY(double x, double y) {
 		return String.format("x| %1$8.2f  y| %2$8.2f", x, y);
 	}
@@ -102,7 +105,7 @@ class Utility {
 	}
 	static String LogMsgStr(String msg, Point pt) 				{ return LogMsgStr(msg, dispVal(pt)); }
 	static String LogMsgStr(String msg, Point2D.Double pt) 		{ return LogMsgStr(msg, dispVal(pt)); }
-	static String LogMsgStr(String msg, Dimension2dx dim) 		{ return LogMsgStr(msg, dispVal(dim)); }
+	
 	static String LogMsgStr(String msg, Dimension dim) 			{ return LogMsgStr(msg, dispVal(dim)); }
 	static String LogMsgStr(String msg, double x, double y) 	{ return LogMsgStr(msg, dispVal(x, y)); }
 	static String LogMsgStr(String msg, int x, int y) 			{ return LogMsgStr(msg, dispVal(x, y)); }
@@ -113,7 +116,7 @@ class Utility {
 	static void LogMsgFmtln(String msg1, String msg2) 			{ LogMsgln(LogMsgStr(msg1, msg2)); }
 	static void LogMsgFmtln(String msg, Point pt) 				{ LogMsgln(LogMsgStr(msg, pt)); }
 	static void LogMsgFmtln(String msg, Point2D.Double pt) 		{ LogMsgln(LogMsgStr(msg, pt)); }
-	static void LogMsgFmtln(String msg, Dimension2dx dim) 		{ LogMsgln(LogMsgStr(msg, dim)); }
+	
 	static void LogMsgFmtln(String msg, Dimension dim) 			{ LogMsgln(LogMsgStr(msg, dim)); }
 	static void LogMsgFmtln(String msg, double x, double y) 	{ LogMsgln(LogMsgStr(msg, x, y)); }
 	static void LogMsgFmtln(String msg, int x, int y) 			{ LogMsgln(LogMsgStr(msg, x, y)); }
@@ -132,10 +135,6 @@ class Utility {
 	
 	@NotNull
 	static String dispVal(Point2D.Double pt)  { return dispVal(pt.getX(), pt.getY()); }
-	
-	@NotNull
-	@Contract(pure = true)
-	static String dispVal(Dimension2dx dim) { return dispVal(dim.width, dim.height); }
 	
 	@NotNull
 	@Contract(pure = true)

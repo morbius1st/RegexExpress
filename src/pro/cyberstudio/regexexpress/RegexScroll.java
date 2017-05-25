@@ -5,7 +5,8 @@ import java.awt.event.*;
 import java.util.ArrayList;
 
 import javax.swing.*;
-import static pro.cyberstudio.regexexpress.Utility.*;
+
+import static pro.cyberstudio.utilities.log.*;
 
 /**
  * @author jeffs
