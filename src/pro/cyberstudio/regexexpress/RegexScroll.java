@@ -6,8 +6,6 @@ import java.util.ArrayList;
 
 import javax.swing.*;
 
-import static pro.cyberstudio.utilities.log.*;
-
 /**
  * @author jeffs
  *         File:    RegexScroll

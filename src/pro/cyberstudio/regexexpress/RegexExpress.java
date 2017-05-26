@@ -6,10 +6,8 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
-import static pro.cyberstudio.regexexpress.Utility2.*;
-import static pro.cyberstudio.regexexpress.Utility2.viewSizeMask.*;
-
-import static pro.cyberstudio.utilities.log.*;
+import static pro.cyberstudio.regexexpress.Utility.viewSizeMask.*;
+import static pro.cyberstudio.regexexpress.Utility.*;
 
 /**
  * @author jeffs
@@ -379,18 +377,18 @@ class RegexExpress extends JPanel {
 				LogMsgFmtln("********* view ", "info *******************************");
 				LogMsgFmtln("scroll", " panel");
 				LogMsg(viewSizes(regexScroll, viewSizeMask.all(), true));
-				LogMsgFmtln("vp bounds| ", Utility.dispVal(regexScroll.getViewportBorderBounds()));
+				LogMsgFmtln("vp bounds| ", dispVal(regexScroll.getViewportBorderBounds()));
 				
 				ScrollPaneLayout layout = (ScrollPaneLayout) regexScroll.getLayout();
 				LogMsg("\n");
 				LogMsgFmtln("scroll", " panel");
-				LogMsgFmtln("layout size| ", Utility.dispVal(layout.preferredLayoutSize(regexScroll)));
+				LogMsgFmtln("layout size| ", dispVal(layout.preferredLayoutSize(regexScroll)));
 				
 				LogMsg("\n");
 				LogMsgFmtln("viewport", "");
 				LogMsg(viewSizes(regexScroll.getViewport(), viewSizeMask.all(), true));
-				LogMsgFmtln("view size| ", Utility.dispVal(regexScroll.getViewport().getViewSize()));
-				LogMsgFmtln(" ext size| ", Utility.dispVal(regexScroll.getViewport().getExtentSize()));
+				LogMsgFmtln("view size| ", dispVal(regexScroll.getViewport().getViewSize()));
+				LogMsgFmtln(" ext size| ", dispVal(regexScroll.getViewport().getExtentSize()));
 				LogMsgFmtln(" view pos| ", dispVal(regexScroll.getViewport().getViewPosition()));
 				
 				LogMsg("\n");

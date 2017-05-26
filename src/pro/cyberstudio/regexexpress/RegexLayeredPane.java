@@ -8,9 +8,11 @@ import java.util.*;
 import javax.swing.*;
 
 import static pro.cyberstudio.regexexpress.Utility.*;
+import static pro.cyberstudio.regexexpress.Utility.viewSizeMask;
 import static pro.cyberstudio.regexexpress.RegexLayeredPane.DragModes.*;
 import static pro.cyberstudio.regexexpress.RegexExpress.viewSizes;
 
+import static pro.cyberstudio.utilities.point.*;
 
 /**
  * @author jeffs

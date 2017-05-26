@@ -5,8 +5,6 @@ import java.awt.geom.*;
 
 import javax.swing.JPanel;
 
-import static pro.cyberstudio.regexexpress.RegexExpress.*;
-
 /**
  * @author jeffs
  *         File:    RxBackground

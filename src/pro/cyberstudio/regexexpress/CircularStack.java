@@ -1,8 +1,5 @@
 package pro.cyberstudio.regexexpress;
 
-import java.util.*;
-import static pro.cyberstudio.regexexpress.Utility.*;
-
 /**
  * @author jeffs
  *         File:    CircularList
