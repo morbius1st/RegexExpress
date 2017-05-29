@@ -1,6 +1,8 @@
 package pro.cyberstudio.displaylist;
 
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
+import java.awt.geom.Rectangle2D.Double;
 
 import static pro.cyberstudio.regexexpress.Utility.dispVal;
 import static pro.cyberstudio.utilities.log.*;
@@ -12,21 +14,24 @@ import static pro.cyberstudio.utilities.log.*;
  *         Project: RegexExpress
  */
 
-public class GElemRectFilled extends GElemRect {
+public class GElemRectFilled extends GraphElemRectangular {
 	
-	private Color colorFill;
+	private Paint colorFill;
 	
-	public GElemRectFilled(Point inserPt, Dimension size, double rotation,
-						   Color color, BasicStroke stroke, Color colorFill) {
+	public GElemRectFilled(double rotation, Paint paint, BasicStroke stroke, Paint paintFill, Rectangle2D.Double rect) {
 		
-		super(inserPt, size, rotation, GraphicType.RECTFILLED, color, stroke);
+		super(rotation, GraphicType.RECTFILLED, paint, stroke, rect);
 		
-		this.colorFill = colorFill;
+		this.colorFill = paintFill;
 	}
 	
 //	public void draw(Graphics2D g2) {
+	@Override
 	public void draw() {
 		LogMsgFmtln("this is a rect filled|",
-				GraphElem.listElemInfo(ID(), paint, getInsertPt()));
+				GraphElement.listElemInfo(ID(), paint,
+						((Rectangle2D.Double) shape).getX(),
+						((Rectangle2D.Double) shape).getY(),
+						rotation));
 	}
 }

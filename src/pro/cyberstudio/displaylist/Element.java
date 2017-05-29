@@ -26,7 +26,7 @@ abstract class Element {
 		
 	}
 	
-	enum GraphicType implements iSubElementType {
+	enum GraphicType {
 		UNDEFINED,
 		LINE,
 		RECT,
@@ -34,14 +34,13 @@ abstract class Element {
 		STRING
 	}
 	
-	
 	class ID {
 		
 		String elemType;
 		String SubElemType;
 		int index;
 		
-		ID(ElementType elementType, iSubElementType subElementType) {
+		ID(ElementType elementType, GraphicType subElementType) {
 			elemType = elementType.getElementType();
 			SubElemType = subElementType.name();
 			index = indexID++;

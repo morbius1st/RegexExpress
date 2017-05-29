@@ -2,9 +2,9 @@ package pro.cyberstudio.displaylist;
 
 import java.awt.*;
 import java.awt.geom.Line2D;
+import java.awt.geom.Line2D.Double;
 
 import static pro.cyberstudio.regexexpress.Utility.*;
-import static pro.cyberstudio.utilities.log.*;
 
 
 /**
@@ -16,30 +16,15 @@ import static pro.cyberstudio.utilities.log.*;
 
 public class GElemLine extends GraphElemLinear {
 	
-	Line2D.Double line;
-	
-	public GElemLine(Point inserPt, int length, double rotation,
-					 Color color, BasicStroke stroke) {
-		super(inserPt, length, rotation, GraphicType.LINE, color, stroke);
+	public GElemLine(double rotation, Paint paint,
+					 BasicStroke stroke, Line2D.Double line) {
 		
+		super(rotation, GraphicType.LINE, paint, stroke, line);
 	}
-	
-	// for a sub-classes
-	GElemLine(Point inserPt, int length, double rotation,
-			  GraphicType graphicType,
-			  Color color, BasicStroke stroke) {
-		super(inserPt, length, rotation, graphicType, color, stroke);
-	}
-	
-	@Override
-	void setBoundary(Point insertPt, Dimension size) {
-		boundary = new Rectangle(insertPt, size);
-	}
-	
-	
+
 //	public void draw(Graphics2D g2) {
 	public void draw() {
 		LogMsgFmtln("this is a line|",
-				GraphElem.listElemInfo(ID(), paint, getInsertPt()));
+				GraphElement.listElemInfo(ID(), paint, ((Line2D.Double) shape).getP1(), rotation));
 	}
 }

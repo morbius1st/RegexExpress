@@ -9,13 +9,15 @@ import java.awt.*;
  *         Project: RegexExpress
  */
 
-abstract class GraphElemShape extends GraphElem {
+abstract class GraphElemShape extends GraphElement {
 	
-	public GraphElemShape(Point insertPt, Dimension size, double rotation,
-						  GraphicType graphicType, Color color, BasicStroke stroke) {
-		super(rotation, graphicType, color, stroke);
-		
-		setBoundary(insertPt, size);
-	}
+	Shape shape;
+	
+	public GraphElemShape(double rotation, GraphicType graphicType,
+						  Paint paint, BasicStroke stroke, Shape shape) {
 
+		super(rotation, graphicType, paint, stroke);
+		
+		this.shape = shape;
+	}
 }

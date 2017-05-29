@@ -9,20 +9,27 @@ import java.awt.*;
  *         Project: RegexExpress
  */
 
-abstract class GraphElemString extends GraphElem {
+abstract class GraphElemString extends GraphElement {
 	
+	Point insertPt;
 	Font font;
 	String string;
 	Graphics2D	graphics;
 	
-	public GraphElemString(Point insertPt, double rotation,
-						   GraphicType graphicType, Color color, BasicStroke stroke,
-						   Font font, String string, Graphics2D graphics) {
-		super(rotation, graphicType, color, stroke);
+	public GraphElemString(double rotation, GraphicType graphicType,
+						   Paint paint, BasicStroke stroke, Graphics2D graphics,
+						   String string, Font font, Point insertPt) {
+		super(rotation, graphicType, paint, stroke);
 		
+		this.insertPt = insertPt;
 		this.font = font;
 		this.string = string;
+		this.graphics = graphics;
 		
+	}
+	
+	public Point getInsertPt() {
+		return insertPt;
 	}
 	
 }

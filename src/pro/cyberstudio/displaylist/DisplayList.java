@@ -9,10 +9,10 @@ import java.util.ArrayList;
  *         Project: RegexExpress
  */
 
-class DisplayList extends ArrayList<GraphElem> {
+class DisplayList extends ArrayList<GraphElement> {
 	
 	DisplayList(int initCapacity) { super.ensureCapacity(initCapacity); }
 
-	void addOne(GraphElem item) { super.add(item); }
+	void addOne(GraphElement item) { super.add(item); }
 
 }

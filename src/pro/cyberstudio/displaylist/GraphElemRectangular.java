@@ -10,10 +10,10 @@ import java.awt.*;
  */
 
 // a graphic element with a length definition but no width
-abstract class GraphElemLinear extends GraphElemShape {
+abstract class GraphElemRectangular extends GraphElemShape {
 	
-	public GraphElemLinear(double rotation, GraphicType graphicType,
-						   Paint paint, BasicStroke stroke, Shape shape) {
+	public GraphElemRectangular(double rotation, GraphicType graphicType,
+								Paint paint, BasicStroke stroke, Shape shape) {
 		
 		super(rotation, graphicType, paint, stroke, shape);
 	}

@@ -4,8 +4,6 @@ import java.awt.*;
 import java.awt.font.LineMetrics;
 
 import static pro.cyberstudio.utilities.log.*;
-import static pro.cyberstudio.utilities.point.*;
-import static pro.cyberstudio.regexexpress.Utility.*;
 
 /**
  * @author jeffs
@@ -16,29 +14,15 @@ import static pro.cyberstudio.regexexpress.Utility.*;
 
 public class GElemSimpleString extends GraphElemString {
 	
+	Point insertPt;
 	
-	public GElemSimpleString(Point inserPt, double rotation,
-							 Color color, BasicStroke stroke,
-							 Font font, String string,
-							 Graphics2D graphics) {
+	public GElemSimpleString(double rotation, Paint paint, BasicStroke stroke,
+							 Graphics2D graphics, String string, Font font, Point insertPt) {
 		
-		super(inserPt, rotation, GraphicType.STRING, color, stroke, font, string, graphics);
+		super(rotation, GraphicType.STRING, paint, stroke, graphics, string, font, insertPt);
 
+		this.insertPt = insertPt;
 		this.graphics = graphics;
-		setBoundary(inserPt, null);
-		
-	}
-	
-	public GElemSimpleString(Point inserPt, double rotation,
-							 GraphicType graphicType, Color color, BasicStroke stroke,
-							 Font font, String string,
-							 Graphics2D graphics) {
-		
-		super(inserPt, rotation, GraphicType.STRING, color, stroke, font, string, graphics);
-
-		this.graphics = graphics;
-		setBoundary(inserPt, null);
-		
 	}
 
 	Dimension determineSize(Font font, String string) {
@@ -46,14 +30,9 @@ public class GElemSimpleString extends GraphElemString {
 		return new Dimension(30, 10);
 	}
 	
-	void setBoundary(Point insertPt, Dimension size) {
-		size = determineSize(font, string);
-		boundary = new Rectangle(addPoints(getInsertPt(), new Point(0, -size.height)), size);
-	}
-	
 //	public void draw(Graphics2D g2) {
 	public void draw() {
 		LogMsgFmtln("this is a simple string|",
-				GraphElem.listElemInfo(ID(), paint, getInsertPt()));
+				GraphElement.listElemInfo(ID(), paint, insertPt, rotation));
 	}
 }
