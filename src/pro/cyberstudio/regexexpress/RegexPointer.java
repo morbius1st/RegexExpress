@@ -17,7 +17,7 @@ import static pro.cyberstudio.regexexpress.RegexLayeredPane.DragModes.*;
  *         Project: RegexExpress
  */
 
-class RegexPointer extends JPanel implements Scrollable, iRxLayer, iMMListener { //}, MouseMotionListener { //}, iMWListener {
+class RegexPointer extends iRxLayer implements Scrollable, iMMListener { //}, MouseMotionListener { //}, iMWListener {
 	
 	private static int maxUnitIncrement = 1;
 	
@@ -39,6 +39,11 @@ class RegexPointer extends JPanel implements Scrollable, iRxLayer, iMMListener {
 		RegexScroll.addMMovL(this);
 		RegexScroll.addMDragL(this);
 	}
+//
+//	@Override
+//	public Graphics2D getGraphics() {
+//		return (Graphics2D) super.getGraphics();
+//	}
 
 	public Dimension getPreferredSize() {
 		return super.getPreferredSize();

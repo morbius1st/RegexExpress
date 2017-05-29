@@ -43,7 +43,7 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 	private static JViewport viewport;
 	private static RegexBackground rxBackground;
 	private static RegexPointer rxPointer;
-	private static RegexZero rxZero;
+	static RegexZero rxZero;
 	
 	private static viewSizeData viewSizeParams = new viewSizeData();
 	

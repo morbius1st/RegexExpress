@@ -6,6 +6,8 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
+import pro.cyberstudio.displaylist.*;
+
 import static pro.cyberstudio.regexexpress.Utility.viewSizeMask.*;
 import static pro.cyberstudio.regexexpress.Utility.*;
 
@@ -19,10 +21,18 @@ import static pro.cyberstudio.regexexpress.Utility.*;
 
 class RegexExpress extends JPanel {
 	
+	public enum t {
+		a,
+		b,
+		c
+	}
+	
+
 	static RegexScroll regexScroll = new RegexScroll();
 	
 	private static JFrame frame;
 	private static RegexExpress rx;
+	private RegexExpress rxx;
 	
 	static JTextArea textAreaCoords;
 	static JTextArea textAreaZmFactor;
@@ -64,6 +74,7 @@ class RegexExpress extends JPanel {
 	public static void main(String[] args) {
 		rx = new RegexExpress();
 		
+		
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
@@ -74,6 +85,7 @@ class RegexExpress extends JPanel {
 	
 	
 	public void createAndShowGUI() {
+		rxx = new RegexExpress();
 		
 		int screenX = (int) Toolkit.getDefaultToolkit().getScreenSize().getWidth();
 		int screenY = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight();
@@ -369,7 +381,9 @@ class RegexExpress extends JPanel {
 			case 6:
 //				regexLayerPane.testPointer();
 
-				listListeners();
+//				listListeners();
+				
+				testDisplayList();
 				
 				break;
 			case 3:
@@ -463,6 +477,79 @@ class RegexExpress extends JPanel {
 			if (newLine) { sb.append("\n"); }
 		}
 		return sb.toString();
+	}
+	
+	void testDisplayList() {
+		DisplayListManager dlm = new DisplayListManager(50);
+		
+//		Point pt1 = new Point(100, 101);
+//		Point pt2 = new Point(110, 111);
+//
+//		Dimension size1 = new Dimension(1000, 1001);
+//		Dimension size2 = new Dimension(1100, 1101);
+//
+//		Color color1 = Color.CYAN;
+//		Color color2 = Color.BLUE;
+		
+		double rotation = 0;
+		
+		// define a filled rectangle
+		Point rectFOrigin = new Point(3700, 1900);
+		Dimension rectFSize = new Dimension(200, 150);
+		Color rectFColor = Color.PINK;
+		Color rectFColorFill = Color.GRAY;
+		
+		// define a rectangle
+		Point rectOrigin = new Point(3700, 2000);
+		Dimension rectSize = new Dimension(200, 150);
+		Color rectColor = Color.PINK;
+		
+		// define a line 1
+		Point line1Origin = new Point(4000, 1900);
+		int line1Size = 150;
+		double line1Rotation = -30;
+		Color line1Color = Color.RED;
+		
+		// define a line 2
+		Point line2Origin = new Point(4000, 2050);
+		int line2Size = 150;
+		double line2otation = 30;
+		Color line2Color = Color.BLUE;
+		
+		// define a text string
+		Point stringFOrigin = new Point(4200, 1900);
+		Dimension string2Size = null;
+		Color string2Color = Color.ORANGE;
+		Font string1Font = new Font("Comic Sans MS", Font.PLAIN, 12);
+		
+		
+		GElemRectFilled gRectFill1 = new GElemRectFilled(rectFOrigin, rectFSize, rotation, rectFColor, null, rectFColorFill);
+		GElemRect gRect1 = new GElemRect(rectOrigin, rectSize, rotation, rectColor, null);
+		
+		GElemLine gLine1 = new GElemLine(line1Origin, line1Size, line1Rotation, line1Color, null);
+		GElemLine gLine2 = new GElemLine(line2Origin, line2Size, line2otation, line2Color, null);
+		
+		GElemSimpleString gString1 = new GElemSimpleString(stringFOrigin, rotation, string2Color, null,
+				string1Font, "this is line 1",
+				regexLayerPane.rxZero.getGraphics());
+		
+		LogMsgFmtln("string  in info| ", "insertPt| " + dispVal(stringFOrigin)
+					+ " size| " + dispVal(string2Size));
+		
+		LogMsgFmtln("string out info| ", "insertPt| " + dispVal(gString1.getInsertPt())
+				+ " size| " + dispVal(gString1.getSize()));
+		
+
+		dlm.add(gRect1);
+		dlm.add(gRectFill1);
+		dlm.add(gLine1);
+		dlm.add(gLine2);
+		dlm.add(gString1);
+		
+		dlm.list();
+		
+		
+		
 	}
 
 }

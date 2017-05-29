@@ -3,6 +3,8 @@ package pro.cyberstudio.regexexpress;
 import java.awt.*;
 import javax.swing.*;
 
+import pro.cyberstudio.displaylist.*;
+
 import static pro.cyberstudio.regexexpress.Utility.*;
 
 /**
@@ -13,8 +15,10 @@ import static pro.cyberstudio.regexexpress.Utility.*;
  */
 
 
-
-class RegexLayer extends JPanel implements Scrollable, iRxLayer {
+class RegexLayer extends iRxLayer implements Scrollable {
+	
+	private DisplayListManager dispListMgr;
+	
 	
 	private static int idx = 1;
 	private int layerIndex;
@@ -41,7 +45,15 @@ class RegexLayer extends JPanel implements Scrollable, iRxLayer {
 		this.layerID = layerID;
 		layerIndex = idx++;
 		offsetY = 6 + (layerIndex) * -12;
+		
+		dispListMgr = new DisplayListManager(50);
+		
 	}
+//
+//	@Override
+//	public Graphics2D getGraphics() {
+//		return (Graphics2D) super.getGraphics();
+//	}
 	
 	int getLayerID() {
 		return layerID;
@@ -53,7 +65,6 @@ class RegexLayer extends JPanel implements Scrollable, iRxLayer {
 
 	@Override
 	public void paint(Graphics g) {
-	
 		Graphics2D g2 = (Graphics2D) g;
 		g2.scale(zoomFactor, zoomFactor);
 		super.paint(g);

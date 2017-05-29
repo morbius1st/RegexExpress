@@ -2,6 +2,8 @@ package pro.cyberstudio.regexexpress;
 
 import org.jetbrains.annotations.*;
 
+import java.awt.*;
+
 import pro.cyberstudio.utilities.log;
 
 /**
@@ -11,7 +13,7 @@ import pro.cyberstudio.utilities.log;
  *         Project: RegexExpress
  */
 
-class Utility extends log {
+public class Utility extends log {
 	
 	
 	enum viewSizeMask { MIN(1), PERF(2), MAX(4), SIZE(8), BOUNDS(16);
@@ -32,15 +34,36 @@ class Utility extends log {
 	}
 	
 	
-	static String LogMsgStr(String msg, Dimension2dx dim) 		{ return LogMsgStr(msg, dispVal(dim)); }
-	static void LogMsgFmtln(String msg, Dimension2dx dim) 		{ LogMsgln(LogMsgStr(msg, dim)); }
+	public static String LogMsgStr(String msg, Dimension2dx dim) 		{ return LogMsgStr(msg, dispVal(dim)); }
+	public static void LogMsgFmtln(String msg, Dimension2dx dim) 		{ LogMsgln(LogMsgStr(msg, dim)); }
 	
 	@NotNull
 	@Contract(pure = true)
-	static String dispVal(Dimension2dx dim) { return dispVal(dim.width, dim.height); }
+	public static String dispVal(Dimension2dx dim) { return dispVal(dim.width, dim.height); }
+	
+	public static String dispVal(Color color) {return "r| " + color.getRed()
+			+ " g| " + color.getGreen() + " b| " + color.getBlue() + " a| " + color.getAlpha();}
+	
+	public static String dispVal(Paint paint) {
+		if (paint instanceof Color) {
+			Color color = (Color) paint;
+			return String.format("r| %1$3s g| %2$3s b| %3$3s a| %4$3s",
+					color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+		}
+		
+		return "paint of some kind";
+	}
+	
+	public static String dispVal(String msg, int width) {
+		String pattern = "%1$-" + width + "s";
+		
+		return String.format(pattern, msg);
+	}
 	
 	@NotNull
-	static String dispZoom(double zoomFactor) { return "zoom factor| " + zoomFactor; }
+	public static String dispZoom(double zoomFactor) { return "zoom factor| " + zoomFactor; }
+	
+	
 	
 	
 }

@@ -1,5 +1,7 @@
 package pro.cyberstudio.regexexpress;
 
+import java.awt.*;
+
 import javax.swing.JPanel;
 
 /**
@@ -9,14 +11,17 @@ import javax.swing.JPanel;
  *         Project: RegexExpress
  */
 
-class RegexZero extends JPanel implements iRxLayer {
+class RegexZero extends iRxLayer {
 	
-	private double zoomScale = 1.0;
+	private double zoomFactor = 1.0;
 
 	// set the absolute zoom amount
-	@Override
-	public void setZoomScale(double zFactor) {
-	
+	public void setZoomScale(double zoomFactor) {
+		this.zoomFactor = zoomFactor;
 	}
-
+	
+//	@Override
+//	public Graphics2D getGraphics() {
+//		return (Graphics2D) super.getGraphics();
+//	}
 }

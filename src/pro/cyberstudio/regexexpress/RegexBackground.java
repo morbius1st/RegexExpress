@@ -12,13 +12,18 @@ import javax.swing.JPanel;
  *         Project: RegexExpress
  */
 
-class RegexBackground extends JPanel implements iRxLayer {
+class RegexBackground extends iRxLayer {
 	
 	private double zoomFactor = 1.0;
 	private static AffineTransform afInv = new AffineTransform();
 	
 	private static Color gridColor = new Color(40, 40, 40);
 	private static Color coordColor = new Color(80, 80, 80);
+	
+//	@Override
+//	public Graphics2D getGraphics() {
+//		return (Graphics2D) super.getGraphics();
+//	}
 	
 	@Override
 	public void setZoomScale(double zoomFactor) {
