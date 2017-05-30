@@ -2,6 +2,7 @@ package pro.cyberstudio.regexexpress;
 
 import java.awt.*;
 import java.awt.geom.*;
+import java.awt.geom.Rectangle2D.Double;
 
 import javax.swing.JPanel;
 
@@ -19,12 +20,7 @@ class RegexBackground extends iRxLayer {
 	
 	private static Color gridColor = new Color(40, 40, 40);
 	private static Color coordColor = new Color(80, 80, 80);
-	
-//	@Override
-//	public Graphics2D getGraphics() {
-//		return (Graphics2D) super.getGraphics();
-//	}
-	
+
 	@Override
 	public void setZoomScale(double zoomFactor) {
 		this.zoomFactor = zoomFactor;
@@ -71,5 +67,15 @@ class RegexBackground extends iRxLayer {
 				g2.drawString("y: " + pt.y, pt.x + textOffsetHoriz, pt.y + textOffsetVert + 10);
 			}
 		}
+//
+//		Rectangle2D.Double rect = new Rectangle2D.Double(4000, 2000, 100, 100);
+//		AffineTransform ax = new AffineTransform();
+//		ax.setToRotation(Math.PI / 4); // 45°
+//		Shape shape = ax.createTransformedShape(rect);
+//
+//		g2.setColor(Color.CYAN);
+//		g2.draw(shape);
+//
+	
 	}
 }

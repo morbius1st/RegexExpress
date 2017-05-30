@@ -49,12 +49,7 @@ class RegexLayer extends iRxLayer implements Scrollable {
 		dispListMgr = new DisplayListManager(50);
 		
 	}
-//
-//	@Override
-//	public Graphics2D getGraphics() {
-//		return (Graphics2D) super.getGraphics();
-//	}
-	
+
 	int getLayerID() {
 		return layerID;
 	}

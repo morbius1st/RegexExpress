@@ -19,6 +19,8 @@ import static pro.cyberstudio.regexexpress.RegexLayeredPane.DragModes.*;
 
 class RegexPointer extends iRxLayer implements Scrollable, iMMListener { //}, MouseMotionListener { //}, iMWListener {
 	
+	
+	
 	private static int maxUnitIncrement = 1;
 	
 	private static Point cursorPoint = new Point();
@@ -39,16 +41,12 @@ class RegexPointer extends iRxLayer implements Scrollable, iMMListener { //}, Mo
 		RegexScroll.addMMovL(this);
 		RegexScroll.addMDragL(this);
 	}
-//
-//	@Override
-//	public Graphics2D getGraphics() {
-//		return (Graphics2D) super.getGraphics();
-//	}
 
-	public Dimension getPreferredSize() {
-		return super.getPreferredSize();
-	}
+	@Override
+	public void setZoomScale(double zoomFactor) {
 	
+	}
+
 	@Override
 	protected void paintComponent(Graphics g) {
 	}
@@ -67,6 +65,7 @@ class RegexPointer extends iRxLayer implements Scrollable, iMMListener { //}, Mo
 	
 	@Override
 	public void paint(Graphics g) {
+
 		super.paint(g);
 		
 		switch (dragMode) {
@@ -113,9 +112,6 @@ class RegexPointer extends iRxLayer implements Scrollable, iMMListener { //}, Mo
 		g.drawLine(0, cursorPoint.y, this.getWidth(), cursorPoint.y);
 		g.drawLine(cursorPoint.x, 0, cursorPoint.x, this.getHeight());
 	}
-	
-	@Override
-	public void setZoomScale(double zoomFactor) { }
 	
 	void test() {
 		LogMsgFmtln("this is ", "a test");

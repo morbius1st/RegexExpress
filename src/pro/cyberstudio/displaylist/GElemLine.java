@@ -17,7 +17,7 @@ import static pro.cyberstudio.regexexpress.Utility.*;
 public class GElemLine extends GraphElemLinear {
 	
 	public GElemLine(double rotation, Paint paint,
-					 BasicStroke stroke, Line2D.Double line) {
+					 BasicStroke stroke, Line2D line) {
 		
 		super(rotation, GraphicType.LINE, paint, stroke, line);
 	}
@@ -25,6 +25,6 @@ public class GElemLine extends GraphElemLinear {
 //	public void draw(Graphics2D g2) {
 	public void draw() {
 		LogMsgFmtln("this is a line|",
-				GraphElement.listElemInfo(ID(), paint, ((Line2D.Double) shape).getP1(), rotation));
+				GraphElement.listElemInfo(ID(), paint, ((Line2D) shape).getP1(), rotation));
 	}
 }

@@ -16,9 +16,12 @@ import static pro.cyberstudio.utilities.log.*;
 public class GElemRect extends GraphElemRectangular {
 	
 	public GElemRect(double rotation, Paint paint,
-					 BasicStroke stroke, Rectangle2D.Double rect) {
+					 BasicStroke stroke, Rectangle2D rect) {
 		
 		super(rotation, GraphicType.RECT, paint, stroke, rect);
+		
+//		((Rectangle2D) getShape())
+	
 	}
 	
 	//	public void draw(Graphics2D g2) {
@@ -26,8 +29,8 @@ public class GElemRect extends GraphElemRectangular {
 	public void draw() {
 		LogMsgFmtln("this is a rect|",
 				GraphElement.listElemInfo(ID(), paint,
-						((Rectangle2D.Double) shape).getX(),
-						((Rectangle2D.Double) shape).getY(),
+						((Rectangle2D) shape).getX(),
+						((Rectangle2D) shape).getY(),
 						rotation));
 	}
 	

@@ -4,7 +4,6 @@ import java.awt.*;
 import java.awt.Toolkit;
 import java.awt.event.*;
 import java.awt.geom.*;
-import java.awt.geom.Rectangle2D.Double;
 
 import javax.swing.*;
 
@@ -158,17 +157,11 @@ class RegexExpress extends JPanel {
 		
 		JPanel buttons1 = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
 		
-		
 		buttons1.add(makeButton(btn3, "View<br>Info"));
 		buttons1.add(makeButton(btn5, "Layer<br>Info"));
 		buttons1.add(makeButton(btn31, "Layer 1<br>Info"));
 		buttons1.add(makeButton(btn15, "Lay pane<br>Info"));
 		buttons1.add(makeButton(btn6, "Misc<br>Test"));
-		
-		
-		buttons1.setMaximumSize(new Dimension(FRAMEPREFWIDTH, BUTTONHEIGHT));
-		buttons1.setPreferredSize(new Dimension(FRAMEPREFWIDTH, BUTTONHEIGHT));
-		buttons1.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 		
 		add(buttons1);
 		
@@ -183,10 +176,6 @@ class RegexExpress extends JPanel {
 		btnZWindow = makeButton(btn34, "Zoom<br>Window");
 		buttons2.add((btnZWindow));
 		buttons2.add(makeButton(btn35, "Zoom<br>Previous"));
-		
-		buttons2.setMaximumSize(new Dimension(FRAMEPREFWIDTH, 50));
-		buttons2.setPreferredSize(new Dimension(FRAMEPREFWIDTH, 50));
-		buttons2.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 		
 		add(buttons2);
 		
@@ -226,7 +215,7 @@ class RegexExpress extends JPanel {
 		regexLayerPane.setBackground(Color.LIGHT_GRAY);
 		
 		regexScroll.setViewportView(regexLayerPane);
-//		regexAnalysisScroll.setMinimumSize(new Dimension(SCROLLPREFWIDTH, SCROLLPREFHEIGHT)); - do not use
+//		regexScroll.setMinimumSize(new Dimension(SCROLLPREFWIDTH, SCROLLPREFHEIGHT)); - do not use
 		regexScroll.setPreferredSize(new Dimension(SCROLLPREFWIDTH, SCROLLPREFHEIGHT));
 		regexScroll.setViewportBorder(BorderFactory.createBevelBorder(3, Color.WHITE, Color.BLUE));
 		regexScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
@@ -493,26 +482,27 @@ class RegexExpress extends JPanel {
 //		Color color1 = Color.CYAN;
 //		Color color2 = Color.BLUE;
 		
-		double rotation = 0;
+		double rotation000 = 0;
+		double rotation030 = 30; // degrees, ccw
 		BasicStroke stroke = null;
 		
 		// define a filled rectangle
 		
-		Rectangle2D.Double rectFilled = new Rectangle2D.Double(3700, 1900, 200, 150);
+		Rectangle2D rectFilled = new Rectangle2D.Double(3700, 1900, 200, 150);
 		Color rectFColor = Color.PINK;
 		Color rectFColorFill = Color.GRAY;
 		
 		// define a rectangle
-		Rectangle2D.Double rect = new Rectangle2D.Double(3700, 2000, 200, 150);
+		Rectangle2D rect = new Rectangle2D.Double(3700, 2000, 200, 150);
 		Color rectColor = Color.PINK;
 		
 		// define a line 1
-		Line2D.Double line1 = new Line2D.Double(4000, 1900, 150, 0);
+		Line2D line1 = new Line2D.Double(4000, 1900, 150, 0);
 		double line1Rotation = -30;
 		Color line1Color = Color.RED;
 		
 		// define a line 2
-		Line2D.Double line2 = new Line2D.Double(4000, 2050, 150, 0);
+		Line2D line2 = new Line2D.Double(4000, 2050, 150, 0);
 		double line2otation = 30;
 		Color line2Color = Color.BLUE;
 		
@@ -522,18 +512,19 @@ class RegexExpress extends JPanel {
 		Font string1Font = new Font("Comic Sans MS", Font.PLAIN, 12);
 		
 		
-		GElemRectFilled gRectFill1 = new GElemRectFilled(rotation, rectFColor, stroke, rectFColorFill, rectFilled);
-		GElemRect gRect1 = new GElemRect(rotation, rectFColor, stroke, rect);
+		GElemRectFilled gRectFill1 = new GElemRectFilled(rotation000, rectFColor, stroke, rectFColorFill, rectFilled);
+		GElemRect gRect1 = new GElemRect(rotation030, rectFColor, stroke, rect);
 		
 		GElemLine gLine1 = new GElemLine(line1Rotation, line1Color, stroke, line1);
 		GElemLine gLine2 = new GElemLine(line2otation, line2Color, stroke, line2);
 		
-		GElemSimpleString gString1 = new GElemSimpleString(rotation, string2Color, stroke,
+		GElemSimpleString gString1 = new GElemSimpleString(rotation000, string2Color, stroke,
 				regexLayerPane.rxZero.getGraphics(), "this is line 1", string1Font, stringFOrigin);
 		
 		LogMsgFmtln("string  in info| ", "insertPt| " + dispVal(stringFOrigin));
 		
 		LogMsgFmtln("string out info| ", "insertPt| " + dispVal(gString1.getInsertPt()));
+		
 		
 
 		dlm.add(gRect1);

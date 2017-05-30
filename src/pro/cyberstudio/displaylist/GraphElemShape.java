@@ -20,4 +20,8 @@ abstract class GraphElemShape extends GraphElement {
 		
 		this.shape = shape;
 	}
+	
+	public Shape getShape() {
+		return shape;
+	}
 }

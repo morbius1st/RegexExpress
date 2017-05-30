@@ -3,7 +3,7 @@ package pro.cyberstudio.regexexpress;
 import org.jetbrains.annotations.*;
 
 import java.awt.*;
-import java.awt.geom.Point2D;
+import java.awt.geom.*;
 
 import pro.cyberstudio.utilities.log;
 
@@ -63,6 +63,13 @@ public class Utility extends log {
 	
 	public static String dispVal(Point2D pt) {
 		return FmtXY(pt.getX(), pt.getY());
+	}
+	
+	public static String dispVal(Rectangle2D rect) {
+		if (rect == null) {
+			return FmtXY(Double.NaN, Double.NaN) + "  " +  FmtWH(Double.NaN, Double.NaN);
+		}
+		return FmtXY(rect.getX(), rect.getY()) + "  " +  FmtWH(rect.getWidth(), rect.getHeight());
 	}
 	
 	@NotNull

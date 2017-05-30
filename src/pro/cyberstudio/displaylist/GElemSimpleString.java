@@ -1,9 +1,9 @@
 package pro.cyberstudio.displaylist;
 
 import java.awt.*;
-import java.awt.font.LineMetrics;
 
 import static pro.cyberstudio.utilities.log.*;
+import static pro.cyberstudio.regexexpress.Utility.*;
 
 /**
  * @author jeffs
@@ -25,14 +25,10 @@ public class GElemSimpleString extends GraphElemString {
 		this.graphics = graphics;
 	}
 
-	Dimension determineSize(Font font, String string) {
-		LineMetrics lm = font.getLineMetrics(string, graphics.getFontRenderContext());
-		return new Dimension(30, 10);
-	}
-	
 //	public void draw(Graphics2D g2) {
 	public void draw() {
 		LogMsgFmtln("this is a simple string|",
-				GraphElement.listElemInfo(ID(), paint, insertPt, rotation));
+				GraphElement.listElemInfo(ID(), paint, insertPt, rotation)
+				+ " bounds: " + dispVal(getBounds()));
 	}
 }

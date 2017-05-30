@@ -14,14 +14,18 @@ import javax.swing.JPanel;
 class RegexZero extends iRxLayer {
 	
 	private double zoomFactor = 1.0;
-
+	
 	// set the absolute zoom amount
 	public void setZoomScale(double zoomFactor) {
 		this.zoomFactor = zoomFactor;
 	}
 	
-//	@Override
-//	public Graphics2D getGraphics() {
-//		return (Graphics2D) super.getGraphics();
-//	}
+	@Override
+	public void paint(Graphics g) {
+		
+		Graphics2D g2 = (Graphics2D) g;
+		g2.scale(zoomFactor, zoomFactor);
+		super.paint(g);
+	}
+	
 }

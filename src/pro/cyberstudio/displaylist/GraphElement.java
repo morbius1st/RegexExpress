@@ -35,6 +35,9 @@ abstract class GraphElement extends Element {
 		this.graphicType = graphicType;
 		this.paint = paint;
 		this.stroke = stroke;
+		
+		
+		
 	}
 	
 	//	abstract public void draw(Graphics2D g2);

@@ -1,0 +1,51 @@
+A	Elem
+|	f:	ID:	id
+|	
+|	{ C	ID
+|		f:	String:	elemType
+|		f:	String:	subElemType }
+|	
++->	A	GraphElement
+		|	f:	GraphicType:	graphicType
+		|	f:	Paint:			paint
+		|	f:	BasicStroke:	stroke
+		|	f:	double:			rotation
+		|	c:	rotation, GraphicType, Paint, BasicStroke
+		|
+		+->	A	GraphElemShape
+		|	|	f:	Shape:	shape
+		|	|	c:	rotation, GraphicType, Paint, BasicStroke, Shape
+		|	|
+		|	+-> A	GraphElemLinear
+		|	|	|	f:
+		|	|	|	c:	rotation, GraphicType, Paint, BasicStroke, Shape
+		|	|	|
+		|	|	+-> C	GElemLine
+		|	|			f:	Line2D.Double:	line
+		|	|			c:	rotation, Paint, BasicStroke, Line2D.Double
+		|	|   
+		|	+-> A	GraphElemRectangular
+		|		|	f:	
+		|		|	c:	rotation, GraphicType, Paint, BasicStroke, Shape
+		|		|
+		|		+->	C	GElemRect
+		|		|		f:	Rectangle2D.Double:	rect
+		|		|		c:	rotation, Paint, BasicStroke, Rectangle2D.Double
+		|		|	
+		|		+->	C	GElemRectFilled
+		|				f:	Rectangle2D.Double:	rect
+		|				f:	Paint:				paint (fill)
+		|				c:	rotation, Paint, BasicStroke, Paint (fill), Rectangle2D.Double
+		|	
+		+->	A	GraphElemString
+			|	f:	Point:		insertPt
+			|	f:	Font:		font
+			|	f:	String:		string
+			|	f:	Graphics2D	g2
+			|	c:	rotation, GraphicType, Paint, BasicStroke, Graphics2D, String, Font, Point (insert)
+			|	
+			+->	C	GElemSimpleString
+					f:	Graphics2D:	graphics
+					c:	rotation, Paint, BasicStroke, Graphics2D, String, Font, Point (insert)
+
+

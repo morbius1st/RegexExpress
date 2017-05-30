@@ -1,6 +1,8 @@
 package pro.cyberstudio.displaylist;
 
 import java.awt.*;
+import java.awt.font.LineMetrics;
+import java.awt.geom.Rectangle2D;
 
 /**
  * @author jeffs
@@ -31,5 +33,13 @@ abstract class GraphElemString extends GraphElement {
 	public Point getInsertPt() {
 		return insertPt;
 	}
+	
+	Rectangle2D getBounds() {
+		Rectangle2D bounds = font.getStringBounds(string, graphics.getFontRenderContext());
+		return bounds;
+	}
+	
+	
+	
 	
 }

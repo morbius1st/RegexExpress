@@ -18,7 +18,7 @@ public class GElemRectFilled extends GraphElemRectangular {
 	
 	private Paint colorFill;
 	
-	public GElemRectFilled(double rotation, Paint paint, BasicStroke stroke, Paint paintFill, Rectangle2D.Double rect) {
+	public GElemRectFilled(double rotation, Paint paint, BasicStroke stroke, Paint paintFill, Rectangle2D rect) {
 		
 		super(rotation, GraphicType.RECTFILLED, paint, stroke, rect);
 		
@@ -30,8 +30,8 @@ public class GElemRectFilled extends GraphElemRectangular {
 	public void draw() {
 		LogMsgFmtln("this is a rect filled|",
 				GraphElement.listElemInfo(ID(), paint,
-						((Rectangle2D.Double) shape).getX(),
-						((Rectangle2D.Double) shape).getY(),
+						((Rectangle2D) shape).getX(),
+						((Rectangle2D) shape).getY(),
 						rotation));
 	}
 }
