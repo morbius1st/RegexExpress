@@ -1,51 +1,49 @@
-A	Elem
+A	Element
 |	f:	ID:	id
 |	
 |	{ C	ID
 |		f:	String:	elemType
 |		f:	String:	subElemType }
+|
+|	{ E GraphElemType }
 |	
-+->	A	GraphElement
++->	A	GraphElement 
 		|	f:	GraphicType:	graphicType
 		|	f:	Paint:			paint
 		|	f:	BasicStroke:	stroke
-		|	f:	double:			rotation
-		|	c:	rotation, GraphicType, Paint, BasicStroke
+		|																				c:	GraphicType, Paint, BasicStroke
+		|	{ C GraphElemFeatures
+		|		f:	boolean:	canPaint
+		|		f:	boolean:	canStroke
+		|		f:	boolean:	canRotate }
 		|
-		+->	A	GraphElemShape
+		+->	A	GraphElemShape 
 		|	|	f:	Shape:	shape
-		|	|	c:	rotation, GraphicType, Paint, BasicStroke, Shape
-		|	|
-		|	+-> A	GraphElemLinear
-		|	|	|	f:
-		|	|	|	c:	rotation, GraphicType, Paint, BasicStroke, Shape
-		|	|	|
-		|	|	+-> C	GElemLine
-		|	|			f:	Line2D.Double:	line
-		|	|			c:	rotation, Paint, BasicStroke, Line2D.Double
-		|	|   
-		|	+-> A	GraphElemRectangular
-		|		|	f:	
-		|		|	c:	rotation, GraphicType, Paint, BasicStroke, Shape
-		|		|
-		|		+->	C	GElemRect
-		|		|		f:	Rectangle2D.Double:	rect
-		|		|		c:	rotation, Paint, BasicStroke, Rectangle2D.Double
-		|		|	
-		|		+->	C	GElemRectFilled
-		|				f:	Rectangle2D.Double:	rect
-		|				f:	Paint:				paint (fill)
-		|				c:	rotation, Paint, BasicStroke, Paint (fill), Rectangle2D.Double
-		|	
+		|	|																			c:	GraphicType, Paint, BasicStroke, Shape
+		|	+->	A	GraphElemRotatable
+		|	|	|	f:	double:	rotation
+		|	|	|																			c:	GraphicType, Paint, BasicStroke, Shape, rotation	
+		|	|	+-> A	GraphElemRectangular
+		|	|		|																		c:	GraphicType, Paint, BasicStroke, Shape, rotation
+		|	|		+->	C	GElemRect
+		|	|		|																			c:	Paint, BasicStroke, Rectangle2D.Double, rotation
+		|	|		+->	C	GElemRectFilled
+		|	|				f:	Paint:				paint (fill)
+		|	|																					c:	Paint, BasicStroke, Rectangle2D.Double, rotation, Paint (fill)
+		|	+-> A	GraphElemLineBased
+		|			|	f:
+		|			|																		c:	GraphicType, Paint, BasicStroke, Shape
+		|			+-> C	GElemLine
+		|					f:	Line2D.Double:	line
+		|																						c:	Paint, BasicStroke, Line2D.Double
 		+->	A	GraphElemString
 			|	f:	Point:		insertPt
 			|	f:	Font:		font
 			|	f:	String:		string
 			|	f:	Graphics2D	g2
-			|	c:	rotation, GraphicType, Paint, BasicStroke, Graphics2D, String, Font, Point (insert)
-			|	
+			|																			c:	GraphicType, Paint, BasicStroke, Graphics2D, String, Font, Point (insert)
+			
+			
 			+->	C	GElemSimpleString
 					f:	Graphics2D:	graphics
-					c:	rotation, Paint, BasicStroke, Graphics2D, String, Font, Point (insert)
-
-
+																									c:	Paint, BasicStroke, Graphics2D, String, Font, Point (insert)
