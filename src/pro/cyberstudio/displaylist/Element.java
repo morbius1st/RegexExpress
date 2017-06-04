@@ -10,6 +10,25 @@ package pro.cyberstudio.displaylist;
 // this is the root class for the display elements
 abstract class Element {
 	
+	private ID id;
+	private ElementType elementType;
+	
+	private static int indexID = 0;
+	
+	Element() {}
+	
+	Element(ElementType elementType, GraphElemType graphElemType) {
+		this.elementType = elementType;
+		
+		this.id = new ID(elementType, graphElemType);
+	}
+	
+	String ID() {
+		return id.getID();
+	}
+	
+	void setID(ID id) { this.id = id; }
+	
 	enum ElementType {
 		LayerDefault	("LD"),
 		GraphicElement	("GE");
@@ -40,9 +59,9 @@ abstract class Element {
 		String SubElemType;
 		int index;
 		
-		ID(ElementType elementType, GraphElemType subElementType) {
+		ID(ElementType elementType, GraphElemType graphElementType) {
 			elemType = elementType.getElementType();
-			SubElemType = subElementType.name();
+			SubElemType = graphElementType.name();
 			index = indexID++;
 		}
 		
@@ -50,18 +69,6 @@ abstract class Element {
 			return String.format("%1$s.%2$010d.%3$s", elemType,
 					index, SubElemType );
 		}
-	}
-	
-	private ID id;
-	
-	private static int indexID = 0;
-	
-	Element(ElementType elementType, GraphElemType subElementType) {
-		id = new ID(elementType, subElementType);
-	}
-	
-	String ID() {
-		return id.getID();
 	}
 	
 }

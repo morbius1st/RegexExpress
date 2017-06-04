@@ -19,21 +19,21 @@ import static pro.cyberstudio.regexexpress.Utility.*;
 
 abstract public class GraphElement extends Element {
 
-	GraphElemType graphElemType;
-	Paint paint = null;
-	BasicStroke stroke = null;
+	GraphElemType 	graphElemType;
+	Paint 			paint = null;
+	BasicStroke 	stroke = null;
+	
+	Paint 			defPaint = Color.WHITE;
+	Paint			defFillPaint = Color.WHITE;
+	BasicStroke 	defStroke = new BasicStroke(1.0f);
+	Font			defFont = new Font("SansSerif", Font.PLAIN, 10);
 	
 	GraphElemFeatures gf = new GraphElemFeatures();
-
-	GraphElement(GraphElemType graphElemType,
-						Paint paint,
-						BasicStroke stroke) {
-		
+	
+	GraphElement() { }
+	
+	GraphElement(GraphElemType graphElemType) {
 		super(ElementType.GraphicElement, graphElemType);
-		
-		this.graphElemType = graphElemType;
-		this.paint = paint;
-		this.stroke = stroke;
 	}
 
 	class GraphElemFeatures {
@@ -41,8 +41,6 @@ abstract public class GraphElement extends Element {
 		boolean canStroke = true;
 		boolean canRotate = false;
 	}
-	
-	
 	
 	//	abstract public void draw(Graphics2D g2);
 	abstract void draw(Graphics2D g2);

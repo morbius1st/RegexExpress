@@ -1,7 +1,5 @@
 package pro.cyberstudio.displaylist;
 
-import java.awt.*;
-
 /**
  * @author jeffs
  *         File:    GELinear
@@ -10,11 +8,12 @@ import java.awt.*;
  */
 
 // a graphic element with a length definition but no width
-abstract class GraphElemLineBased extends GraphElemShape {
+abstract class GraphElemLineBased extends GraphElemShapeNonRotatable {
 	
-	public GraphElemLineBased(GraphElemType graphElemType,
-							  Paint paint, BasicStroke stroke, Shape shape) {
-		
-		super(graphElemType, paint, stroke, shape);
+	GraphElemLineBased() {}
+	
+	GraphElemLineBased(GraphElemType graphElemType) {
+		super(graphElemType);
 	}
+
 }

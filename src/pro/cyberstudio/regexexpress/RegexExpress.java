@@ -495,7 +495,7 @@ class RegexExpress extends JPanel {
 		
 		Rectangle2D rectFilledObj = new Rectangle2D.Double(3700, 2100, 200, 150);
 		Color rectFColor = Color.GREEN;
-		Color rectFColorFill = Color.ORANGE;
+		Color rectFColorFill = new Color(128, 128, 0, 128);
 		
 		// define a rectangle
 		Rectangle2D rectShape = new Rectangle2D.Double(3700, 1900, 200, 150);
@@ -503,12 +503,10 @@ class RegexExpress extends JPanel {
 		
 		// define a line 1
 		Line2D line1Obj = new Line2D.Double(4000, 1900, 4150, 2050);
-		double line1Rotation = 0;
 		Color line1Color = Color.RED;
 		
 		// define a line 2
 		Line2D line2Obj = new Line2D.Double(4000, 2050, 4150, 1900);
-		double line2otation = 30;
 		Color line2Color = Color.BLUE;
 		
 		// define a text string
@@ -524,7 +522,7 @@ class RegexExpress extends JPanel {
 		GElemLine gLine2 = new GElemLine(line2Color, stroke, line2Obj);
 		
 		GElemSimpleString gString1 = new GElemSimpleString(string2Color, stroke,
-				regexLayerPane.rxZero.getGraphics(), "this is line 1", string1Font, stringFOrigin);
+				regexLayerPane.rxZero.getGraphics(), "this is line 1", string1Font, stringFOrigin, rotation030);
 		
 //		LogMsgFmtln("string  in info| ", "insertPt| " + dispVal(stringFOrigin));
 //

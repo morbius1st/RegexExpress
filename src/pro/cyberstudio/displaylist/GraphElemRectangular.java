@@ -1,8 +1,5 @@
 package pro.cyberstudio.displaylist;
 
-import java.awt.*;
-import java.awt.geom.Rectangle2D;
-
 /**
  * @author jeffs
  *         File:    GELinear
@@ -11,12 +8,12 @@ import java.awt.geom.Rectangle2D;
  */
 
 // a graphic element with a length definition but no width
-abstract class GraphElemRectangular extends GraphElemRotatable {
+abstract class GraphElemRectangular extends GraphElemShapeRotatable {
 	
-	public GraphElemRectangular(GraphElemType graphElemType,
-								Paint paint, BasicStroke stroke, Shape shape,
-								double rotation) {
-		
-		super(graphElemType, paint, stroke, shape, rotation);
+	GraphElemRectangular() {}
+	
+	GraphElemRectangular(GraphElemType graphElemType) {
+		super(graphElemType);
 	}
+
 }

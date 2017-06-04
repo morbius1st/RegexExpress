@@ -13,14 +13,16 @@ import pro.cyberstudio.utilities.log;
  *         Project: RegexExpress
  */
 
-
-// note that, for a line, the rotation does not apply
 public class GElemLine extends GraphElemLineBased {
 
 	public GElemLine(Paint paint,
 					 BasicStroke stroke, Line2D line) {
 		
-		super(GraphElemType.LINE, paint, stroke, line);
+		super(GraphElemType.LINE);
+		
+		this.paint = paint;
+		this.stroke = stroke;
+		this.shape = line;
 	}
 	
 	@Override

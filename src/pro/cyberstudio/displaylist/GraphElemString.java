@@ -10,25 +10,20 @@ import java.awt.geom.Rectangle2D;
  *         Project: RegexExpress
  */
 
-abstract class GraphElemString extends GraphElement {
+abstract class GraphElemString extends GraphElemRotatable {
 	
-	Point insertPt;
-	Font font;
-	String string;
+	Point 		insertPt;
+	Font 		font;
+	String 		string;
 	Graphics2D	graphics;
 	
-	public GraphElemString(GraphElemType graphElemType,
-						   Paint paint, BasicStroke stroke, Graphics2D graphics,
-						   String string, Font font, Point insertPt) {
-		
-		super(graphElemType, paint, stroke);
-		
-		this.insertPt = insertPt;
-		this.font = font;
-		this.string = string;
-		this.graphics = graphics;
-		
+	GraphElemString() {}
+	
+	GraphElemString(GraphElemType graphElemType) {
+		super(graphElemType);
 	}
+	
+	
 	
 	public Point getInsertPt() {
 		return insertPt;

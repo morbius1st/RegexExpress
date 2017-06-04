@@ -1,7 +1,5 @@
 package pro.cyberstudio.displaylist;
 
-import java.awt.*;
-
 /**
  * @author jeffs
  *         File:    GEShape
@@ -9,20 +7,28 @@ import java.awt.*;
  *         Project: RegexExpress
  */
 
-abstract class GraphElemRotatable extends GraphElemShape {
+abstract class GraphElemRotatable extends GraphElement {
 	
-	double rotation;
+	private double rotation;	// degrees, + = ccw
 	
-	public GraphElemRotatable(GraphElemType graphElemType,
-							  Paint paint, BasicStroke stroke, Shape shape,
-							  double rotation) {
-
-		super(graphElemType, paint, stroke, shape);
+	GraphElemRotatable() {gf.canRotate = true;}
+	
+	GraphElemRotatable(GraphElemType graphElemType) {
 		
-		this.rotation = rotation;
+		super(graphElemType);
 		
 		gf.canRotate = true;
 	}
 	
+	void setRotation(double rotation) {
+		this.rotation = ((360 - rotation) % 360);
+	}
+
+	double getRotation() {
+		return rotation;
+	}
 	
+	double getRotationRad() {
+		return Math.toRadians(rotation);
+	}
 }
