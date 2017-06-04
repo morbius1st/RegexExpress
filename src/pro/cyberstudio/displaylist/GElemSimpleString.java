@@ -2,9 +2,6 @@ package pro.cyberstudio.displaylist;
 
 import java.awt.*;
 
-import static pro.cyberstudio.utilities.log.*;
-import static pro.cyberstudio.regexexpress.Utility.*;
-
 /**
  * @author jeffs
  *         File:    ElemRect
@@ -14,21 +11,33 @@ import static pro.cyberstudio.regexexpress.Utility.*;
 
 public class GElemSimpleString extends GraphElemString {
 	
-	Point insertPt;
-	
-	public GElemSimpleString(double rotation, Paint paint, BasicStroke stroke,
-							 Graphics2D graphics, String string, Font font, Point insertPt) {
+	public GElemSimpleString(Paint paint, BasicStroke stroke,
+							 Graphics2D graphics, String string,
+							 Font font, Point insertPt) {
 		
-		super(rotation, GraphicType.STRING, paint, stroke, graphics, string, font, insertPt);
+		super(GraphElemType.STRING, paint, stroke, graphics, string, font, insertPt);
 
-		this.insertPt = insertPt;
-		this.graphics = graphics;
 	}
-
-//	public void draw(Graphics2D g2) {
-	public void draw() {
-		LogMsgFmtln("this is a simple string|",
-				GraphElement.listElemInfo(ID(), paint, insertPt, rotation)
-				+ " bounds: " + dispVal(getBounds()));
+	
+	@Override
+	public void draw(Graphics2D g2) {
+		super.draw(g2, this);
 	}
+	
+	
+	public void drawChild(Graphics2D g2) {
+		if (font != null) {
+			g2.setFont(font);
+		}
+		
+		
+		
+		g2.drawString(string, insertPt.x, insertPt.y);
+	}
+	
+	public String toString() {
+		return "this is a simple string| " +
+				listElemInfo(ID(), paint, insertPt, gf);
+	}
+	
 }

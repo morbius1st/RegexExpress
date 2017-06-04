@@ -1,10 +1,7 @@
 package pro.cyberstudio.displaylist;
 
 import java.awt.*;
-import java.awt.geom.Rectangle2D;
-import java.awt.geom.Rectangle2D.Double;
-
-import static pro.cyberstudio.utilities.log.*;
+import java.awt.geom.*;
 
 /**
  * @author jeffs
@@ -15,23 +12,33 @@ import static pro.cyberstudio.utilities.log.*;
 
 public class GElemRect extends GraphElemRectangular {
 	
-	public GElemRect(double rotation, Paint paint,
-					 BasicStroke stroke, Rectangle2D rect) {
+	public GElemRect(Paint paint,
+					 BasicStroke stroke, Rectangle2D rect,
+					 double rotation) {
 		
-		super(rotation, GraphicType.RECT, paint, stroke, rect);
-		
-//		((Rectangle2D) getShape())
+		super(GraphElemType.RECT, paint, stroke, rect, rotation);
 	
 	}
 	
+	public void draw(Graphics2D g2) {
+		super.draw(g2, this);
+		
+	}
+	
+	
 	//	public void draw(Graphics2D g2) {
 	@Override
-	public void draw() {
-		LogMsgFmtln("this is a rect|",
-				GraphElement.listElemInfo(ID(), paint,
-						((Rectangle2D) shape).getX(),
-						((Rectangle2D) shape).getY(),
-						rotation));
+	public void drawChild(Graphics2D g2) {
+		g2.draw(shape);
+	}
+	
+	@Override
+	public String toString() {
+		return "this is a rect| " +
+			GraphElement.listElemInfo(ID(), paint,
+			((Rectangle2D) shape).getX(),
+			((Rectangle2D) shape).getY(),
+			gf, rotation);
 	}
 	
 }

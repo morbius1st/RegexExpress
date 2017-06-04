@@ -1,6 +1,7 @@
 package pro.cyberstudio.displaylist;
 
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
 
 /**
  * @author jeffs
@@ -10,11 +11,12 @@ import java.awt.*;
  */
 
 // a graphic element with a length definition but no width
-abstract class GraphElemRectangular extends GraphElemShape {
+abstract class GraphElemRectangular extends GraphElemRotatable {
 	
-	public GraphElemRectangular(double rotation, GraphicType graphicType,
-								Paint paint, BasicStroke stroke, Shape shape) {
+	public GraphElemRectangular(GraphElemType graphElemType,
+								Paint paint, BasicStroke stroke, Shape shape,
+								double rotation) {
 		
-		super(rotation, graphicType, paint, stroke, shape);
+		super(graphElemType, paint, stroke, shape, rotation);
 	}
 }

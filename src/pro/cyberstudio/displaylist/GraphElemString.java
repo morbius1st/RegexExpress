@@ -1,7 +1,6 @@
 package pro.cyberstudio.displaylist;
 
 import java.awt.*;
-import java.awt.font.LineMetrics;
 import java.awt.geom.Rectangle2D;
 
 /**
@@ -18,10 +17,11 @@ abstract class GraphElemString extends GraphElement {
 	String string;
 	Graphics2D	graphics;
 	
-	public GraphElemString(double rotation, GraphicType graphicType,
+	public GraphElemString(GraphElemType graphElemType,
 						   Paint paint, BasicStroke stroke, Graphics2D graphics,
 						   String string, Font font, Point insertPt) {
-		super(rotation, graphicType, paint, stroke);
+		
+		super(graphElemType, paint, stroke);
 		
 		this.insertPt = insertPt;
 		this.font = font;
@@ -38,8 +38,4 @@ abstract class GraphElemString extends GraphElement {
 		Rectangle2D bounds = font.getStringBounds(string, graphics.getFontRenderContext());
 		return bounds;
 	}
-	
-	
-	
-	
 }

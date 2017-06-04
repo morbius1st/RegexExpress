@@ -2,9 +2,6 @@ package pro.cyberstudio.regexexpress;
 
 import java.awt.*;
 import java.awt.geom.*;
-import java.awt.geom.Rectangle2D.Double;
-
-import javax.swing.JPanel;
 
 /**
  * @author jeffs
@@ -13,26 +10,12 @@ import javax.swing.JPanel;
  *         Project: RegexExpress
  */
 
-class RegexBackground extends iRxLayer {
-	
-	private double zoomFactor = 1.0;
-	private static AffineTransform afInv = new AffineTransform();
+
+// this must be the lowest layer
+class RegexBackground extends aRxLayer {
 	
 	private static Color gridColor = new Color(40, 40, 40);
 	private static Color coordColor = new Color(80, 80, 80);
-
-	@Override
-	public void setZoomScale(double zoomFactor) {
-		this.zoomFactor = zoomFactor;
-	}
-	
-	@Override
-	public void paint(Graphics g) {
-		
-		Graphics2D g2 = (Graphics2D) g;
-		g2.scale(zoomFactor, zoomFactor);
-		super.paint(g);
-	}
 	
 	@Override
 	protected void paintComponent(Graphics g) {
@@ -49,11 +32,12 @@ class RegexBackground extends iRxLayer {
 		
 		Point pt = new Point(0, 0);
 		
-		
 		g2.setFont(font);
 		
-		for (; pt.x < getMinimumSize().width; pt.x += 100) {
-			for (pt.y = 0; pt.y < getMinimumSize().height; pt.y += 100) {
+//		for (; pt.x < getMinimumSize().width; pt.x += 100) {
+//			for (pt.y = 0; pt.y < getMinimumSize().height; pt.y += 100) {
+		for (; pt.x < (testX * 2); pt.x += 100) {
+			for (pt.y = 0; pt.y < (testY * 2); pt.y += 100) {
 				
 				g2.setColor(gridColor);
 				// draw the horizontal ine
@@ -67,15 +51,18 @@ class RegexBackground extends iRxLayer {
 				g2.drawString("y: " + pt.y, pt.x + textOffsetHoriz, pt.y + textOffsetVert + 10);
 			}
 		}
-//
-//		Rectangle2D.Double rect = new Rectangle2D.Double(4000, 2000, 100, 100);
-//		AffineTransform ax = new AffineTransform();
-//		ax.setToRotation(Math.PI / 4); // 45°
-//		Shape shape = ax.createTransformedShape(rect);
-//
-//		g2.setColor(Color.CYAN);
-//		g2.draw(shape);
-//
+
+		Rectangle2D.Double rect = new Rectangle2D.Double(4000, 2000, 100, 100);
+		g2.setColor(Color.RED);
+		g2.draw(rect);
+
+		// note: rotation is + is CW, - is CCW
+		g2.rotate(-Math.PI / 8, testX, testY);
+		g2.setColor(Color.CYAN);
+		g2.draw(rect);
+
+		g2.drawString("this is a test", testX, testY);
+
 	
 	}
 }

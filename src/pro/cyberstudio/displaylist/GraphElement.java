@@ -1,7 +1,7 @@
 package pro.cyberstudio.displaylist;
 
 import java.awt.*;
-import java.awt.geom.Point2D;
+import java.awt.geom.*;
 
 import static pro.cyberstudio.regexexpress.Utility.*;
 
@@ -17,44 +17,97 @@ import static pro.cyberstudio.regexexpress.Utility.*;
 
 // this is the root graphic element
 
-abstract class GraphElement extends Element {
+abstract public class GraphElement extends Element {
 
-	GraphicType graphicType;
+	GraphElemType graphElemType;
 	Paint paint = null;
 	BasicStroke stroke = null;
-	double rotation;
 	
-	
-	public GraphElement(double rotation, GraphicType graphicType,
+	GraphElemFeatures gf = new GraphElemFeatures();
+
+	GraphElement(GraphElemType graphElemType,
 						Paint paint,
 						BasicStroke stroke) {
 		
-		super(ElementType.GraphicElement, graphicType);
+		super(ElementType.GraphicElement, graphElemType);
 		
-		this.rotation = rotation;
-		this.graphicType = graphicType;
+		this.graphElemType = graphElemType;
 		this.paint = paint;
 		this.stroke = stroke;
-		
-		
-		
 	}
+
+	class GraphElemFeatures {
+		boolean canPaint = true;
+		boolean canStroke = true;
+		boolean canRotate = false;
+	}
+	
+	
 	
 	//	abstract public void draw(Graphics2D g2);
-	abstract void draw();
+	abstract void draw(Graphics2D g2);
+	
+	abstract void drawChild(Graphics2D g2);
+	
+	void draw(Graphics2D g2, GraphElement ge) {
+	
+		Stroke stroke_save = null;
+		Paint paint_save = null;
 
-	static String listElemInfo(String id, Paint paint, double x, double y, double rotation) {
-		return  listElemInfo(id, paint, new Point2D.Double(x, y), rotation);
+		if (ge.gf.canPaint && ge.paint != null) {
+			paint_save = g2.getPaint();
+			g2.setPaint(ge.paint);
+		}
+
+		if (ge.gf.canStroke && ge.stroke != null) {
+			stroke_save = g2.getStroke();
+			g2.setStroke(ge.stroke);
+		}
+
+		drawChild(g2);
+
+		// restore prior settings
+		if (stroke_save != null) {
+			g2.setStroke(stroke_save);
+		}
+
+		if (paint_save != null) {
+			g2.setPaint(paint_save);
+		}
+	
 	}
 	
-	static String listElemInfo(String id, Paint paint, Point2D insertPt, double rotation) {
-		String msg = " ID| " + dispVal(id, 25)
+	static String listElemInfo(String id, Paint paint, double x, double y,
+							   GraphElemFeatures gf, double rotation) {
+		return  listElemInfo(id, paint, new Point2D.Double(x, y), gf)
+				+ " rotation| " + dispVal(rotation);
+	}
+
+	static String listElemInfo(String id, Paint paint, double x, double y,
+							   GraphElemFeatures gf) {
+		return  listElemInfo(id, paint, new Point2D.Double(x, y), gf);
+	}
+	
+	static String listElemInfo(String id, Paint paint, Point2D insertPt,
+							   GraphElemFeatures gf, double rotation) {
+		return  listElemInfo(id, paint, insertPt, gf)
+				+ " rotation| " + dispVal(rotation);
+	}
+	
+	static String listElemInfo(String id, Paint paint, Point2D insertPt,
+							   GraphElemFeatures gf) {
+		String msg = "ID| " + dispVal(id, 25)
 				+ " color| " + dispVal(paint)
 				+ " insert pt| " + dispVal(insertPt)
-				+ " rotation| " + dispVal(rotation);
+				+ " canPaint?| " + gf.canPaint
+				+ " canStroke?| " + gf.canStroke
+				;
 		
 		return msg;
 	}
+	
+	@Override
+	public abstract String toString();
 
 
 }

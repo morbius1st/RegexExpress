@@ -1,5 +1,7 @@
 package pro.cyberstudio.displaylist;
 
+import java.awt.Graphics2D;
+
 /**
  * @author jeffs
  *         File:    DisplayListManager
@@ -27,9 +29,9 @@ public class DisplayListManager {
 		return layerList.add(graphElement);
 	}
 	
-	public void list() {
+	public void draw(Graphics2D g2) {
 		for (GraphElement ge : layerList) {
-			ge.draw();
+			ge.draw(g2);
 		}
 	}
 	

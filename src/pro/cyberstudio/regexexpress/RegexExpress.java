@@ -485,24 +485,29 @@ class RegexExpress extends JPanel {
 		double rotation000 = 0;
 		double rotation030 = 30; // degrees, ccw
 		BasicStroke stroke = null;
+		BasicStroke stroke_linetest1 =
+				new BasicStroke(3.0f, BasicStroke.CAP_SQUARE,
+						BasicStroke.JOIN_MITER, 10.0f,
+						new float[] {21f, 9f, 3f, 9f}, 0f);
 		
+	
 		// define a filled rectangle
 		
-		Rectangle2D rectFilled = new Rectangle2D.Double(3700, 1900, 200, 150);
-		Color rectFColor = Color.PINK;
-		Color rectFColorFill = Color.GRAY;
+		Rectangle2D rectFilledObj = new Rectangle2D.Double(3700, 2100, 200, 150);
+		Color rectFColor = Color.GREEN;
+		Color rectFColorFill = Color.ORANGE;
 		
 		// define a rectangle
-		Rectangle2D rect = new Rectangle2D.Double(3700, 2000, 200, 150);
+		Rectangle2D rectShape = new Rectangle2D.Double(3700, 1900, 200, 150);
 		Color rectColor = Color.PINK;
 		
 		// define a line 1
-		Line2D line1 = new Line2D.Double(4000, 1900, 150, 0);
-		double line1Rotation = -30;
+		Line2D line1Obj = new Line2D.Double(4000, 1900, 4150, 2050);
+		double line1Rotation = 0;
 		Color line1Color = Color.RED;
 		
 		// define a line 2
-		Line2D line2 = new Line2D.Double(4000, 2050, 150, 0);
+		Line2D line2Obj = new Line2D.Double(4000, 2050, 4150, 1900);
 		double line2otation = 30;
 		Color line2Color = Color.BLUE;
 		
@@ -512,31 +517,35 @@ class RegexExpress extends JPanel {
 		Font string1Font = new Font("Comic Sans MS", Font.PLAIN, 12);
 		
 		
-		GElemRectFilled gRectFill1 = new GElemRectFilled(rotation000, rectFColor, stroke, rectFColorFill, rectFilled);
-		GElemRect gRect1 = new GElemRect(rotation030, rectFColor, stroke, rect);
+		GElemRectFilled gRectFill1 = new GElemRectFilled(rectFColor, stroke, rectFilledObj, rotation030, rectFColorFill);
+		GElemRect gRect1 = new GElemRect(rectColor, stroke, rectShape, rotation000);
 		
-		GElemLine gLine1 = new GElemLine(line1Rotation, line1Color, stroke, line1);
-		GElemLine gLine2 = new GElemLine(line2otation, line2Color, stroke, line2);
+		GElemLine gLine1 = new GElemLine(line1Color, stroke_linetest1, line1Obj);
+		GElemLine gLine2 = new GElemLine(line2Color, stroke, line2Obj);
 		
-		GElemSimpleString gString1 = new GElemSimpleString(rotation000, string2Color, stroke,
+		GElemSimpleString gString1 = new GElemSimpleString(string2Color, stroke,
 				regexLayerPane.rxZero.getGraphics(), "this is line 1", string1Font, stringFOrigin);
 		
-		LogMsgFmtln("string  in info| ", "insertPt| " + dispVal(stringFOrigin));
-		
-		LogMsgFmtln("string out info| ", "insertPt| " + dispVal(gString1.getInsertPt()));
-		
-		
+//		LogMsgFmtln("string  in info| ", "insertPt| " + dispVal(stringFOrigin));
+//
+//		LogMsgFmtln("string out info| ", "insertPt| " + dispVal(gString1.getInsertPt()));
 
-		dlm.add(gRect1);
-		dlm.add(gRectFill1);
-		dlm.add(gLine1);
-		dlm.add(gLine2);
-		dlm.add(gString1);
+//		dlm.add(gRect1);
+//		dlm.add(gRectFill1);
+//		dlm.add(gLine1);
+//		dlm.add(gLine2);
+//		dlm.add(gString1);
+
+//		dlm.draw(regexLayerPane.rxZero.getGraphics());
+
+		LogMsgFmtln("add line1| ", regexLayerPane.addGraphElement("Layer 1", gLine1));
+		LogMsgFmtln("add line2| ", regexLayerPane.addGraphElement("Layer 1", gLine2));
+		LogMsgFmtln("add rect filled| ", regexLayerPane.addGraphElement("Layer 1", gRectFill1));
+		LogMsgFmtln("add rect| ", regexLayerPane.addGraphElement("Layer 1", gRect1));
+		LogMsgFmtln("add string| ", regexLayerPane.addGraphElement("Layer 1", gString1));
 		
-		dlm.list();
-		
-		
-		
+		regexLayerPane.repaint();
+	
 	}
 
 }

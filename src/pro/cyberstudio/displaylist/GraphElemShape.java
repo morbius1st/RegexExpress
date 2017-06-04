@@ -13,15 +13,13 @@ abstract class GraphElemShape extends GraphElement {
 	
 	Shape shape;
 	
-	public GraphElemShape(double rotation, GraphicType graphicType,
+	public GraphElemShape(GraphElemType graphElemType,
 						  Paint paint, BasicStroke stroke, Shape shape) {
 
-		super(rotation, graphicType, paint, stroke);
+		super(graphElemType, paint, stroke);
 		
 		this.shape = shape;
 	}
 	
-	public Shape getShape() {
-		return shape;
-	}
+	
 }

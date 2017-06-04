@@ -1,6 +1,7 @@
 package pro.cyberstudio.regexexpress;
 
 import java.awt.*;
+
 import javax.swing.*;
 
 import pro.cyberstudio.displaylist.*;
@@ -15,10 +16,9 @@ import static pro.cyberstudio.regexexpress.Utility.*;
  */
 
 
-class RegexLayer extends iRxLayer implements Scrollable {
+class RegexLayer extends aRxLayer implements Scrollable {
 	
-	private DisplayListManager dispListMgr;
-	
+	private DisplayListManager dlm;
 	
 	private static int idx = 1;
 	private int layerIndex;
@@ -34,8 +34,6 @@ class RegexLayer extends iRxLayer implements Scrollable {
 	
 	private int maxUnitIncrement = 1;
 	
-	private double zoomFactor = 1.0;
-	
 	private int layerID;
 	
 	
@@ -46,7 +44,7 @@ class RegexLayer extends iRxLayer implements Scrollable {
 		layerIndex = idx++;
 		offsetY = 6 + (layerIndex) * -12;
 		
-		dispListMgr = new DisplayListManager(50);
+		dlm = new DisplayListManager(50);
 		
 	}
 
@@ -54,36 +52,30 @@ class RegexLayer extends iRxLayer implements Scrollable {
 		return layerID;
 	}
 	
-	public void setZoomScale(double zoomFactor) {
-		this.zoomFactor = zoomFactor;
+	boolean addGraphElem(GraphElement ge) {
+		return dlm.add(ge);
 	}
 
-	@Override
-	public void paint(Graphics g) {
-		Graphics2D g2 = (Graphics2D) g;
-		g2.scale(zoomFactor, zoomFactor);
-		super.paint(g);
-	}
-	
-	
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		
 		Graphics2D g2 = (Graphics2D) g;
 		
-		int colorIdx = (layerIndex - 1) % colors.length;
-		g2.setColor(colors[colorIdx]);
+		dlm.draw(g2);
 		
-		Font font;
-		
-		int x = (getMinimumSize().width / 2) + offsetX;
-		int y = (getMinimumSize().height / 2) + offsetY;
-		
-		font = new Font("Arial", Font.BOLD + Font.ITALIC, 12);
-		
-		g2.setFont(font);
-		g2.drawString("layer: " + getName(), x, y);
+//		int colorIdx = (layerIndex - 1) % colors.length;
+//		g2.setColor(colors[colorIdx]);
+//
+//		Font font;
+//
+//		int x = testX + 2 + offsetX;
+//		int y = testY + 50 + offsetY;
+//
+//		font = new Font("Arial", Font.BOLD + Font.ITALIC, 12);
+//
+//		g2.setFont(font);
+//		g2.drawString("layer: " + getName(), x, y);
 	}
 	
 	@Override

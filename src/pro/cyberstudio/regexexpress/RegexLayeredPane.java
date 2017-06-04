@@ -4,13 +4,13 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
 import java.util.*;
+import java.util.function.DoubleBinaryOperator;
 
 import javax.swing.*;
 
-import pro.cyberstudio.utilities.log;
-import sun.rmi.runtime.Log;
 
-import static pro.cyberstudio.regexexpress.RegexExpress.regexScroll;
+import pro.cyberstudio.displaylist.GraphElement;
+
 import static pro.cyberstudio.regexexpress.RegexExpress.regexViewport;
 import static pro.cyberstudio.regexexpress.Utility.*;
 import static pro.cyberstudio.regexexpress.Utility.viewSizeMask;
@@ -39,6 +39,9 @@ class PriorZoom {
 
 class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseListener, iMWListener, iMMListener  { //, MouseWheelListener{
 	
+	boolean runOnce1 = true;
+	
+	
 	enum DragModes {NONE, XHAIRS, PAN, STARTWINDOW, WINDOW, SELECTION, LINE }
 	
 	static private final int POINTER_LAYER = JLayeredPane.PALETTE_LAYER - 1;
@@ -52,7 +55,7 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 	
 	private static viewSizeData viewSizeParams = new viewSizeData();
 	
-	AffineTransform aff = new AffineTransform();
+	AffineTransform aft = new AffineTransform();
 	
 	private static double zoomFactor = 1.0;
 	private static double zoomRatio = 1.0;
@@ -98,7 +101,7 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 		setName("RegexLayeredPane");
 		
 		
-		aff.setToScale(zoomFactor, zoomFactor);
+		aft.setToScale(zoomFactor, zoomFactor);
 		
 		RegexScroll.addMWL(this);
 		RegexScroll.addCL(this);
@@ -176,6 +179,20 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 	
 	void getLayerOneInfo() {
 		LogMsgln(layerTable.firstEntry().getValue().toString());
+	}
+	
+	String addGraphElement(String layerName, GraphElement ge) {
+		RegexLayer layer = layerTable.get(layerName);
+		
+		if (layer == null) {
+			return null;
+		}
+		
+		if (layer.addGraphElem(ge) ) {
+			return ge.toString();
+		}
+		
+		return null;
 	}
 	
 
@@ -384,6 +401,9 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 	}
 	
 	void setZoomRatio(double zRatio) {
+	
+//		LogMsgln("\n\t\t****************************");
+		
 		if (zoomFactor * zRatio > zoomFactorMax || zoomFactor * zRatio < zoomFactorMin) {
 			zRatio = 1.0;
 		}
@@ -401,36 +421,80 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 			newSize.height = getVisibleRect().height;
 		}
 		
-		zoomRatio = zRatio;
-		zoomFactor *= zRatio;
+//		LogMsgFmtln("newsizeA| ", newSize);
 		
 		Dimension newSize2 = new Dimension(newSize);
 		
-		if (newSize.width < getMinimumSize().width) {
-			newSize2.width = getMinimumSize().width;
+		zoomRatio = zRatio;
+		zoomFactor *= zRatio;
+		
+		RegexExpress.textAreaZmFactor.setText(dispZoom(zoomFactor));
+		
+		aft.setToScale(zoomFactor, zoomFactor);
+		rxBackground.setZoomScale(zoomFactor);
+		
+
+		double xfactor = 1.0;
+		double yfactor = 1.0;
+		double xfactor2 = 1.0;
+		double yfactor2 = 1.0;
+		double tx = 0;
+		double ty = 0;
+		double theta = 0;
+		double anchorx = 0;
+		double anchory = 0;
+
+		if (false) {
+			xfactor = 1.1;
+			yfactor = 2.2;
+			xfactor2 = 1.1;
+			yfactor2 = 2.2;
+			tx = 2828;
+			ty = 0;
+			theta = Math.PI /4;
+			anchorx = 0;
+			anchory = 0;
+		}
+
+		if (tx != 0 && ty != 0) {
+			aft.translate(tx, ty);
+			rxBackground.setTranslate(tx, ty);
 		}
 		
-		if (newSize.height < getMinimumSize().height) {
-			newSize2.height = getMinimumSize().height;
+		if (theta != 0) {
+			aft.rotate(theta, anchorx, anchory);
+			rxBackground.setRotate(theta, anchorx, anchory);
+		}
+		
+		newSize = new Dimension((int) (newSize.width * xfactor), (int) (newSize.height * yfactor));
+
+		// this is required
+		if (newSize2.width < (int) (getMinimumSize().width)) {
+			newSize2.width = (int) (getMinimumSize().width);
 		}
 
-		aff.setToScale(zoomFactor, zoomFactor);
+		if (newSize2.height < (int) (getMinimumSize().height)) {
+			newSize2.height = (int) (getMinimumSize().height);
+		}
 
-		RegexExpress.textAreaZmFactor.setText(dispZoom(zoomFactor));
+		newSize2 = new Dimension((int) (newSize2.width * xfactor2), (int) (newSize2.height * yfactor2));
+		
+//		LogMsgFmtln("newsizeB| ", newSize);
+//		LogMsgFmtln("newsize2| ", newSize2);
+//		LogMsgFmtln("min size| ", rxBackground.getMinimumSize());
+//		LogMsgFmtln("size| ", rxBackground.getSize());
 		
 		setPreferredSize(newSize);  // must do this - and use newSize
 
 		// parent is the viewport - required to update the
 		// view port and keep its size current
 		regexViewport.doLayout();
-
+		
 		for (int i = lowestLayer(); i <= highestLayer(); i++) {
 			Component[] comps = getComponentsInLayer(i);
-			
 			if (comps.length > 0) {
 				for (Component c : comps) {
 					c.setSize(newSize2);
-					((iRxLayer) c).setZoomScale(zoomFactor);
 					c.revalidate();
 					c.repaint();
 				}
@@ -463,7 +527,7 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 		Point ptDest = new Point();
 		
 		try {
-			aff.inverseTransform(ptSrc, ptDest);
+			aft.inverseTransform(ptSrc, ptDest);
 		} catch (Exception e) {}
 		
 		return ptDest;
@@ -477,7 +541,7 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 		Point ptDest = new Point();
 		
 		try {
-			aff.transform(ptSrc, ptDest);
+			aft.transform(ptSrc, ptDest);
 		} catch (Exception e) {}
 		
 		return ptDest;
@@ -568,6 +632,7 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 		
 		// determine the layer point coordinate from a screen coordinate
 		Point mouseLayPoint = calcLayerPtFromScnPt(new Point(e.getX(), e.getY()));
+//		Point mouseLayPoint = calcLayerPtFromScnPtRot(new Point(e.getX(), e.getY()));
 
 		RegexExpress.textAreaCoords.setText(dispVal(mouseLayPoint));
 		
@@ -656,6 +721,9 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 		sb.append(LogMsgStr("highest layer| ", dispVal(highestLayer())));
 		sb.append("\n");
 		
+		Point pt = new Point();
+		Rectangle r = new Rectangle();
+		
 		for (int i = lowestLayer(); i <= highestLayer(); i++) {
 			Component[] comps = getComponentsInLayer(i);
 			
@@ -670,6 +738,10 @@ class RegexLayeredPane extends JLayeredPane implements iCompListener, iMouseList
 					sb.append("\n");
 					sb.append(viewSizes(comps[j], viewSizeMask.all(), false));
 					sb.append("\n");
+					
+//					r = comps[j].getBounds();
+//					comps[j].setBounds(r.x + 200, r.y + 200, r.width + 400, r.height + 400);
+//					comps[j].revalidate();
 				}
 			}
 		}

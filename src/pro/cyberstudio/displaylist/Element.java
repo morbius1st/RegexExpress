@@ -26,7 +26,7 @@ abstract class Element {
 		
 	}
 	
-	enum GraphicType {
+	enum GraphElemType {
 		UNDEFINED,
 		LINE,
 		RECT,
@@ -40,13 +40,13 @@ abstract class Element {
 		String SubElemType;
 		int index;
 		
-		ID(ElementType elementType, GraphicType subElementType) {
+		ID(ElementType elementType, GraphElemType subElementType) {
 			elemType = elementType.getElementType();
 			SubElemType = subElementType.name();
 			index = indexID++;
 		}
 		
-		public String getID() {
+		String getID() {
 			return String.format("%1$s.%2$010d.%3$s", elemType,
 					index, SubElemType );
 		}
@@ -56,11 +56,11 @@ abstract class Element {
 	
 	private static int indexID = 0;
 	
-	public Element(ElementType elementType, GraphicType subElementType) {
+	Element(ElementType elementType, GraphElemType subElementType) {
 		id = new ID(elementType, subElementType);
 	}
 	
-	public String ID() {
+	String ID() {
 		return id.getID();
 	}
 	

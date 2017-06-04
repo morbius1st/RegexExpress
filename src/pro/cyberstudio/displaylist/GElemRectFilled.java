@@ -2,10 +2,8 @@ package pro.cyberstudio.displaylist;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
-import java.awt.geom.Rectangle2D.Double;
 
 import static pro.cyberstudio.regexexpress.Utility.dispVal;
-import static pro.cyberstudio.utilities.log.*;
 
 /**
  * @author jeffs
@@ -15,23 +13,44 @@ import static pro.cyberstudio.utilities.log.*;
  */
 
 public class GElemRectFilled extends GraphElemRectangular {
+
+//	GraphicFeatures gf = new GraphicFeatures();
 	
 	private Paint colorFill;
 	
-	public GElemRectFilled(double rotation, Paint paint, BasicStroke stroke, Paint paintFill, Rectangle2D rect) {
+	public GElemRectFilled(Paint paint, BasicStroke stroke,
+						   Rectangle2D rect, double rotation,
+						   Paint colorFill) {
 		
-		super(rotation, GraphicType.RECTFILLED, paint, stroke, rect);
+		super(GraphElemType.RECTFILLED, paint, stroke, rect, rotation);
 		
-		this.colorFill = paintFill;
+		this.colorFill = colorFill;
+		
+		gf.canPaint = false;
 	}
 	
-//	public void draw(Graphics2D g2) {
 	@Override
-	public void draw() {
-		LogMsgFmtln("this is a rect filled|",
+	public void draw(Graphics2D g2) {
+		super.draw(g2, this);
+	}
+	
+	@Override
+	public void drawChild(Graphics2D g2) {
+		
+		g2.setPaint(colorFill);
+		g2.fill(shape);
+		
+		g2.setPaint(paint);
+		g2.draw(shape);
+	}
+	
+	@Override
+	public String toString() {
+		return "this is a rect filled| " +
 				GraphElement.listElemInfo(ID(), paint,
 						((Rectangle2D) shape).getX(),
 						((Rectangle2D) shape).getY(),
-						rotation));
+						gf, rotation);
+		
 	}
 }
